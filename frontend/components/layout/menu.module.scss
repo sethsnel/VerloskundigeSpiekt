@@ -1,0 +1,32 @@
+.nav {
+  display: flex;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 20rem;
+  height: 100vh;
+}
+
+.nav div {
+  width: 100%;
+}
+
+.nav a {
+  font-size: 1.3em;
+  text-align: center;
+  padding: 0.25rem;
+  margin: 0 2rem;
+  display: block;
+  border-top: 1px solid var(--text-color);
+}
+
+.nav div:nth-child(2) a {
+  border-top: 0;
+}
+
+.nav a:active,
+.nav a:hover {
+  background-color: var(--background-color);
+}

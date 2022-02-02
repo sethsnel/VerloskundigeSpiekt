@@ -1,0 +1,9 @@
+.content {
+  display: flex;
+  padding: 1rem 2rem;
+  justify-content: left;
+  width: 100%;
+  max-width: 80rem;
+  min-height: 100vh;
+  background-color: var(--background-color);
+}
