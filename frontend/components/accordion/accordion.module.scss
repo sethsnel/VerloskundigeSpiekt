@@ -1,60 +1,50 @@
 .accordion {
-  //border: 1px solid var(--text-color);
   border-top: 1px solid var(--text-color);
-  border-bottom: 1px solid var(--text-color);
   transition: color 0.15s ease, border-color 0.15s ease;
   width: 100%;
+
+  &:nth-last-child(1) {
+    border-bottom: 1px solid var(--text-color);
+  }
 }
 
-.accordion:nth-last-child(1) {
-  border-bottom: 1px solid var(--text-color);
-  border-top: 0;
-}
-
-.accordion h2 {
-  margin: 1rem 0 0 0;
-  font-size: 1rem;
-}
-
-.accordion h2:nth-child(1) {
-  margin: 0;
-  font-size: 1.2rem;
-  width: 100%;
-  display: block;
-}
-
-.accordion h2 button:hover,
-.accordion h2 button:active {
-  background-color: var(--alternate-background-color);
-}
-
-.accordion h2 button {
+.accordion .name {
   margin: 0;
   padding: 0.8rem 1rem;
-  font-size: 1.1rem;
+  width: 100%;
+  display: flex;
+  
+  font-size: 1.2rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  display: flex;
-  width: 100%;
-  background-color: inherit;
-  border: 0;
   cursor: pointer;
-  align-items: center;
+
+  &:hover, &:active {
+    background-color: var(--alternate-background-color);
+  }
+  
+  &::after {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: auto;
+    content: '';
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232d3f4e'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-size: 1.25rem;
+    transform: rotate(180deg);
+  }
+  
+  &.edit {
+    cursor: text;
+
+    &:hover, &:active {
+      background-color: inherit;
+    }
+  }
 }
 
-.accordion h2:nth-child(1) button::after {
-  flex-shrink: 0;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-left: auto;
-  content: '';
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232d3f4e'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-size: 1.25rem;
-  transform: rotate(180deg);
-}
-
-.accordion.collapsed h2:nth-child(1) button::after {
+.accordion.collapsed .name::after {
   transform: rotate(0);
 }
 
@@ -68,13 +58,28 @@
 
 .accordion .content {
   max-height: 1200px;
-  padding: 1.5rem;
+  padding: 1rem;
   padding-top: 0;
   transition: all 0.3s ease-in-out;
 }
 
-.accordion p {
+.accordion h2 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+}
+
+.accordion p {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
   line-height: 1.5;
+}
+
+.buttons {
+  margin-top: 0.5em;
+  display: flex;
+  flex-direction: row;
+}
+
+.buttons button {
+  margin: 0 1rem 0 0;
 }

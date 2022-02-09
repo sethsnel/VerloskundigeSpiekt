@@ -1,0 +1,12 @@
+.button {
+  padding: 0.3em;
+  font-size: 1.1em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.iconColor {
+  color: var(--text-color);
+  margin-right: 0.3rem;
+}

@@ -1,0 +1,8 @@
+{
+    "javascript.format.enable": true,
+    "typescript.format.enable": true,
+    "editor.tabSize": 2,
+    "javascript.format.semicolons": "remove",
+    "typescript.format.semicolons": "remove",
+    "editor.formatOnSave": true
+}

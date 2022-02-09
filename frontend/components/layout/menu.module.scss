@@ -9,11 +9,11 @@
   height: 100vh;
 }
 
-.nav div {
+.nav .item {
   width: 100%;
 }
 
-.nav a {
+.nav .item a {
   font-size: 1.3em;
   text-align: center;
   padding: 0.25rem;
@@ -22,11 +22,15 @@
   border-top: 1px solid var(--text-color);
 }
 
-.nav div:nth-child(2) a {
+.nav .item:nth-child(2) a {
   border-top: 0;
 }
 
-.nav a:active,
-.nav a:hover {
+.nav .item a:active,
+.nav .item a:hover {
   background-color: var(--background-color);
+}
+
+.profile {
+  margin-top: 2rem;
 }
