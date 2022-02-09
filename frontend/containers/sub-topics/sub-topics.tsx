@@ -20,7 +20,7 @@ const SubTopics = (props: SubTopicsProps) => {
 
   useEffect(() => {
     setSubTopics(props.subTopics)
-  }, props.subTopics)
+  }, [props.subTopics])
 
   const initialNewSubTopic = { name: 'Nieuw sub-onderwerp', text: '<h2>Nieuw kopje</h2><p>Nieuwe tekst</p>' }
   const onCancel = () => {
