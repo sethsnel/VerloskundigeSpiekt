@@ -21,10 +21,11 @@ const upsertSubTopic = async (subtopic: SubTopic, topicId: string): Promise<stri
       subtopicRef = await addDoc(subtopicsCollectionRef, {
         ...subtopic
       })
+
+      //Create parent-child relation
+      await setParentTopic(topicId, subtopicRef.id)
     }
 
-    //Create parent-child relation
-    await setParentTopic(topicId, subtopicRef.id)
     return subtopicRef.id
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
