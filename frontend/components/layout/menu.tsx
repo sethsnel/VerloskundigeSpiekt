@@ -29,9 +29,9 @@ const Menu = () => {
   return (
     <>
       <nav className={styles.nav}>
+        <Profile />
         <h2>Onderwerpen</h2>
         {topicLinks}
-        <Profile />
       </nav>
     </>
   )
