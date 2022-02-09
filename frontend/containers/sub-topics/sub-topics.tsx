@@ -1,5 +1,4 @@
-import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Accordion } from '../../components/accordion'
 import { Button } from '../../components/button'
@@ -16,22 +15,41 @@ interface SubTopicsProps {
 
 const SubTopics = (props: SubTopicsProps) => {
   const { user } = useUser()
-  const router = useRouter()
+  const [subTopics, setSubTopics] = useState<SubTopic[]>(props.subTopics)
   const [newSubTopic, setNewSubTopic] = useState<SubTopic | undefined>()
-  const refreshPage = () => { router.replace(router.asPath) }
+
+  useEffect(() => {
+    setSubTopics(props.subTopics)
+  }, props.subTopics)
+
   const initialNewSubTopic = { name: 'Nieuw sub-onderwerp', text: '<h2>Nieuw kopje</h2><p>Nieuwe tekst</p>' }
   const onCancel = () => {
     setNewSubTopic(undefined)
   }
+  const removeSubTopicFromState = (subTopicId: string) => {
+    setSubTopics(subTopics.filter(st => st.id !== subTopicId))
+  }
+  const addSubTopicToState = (subTopic: SubTopic) => {
+    setSubTopics([subTopic, ...subTopics])
+  }
+  const updateSubTopicInState = (subTopic: SubTopic) => {
+    const index = subTopics.findIndex(st => st.id === subTopic.id)
+    subTopics[index] = subTopic
+    setSubTopics(subTopics)
+  }
 
-  const accordions = props.subTopics.map(subTopic =>
+  const accordions = subTopics.map(subTopic =>
     <Accordion
       key={subTopic.id}
       name={subTopic.name}
       text={subTopic.text}
       modificationEnabled={!!user}
-      onUpdate={(updated) => { upsertSubTopic({ ...subTopic, ...updated }, props.topicId); refreshPage() }}
-      onDelete={() => { deleteSubTopic(subTopic); refreshPage() }}
+      onUpdate={(updated) => {
+        const updatedSubTopic = { ...subTopic, ...updated }
+        upsertSubTopic(updatedSubTopic, props.topicId)
+        updateSubTopicInState(updatedSubTopic)
+      }}
+      onDelete={() => { deleteSubTopic(subTopic); removeSubTopicFromState(subTopic.id || '') }}
     />
   )
 
@@ -43,7 +61,11 @@ const SubTopics = (props: SubTopicsProps) => {
       editMode={true}
       modificationEnabled={true}
       onCancel={onCancel}
-      onUpdate={(updated) => { upsertSubTopic(updated, props.topicId); refreshPage(); setNewSubTopic(undefined) }}
+      onUpdate={async (updated) => {
+        const subTopicId = await upsertSubTopic(updated, props.topicId)
+        addSubTopicToState({ id: subTopicId, ...updated })
+        setNewSubTopic(undefined)
+      }}
     />)
   }
 

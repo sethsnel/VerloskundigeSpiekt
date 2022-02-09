@@ -13,7 +13,7 @@ const deleteSubTopic = async (subtopic: SubTopic): Promise<void> => {
       setParentTopic(parentTopic.id, subtopic.id || '', 'remove')
     })
 
-    await deleteDoc(doc(subtopicsCollectionRef, `sub-topics/${subtopic.id}`))
+    await deleteDoc(doc(subtopicsCollectionRef, subtopic.id))
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
       console.log(error)
