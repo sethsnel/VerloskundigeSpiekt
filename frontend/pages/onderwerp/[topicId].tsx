@@ -38,6 +38,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext<TopicPage
       topic,
       subTopics
     },
+    revalidate: 10
   }
 }
 
