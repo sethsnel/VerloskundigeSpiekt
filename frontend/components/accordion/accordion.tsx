@@ -12,7 +12,8 @@ interface AccordionProps {
   modificationEnabled?: boolean
   editMode?: boolean
   onUpdate?: (update: AccordionUpdate) => void
-  onCancel?: Function
+  onDelete?: () => void
+  onCancel?: () => void
 }
 
 type AccordionUpdate = {
@@ -62,6 +63,7 @@ const Accordion = (props: AccordionProps) => {
                 (<>
                   <Button icon="save" onClick={() => onSave()}>opslaan</Button>
                   <Button icon="cancel" onClick={() => onCancel()}>annuleren</Button>
+                  <Button icon="delete" onClick={() => props.onDelete && props.onDelete()}>verwijderen</Button>
                 </>) :
                 (<Button icon="edit" onClick={() => setEditMode(true)}>bewerken</Button>)
               }
