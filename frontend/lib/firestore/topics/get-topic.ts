@@ -5,7 +5,6 @@ import { firestoreDb } from '../../../config/firebaseConfig'
 
 const getTopic = async (topicId: string): Promise<Topic | undefined> => {
   try {
-    console.info('calling getTopic')
     const topicsRef = collection(firestoreDb, "topics")
     const topicDoc = await getDoc(doc(topicsRef, topicId))
 
