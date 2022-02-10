@@ -12,7 +12,7 @@ const Profile: NextPage = () => {
   return (
     <div>
       <Head>
-        <title className={styles.title}>Verloskundige spiekt</title>
+        <title className={styles.title}>Verloskundige Spiekt</title>
         <meta
           name='description'
           content='Eeerste hulp bij verloskudige kennis'

@@ -38,7 +38,7 @@ const SubTopics = (props: SubTopicsProps) => {
     setSubTopics(subTopics)
   }
 
-  const accordions = subTopics.map(subTopic =>
+  const accordions = subTopics.sort((a, b) => a.name.localeCompare(b.name)).map(subTopic =>
     <Accordion
       key={subTopic.id}
       name={subTopic.name}

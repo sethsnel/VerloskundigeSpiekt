@@ -2,10 +2,8 @@
 @import './_mixins.scss';
 
 .main {
-  min-height: 90%;
-  flex: 1;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
 }

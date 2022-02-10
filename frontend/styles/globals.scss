@@ -27,7 +27,6 @@ body {
 
 a {
   color: inherit;
-  text-decoration: none;
 }
 
 * {
@@ -40,6 +39,12 @@ span,
 button {
   color: var(--text-color);
   font-family: 'Montserrat-ExtraLight';
+}
+
+p {
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin-bottom: 1.4em;
 }
 
 h1,

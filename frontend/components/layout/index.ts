@@ -1,3 +1,5 @@
 export { default as Menu } from './menu'
 export { default as Footer } from './footer'
 export { default as Content } from './content'
+export { DefaultLayout } from './default'
+export type { DefaultLayoutProps } from './default'

@@ -7,30 +7,31 @@ import { Profile } from '../profile'
 
 import styles from './menu.module.scss'
 
-const Menu = () => {
-  const [topics, setTopics] = useState<Topic[]>([])
+interface MenuProps {
+  topics: Topic[]
+}
 
-  useEffect(() => {
-    const fetchTopics = async () => {
-      setTopics(await getTopics())
-    }
-
-    fetchTopics()
-  }, [])
-
-  const topicLinks = topics.map(topic =>
-    <div key={topic.id} className={styles.item}>
-      <Link href={`/onderwerp/${topic.id}`}>
-        <a>{topic.name}</a>
-      </Link>
-    </div>
-  )
+const Menu = ({ topics }: MenuProps) => {
+  const topicLinks = topics
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(topic =>
+      <div key={topic.id} className={styles.item}>
+        <Link href={`/onderwerp/${topic.id}`}>
+          <a>{topic.name}</a>
+        </Link>
+      </div>
+    )
 
   return (
     <>
       <nav className={styles.nav}>
         <Profile />
-        <h2>Onderwerpen</h2>
+        <h2>Spiekbriefjes</h2>
+        <div key='home' className={styles.item}>
+          <Link href={`/`}>
+            <a>Home</a>
+          </Link>
+        </div>
         {topicLinks}
       </nav>
     </>
