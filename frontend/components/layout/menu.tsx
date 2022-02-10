@@ -16,7 +16,7 @@ const Menu = ({ topics }: MenuProps) => {
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(topic =>
       <div key={topic.id} className={styles.item}>
-        <Link href={`/onderwerp/${topic.id}`}>
+        <Link href={`/onderwerp/${topic.id}`} prefetch={false}>
           <a>{topic.name}</a>
         </Link>
       </div>
