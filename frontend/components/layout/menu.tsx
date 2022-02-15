@@ -1,12 +1,12 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
-import Topic from '../../schema/topic';
-import { Profile } from '../profile';
+import Topic from '../../schema/topic'
+import { Profile } from '../profile'
 
-import styles from './menu.module.scss';
+import styles from './menu.module.scss'
 
 interface MenuProps {
-  topics: Topic[];
+  topics: Topic[]
 }
 
 const Menu = ({ topics }: MenuProps) => {
@@ -18,7 +18,7 @@ const Menu = ({ topics }: MenuProps) => {
           <a>{topic.name}</a>
         </Link>
       </div>
-    ));
+    ))
 
   return (
     <>
@@ -33,7 +33,7 @@ const Menu = ({ topics }: MenuProps) => {
         {topicLinks}
       </nav>
     </>
-  );
-};
+  )
+}
 
-export default Menu;
+export default Menu

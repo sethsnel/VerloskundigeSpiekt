@@ -1,13 +1,13 @@
-import { collection, getDoc, getDocs, doc } from 'firebase/firestore';
+import { collection, getDoc, getDocs, doc } from 'firebase/firestore'
 
-import { firestoreDb } from '../../../config/firebaseConfig';
-import SubTopic from '../../../schema/sub-topic';
+import { firestoreDb } from '../../../config/firebaseConfig'
+import SubTopic from '../../../schema/sub-topic'
 
 const getSubTopics = async (topicId: string): Promise<SubTopic[]> => {
   try {
     const topicChildren = await getDocs(
       collection(firestoreDb, `topics/${topicId}/children`)
-    );
+    )
 
     const subtopicsDocs = await Promise.all(
       topicChildren.docs.map(
@@ -16,7 +16,7 @@ const getSubTopics = async (topicId: string): Promise<SubTopic[]> => {
             doc(collection(firestoreDb, 'sub-topics'), subTopicRef.id)
           )
       )
-    );
+    )
 
     return subtopicsDocs
       .filter((doc) => doc.exists)
@@ -24,7 +24,7 @@ const getSubTopics = async (topicId: string): Promise<SubTopic[]> => {
         id: subTopic.id,
         name: subTopic.data()?.name,
         text: subTopic.data()?.text,
-      }));
+      }))
 
     // const subTopicIds: string[] = [];
 
@@ -51,11 +51,11 @@ const getSubTopics = async (topicId: string): Promise<SubTopic[]> => {
     //return subtopics;
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.log(error);
+      console.log(error)
     }
   }
 
-  return [];
-};
+  return []
+}
 
-export default getSubTopics;
+export default getSubTopics
