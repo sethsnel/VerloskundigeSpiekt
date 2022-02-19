@@ -68,7 +68,6 @@
   font-size: 1.1rem;
 }
 
-
 .accordion h2 input {
   margin: 0;
   padding: 0;
@@ -91,6 +90,12 @@
   margin: 0 0 1rem 0;
   font-size: 1.1rem;
   line-height: 1.5;
+}
+
+.accordion ul, .accordion ol {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  line-height: 1.25;
 }
 
 .buttons {

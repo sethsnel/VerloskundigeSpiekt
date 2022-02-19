@@ -22,7 +22,10 @@ export const BaseButton = React.forwardRef(
       {...props}
       // @ts-ignore
       ref={ref}
-      className={styles.button}
+      className={`
+        ${styles.button}
+        ${active ? styles.active : undefined}
+      `}
     />
   )
 )

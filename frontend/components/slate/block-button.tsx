@@ -1,22 +1,24 @@
 import { useSlate } from 'slate-react'
 
 import { isBlockActive, toggleBlock } from '../../lib/slate/utils'
+
 import { BaseButton } from './base-button'
-import { Icon } from './icon'
+import { SlateIcon } from './icon.slate'
 
 // @ts-ignore
 export const BlockButton = ({ format, icon }) => {
   const editor = useSlate()
+  const active = isBlockActive(editor, format)
 
   return (
     <BaseButton
-      active={isBlockActive(editor, format)}
+      active={active}
       onMouseDown={(event: any) => {
         event.preventDefault()
         toggleBlock(editor, format)
       }}
     >
-      <Icon iconType={icon}>{icon}</Icon>
+      <SlateIcon iconType={icon} active={active}>{icon}</SlateIcon>
     </BaseButton>
   )
 }

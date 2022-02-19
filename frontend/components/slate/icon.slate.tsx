@@ -1,12 +1,13 @@
 import React, { PropsWithChildren, Ref } from "react"
-import { RiBold, RiHeading, RiItalic, RiParagraph, RiUnderline } from "react-icons/ri"
+import { RiBold, RiHeading, RiItalic, RiParagraph, RiUnderline, RiListUnordered, RiListOrdered, RiLinkM, RiLinkUnlinkM } from "react-icons/ri"
+
 import { BaseProps, OrNull } from "../../lib/slate/types"
 
 import styles from './slate.module.scss'
 
-export const Icon = React.forwardRef(
+export const SlateIcon = React.forwardRef(
   (
-    { className, iconType, ...props }: PropsWithChildren<BaseProps>,
+    { className, iconType, active, ...props }: PropsWithChildren<BaseProps>,
     ref: Ref<OrNull<HTMLSpanElement>>
   ) => {
     let icon = undefined
@@ -26,6 +27,18 @@ export const Icon = React.forwardRef(
     if (iconType === 'format_bold') {
       icon = (<RiBold />)
     }
+    if (iconType === 'u_list') {
+      icon = (<RiListUnordered />)
+    }
+    if (iconType === 'o_list') {
+      icon = (<RiListOrdered />)
+    }
+    if (iconType === 'link') {
+      icon = (<RiLinkM />)
+    }
+    if (iconType === 'link' && active) {
+      icon = (<RiLinkUnlinkM />)
+    }
 
     return (
       <span
@@ -38,4 +51,5 @@ export const Icon = React.forwardRef(
     )
   }
 )
-Icon.displayName = 'Icon'
+
+SlateIcon.displayName = 'SlateIcon'

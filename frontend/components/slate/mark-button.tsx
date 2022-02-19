@@ -3,11 +3,12 @@ import { useSlate } from "slate-react"
 import { isMarkActive, toggleMark } from "../../lib/slate/utils"
 
 import { BaseButton } from "./base-button"
-import { Icon } from "./icon"
+import { SlateIcon } from "./icon.slate"
 
 // @ts-ignore
 export const MarkButton = ({ format, icon }) => {
   const editor = useSlate()
+
   return (
     <BaseButton
       active={isMarkActive(editor, format)}
@@ -16,7 +17,7 @@ export const MarkButton = ({ format, icon }) => {
         toggleMark(editor, format)
       }}
     >
-      <Icon iconType={icon}>{icon}</Icon>
+      <SlateIcon iconType={icon}>{icon}</SlateIcon>
     </BaseButton>
   )
 }

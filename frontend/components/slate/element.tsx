@@ -14,8 +14,6 @@ export const Element = (props: any) => {
           <code {...attributes}>{children}</code>
         </pre>
       )
-    case 'bulleted-list':
-      return <ul {...attributes}>{children}</ul>
     case 'heading-one':
       return <h1 {...attributes}>{children}</h1>
     case 'heading-two':
@@ -30,6 +28,8 @@ export const Element = (props: any) => {
       return <h6 {...attributes}>{children}</h6>
     case 'list-item':
       return <li {...attributes}>{children}</li>
+    case 'bulleted-list':
+      return <ul {...attributes}>{children}</ul>
     case 'numbered-list':
       return <ol {...attributes}>{children}</ol>
     case 'link':

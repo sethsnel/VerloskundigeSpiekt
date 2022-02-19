@@ -28,10 +28,16 @@ const serializeNode = (node: Descendant): string => {
       return `<h1>${children}</h1>`
     case 'heading-two':
       return `<h2>${children}</h2>`
+    case 'bulleted-list':
+      return `<ul>${children}</ul>`
+    case 'numbered-list':
+      return `<ol>${children}</ol>`
+    case 'list-item':
+      return `<li>${children}</li>`
     case 'link':
       // @ts-ignore
-      return `<a href="${escapeHtml(node.url)}">${children}</a>`
+      return `<a href="${escapeHtml(node.url)}" target="_blank" rel="external">${children}</a>`
     default:
-      return children
+      return `<p>${children}</p>`
   }
 }

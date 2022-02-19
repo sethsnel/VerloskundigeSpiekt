@@ -20,9 +20,16 @@ const Menu = ({ articles }: MenuProps) => {
       </div>
     ))
 
+  let devNotice: JSX.Element | undefined = undefined
+
+  if (process.env.NODE_ENV === 'development') {
+    devNotice = <h1>DEV</h1>
+  }
+
   return (
     <>
       <nav className={styles.nav}>
+        {devNotice}
         <Profile />
         <p>
           <Link href={`/`}>

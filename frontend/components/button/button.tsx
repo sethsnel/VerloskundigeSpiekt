@@ -1,5 +1,3 @@
-import styles from './button.module.scss'
-
 import { ReactNode } from 'react'
 import { IconContext } from 'react-icons'
 import { FiEdit3 } from 'react-icons/fi'
@@ -8,6 +6,8 @@ import { GrAddCircle } from 'react-icons/gr'
 import { ImCancelCircle } from 'react-icons/im'
 import { MdDelete } from 'react-icons/md'
 import { AiOutlineLogout, AiOutlineLogin } from 'react-icons/ai'
+
+import styles from './button.module.scss'
 
 interface ButtonProps {
   children: ReactNode

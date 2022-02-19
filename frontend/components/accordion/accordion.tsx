@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { Button } from '../button'
 import { EditableText } from './editable-text'
 
-import styles from './accordion.module.scss'
 import { EditableHeader } from './editable-header'
+
+import styles from './accordion.module.scss'
 
 interface AccordionProps {
   name: string

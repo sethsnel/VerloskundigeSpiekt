@@ -2,9 +2,9 @@
   & > * {
     display: inline-block;
   }
-  & > * + * {
-    margin-left: 15px;
-  }
+  // & > .button + * {
+  //   margin-left: 0.5rem;
+  // }
 }
 
 .toolbar {
@@ -17,10 +17,32 @@
 
 .button {
   cursor: pointer;
-  color: #aaa;
+  color: var(--text-color);
+  padding: 0.3rem;
+
+  &.active {
+    background-color: var(--alternate-background-color);
+  }
+}
+
+.button:hover {
+  color: var(--button-text);
+  background-color: var(--header-color);
 }
 
 .icon {
   font-size: 18px;
   vertical-align: text-bottom;
+  color: inherit;
+}
+
+.divider {
+  padding: 0;
+  margin: 0 0 0 0.3em;
+  font-size: 1.4em;
+  cursor: default;
+
+  height: 100%;
+
+  border-left: 1px solid var(--title-color)
 }
