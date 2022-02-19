@@ -1,9 +1,10 @@
-import { getTopics } from "../firestore/topics"
+import { DefaultLayoutProps } from "../../components/layout"
+import getArticles from "../firestore/articles/get-articles"
 
-export default async function fetchLayoutProps() {
-  const topics = await getTopics()
+export default async function fetchLayoutProps(): Promise<DefaultLayoutProps> {
+  const articles = await getArticles()
 
   return {
-    topics
+    articles: articles
   }
 }

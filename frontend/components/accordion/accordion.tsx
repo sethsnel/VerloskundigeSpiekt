@@ -46,7 +46,7 @@ const Accordion = (props: AccordionProps) => {
   return (
     <div className={accordionClasses}>
       {editMode ?
-        <EditableHeader name={props.name} onChange={(newName: string) => setName(newName)} /> :
+        <EditableHeader name={name} onChange={(newName: string) => setName(newName)} /> :
         <h2 className={styles.name} onClick={() => setCollapsed(!collapsed)}>
           {name}
         </h2>

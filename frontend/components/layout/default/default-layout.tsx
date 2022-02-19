@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Content, Menu } from '..'
-import Topic from '../../../schema/topic'
+import { Article } from '../../../schema/article'
 
 import styles from './default-layout.module.scss'
 
@@ -10,13 +10,13 @@ interface DefaultLayout extends DefaultLayoutProps {
 }
 
 export type DefaultLayoutProps = {
-  topics: Topic[]
+  articles: Article[]
 }
 
-const DefaultLayout = ({ children, topics }: DefaultLayout) => {
+const DefaultLayout = ({ children, articles }: DefaultLayout) => {
   return (
     <div className={styles.container}>
-      <Menu topics={topics} />
+      <Menu articles={articles} />
       <Content>
         {children}
       </Content>

@@ -1,3 +1,8 @@
 # misc
 .DS_Store
 *.pem
+**/.env
+**/*-prod.json
+**/*-dev.json
+**/node_modules*
+**/out*
