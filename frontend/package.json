@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/escape-html": "^1.0.1",
     "@types/firebase": "^3.2.1",
+    "@types/is-url": "^1.2.30",
     "@types/nanoid": "^3.0.0",
     "@types/node": "17.0.13",
     "@types/react": "17.0.38",
