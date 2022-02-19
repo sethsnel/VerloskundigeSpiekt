@@ -5,11 +5,16 @@
   "main": "index.js",
   "scripts": {
     "export": "ts-node export.ts",
-    "import": "ts-node import.ts"
+    "import": "ts-node import.ts",
+    "migrate:subtopics": "ts-node migrations/topics-to-pages.ts"
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "dateformat": "^5.0.2"
+  },
   "devDependencies": {
+    "@types/dateformat": "^5.0.0",
     "@types/node": "^17.0.17",
     "dotenv": "16.0.0",
     "firestore-export-import": "0.17.0",

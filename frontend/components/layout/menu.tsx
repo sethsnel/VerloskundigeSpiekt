@@ -1,21 +1,21 @@
 import Link from 'next/link'
 
-import Topic from '../../schema/topic'
+import { Article } from '../../schema/article'
 import { Profile } from '../profile'
 
 import styles from './menu.module.scss'
 
 interface MenuProps {
-  topics: Topic[]
+  articles: Article[]
 }
 
-const Menu = ({ topics }: MenuProps) => {
-  const topicLinks = topics
+const Menu = ({ articles }: MenuProps) => {
+  const articleLinks = articles
     .sort((a, b) => a.name.localeCompare(b.name))
-    .map((topic) => (
-      <div key={topic.id} className={styles.item}>
-        <Link href={`/onderwerp/${topic.id}`} prefetch={false}>
-          <a>{topic.name}</a>
+    .map((article) => (
+      <div key={article.id} className={styles.item}>
+        <Link href={`/artikel/${article.id}`} prefetch={false}>
+          <a>{article.name}</a>
         </Link>
       </div>
     ))
@@ -30,7 +30,7 @@ const Menu = ({ topics }: MenuProps) => {
           </Link>
         </p>
         <h2>Spiekbriefjes</h2>
-        {topicLinks}
+        {articleLinks}
       </nav>
     </>
   )

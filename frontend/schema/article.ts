@@ -1,7 +1,7 @@
-export type Page = {
+export type Article = {
   id?: string
   name: string
-  notes: Note[]
+  notes: Record<string, Note>
 }
 
 export type Note = {

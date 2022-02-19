@@ -1,17 +1,17 @@
-import { nanoid } from 'nanoid'
 import { useEffect, useState } from 'react'
+import { nanoid } from 'nanoid'
 
 import { Accordion } from '../../components/accordion'
 import { Button } from '../../components/button'
 import { useUser } from '../../lib/auth/use-user'
-import { upsertSubTopic, deleteSubTopic } from '../../lib/firestore/sub-topics'
-import { Note } from '../../schema/page'
+import { upsertNote, deleteNote } from '../../lib/firestore/articles'
+import { Note } from '../../schema/article'
 
 import styles from './notes.module.scss'
 
 interface NotesProps {
   notes: Note[]
-  pageId: string
+  articleId: string
 }
 
 const Notes = (props: NotesProps) => {
@@ -23,8 +23,8 @@ const Notes = (props: NotesProps) => {
     setNotes(props.notes)
   }, [props.notes])
 
-  const initialNewSubTopic: Note = {
-    id: nanoid(10),
+  const initialNewNote: Note = {
+    id: nanoid(20),
     name: 'Nieuw sub-onderwerp',
     text: '<h2>Nieuw kopje</h2><p>Nieuwe tekst</p>',
   }
@@ -40,25 +40,26 @@ const Notes = (props: NotesProps) => {
   const updateNoteInState = (note: Note) => {
     const index = notes.findIndex((st) => st.id === note.id)
     notes[index] = note
+    //Want sorting on change name? [...notes.sort((a, b) => a.name.localeCompare(b.name))]
     setNotes(notes)
   }
 
   const accordions = notes
     .sort((a, b) => a.name.localeCompare(b.name))
-    .map((subTopic) => (
+    .map((note) => (
       <Accordion
-        key={subTopic.id}
-        name={subTopic.name}
-        text={subTopic.text}
+        key={note.id}
+        name={note.name}
+        text={note.text}
         modificationEnabled={!!user}
         onUpdate={(updated) => {
-          const updatedSubTopic = { ...subTopic, ...updated }
-          upsertSubTopic(updatedSubTopic, props.pageId)
-          updateNoteInState(updatedSubTopic)
+          const updatedNote = { ...note, ...updated }
+          upsertNote(updatedNote, props.articleId)
+          updateNoteInState(updatedNote)
         }}
         onDelete={() => {
-          deleteSubTopic(subTopic)
-          removeNoteFromState(subTopic.id || '')
+          deleteNote(note.id, props.articleId)
+          removeNoteFromState(note.id || '')
         }}
       />
     ))
@@ -73,8 +74,12 @@ const Notes = (props: NotesProps) => {
         modificationEnabled={true}
         onCancel={onCancel}
         onUpdate={async (updated) => {
-          await upsertSubTopic(updated, props.pageId)
-          addNoteToState({ ...(updated as Note) })
+          const noteToUpsert = {
+            id: newNote.id,
+            ...updated
+          }
+          await upsertNote(noteToUpsert, props.articleId)
+          addNoteToState({ ...(noteToUpsert) })
           setNewNote(undefined)
         }}
       />
@@ -85,8 +90,8 @@ const Notes = (props: NotesProps) => {
     <div className={styles.container}>
       <div className={styles.buttons}>
         {newNote || !user ? undefined : (
-          <Button icon="add" onClick={() => setNewNote(initialNewSubTopic)}>
-            Voeg spiekbriefje toe
+          <Button icon="add" onClick={() => setNewNote(initialNewNote)}>
+            maak spiekbriefje
           </Button>
         )}
       </div>

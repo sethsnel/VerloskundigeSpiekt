@@ -68,6 +68,25 @@
   font-size: 1.1rem;
 }
 
+
+.accordion h2 input {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  line-height: 1rem;
+
+  font-family: 'Kollektif';
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--header-color);
+  
+  background: inherit;
+  border: 0;
+  outline: none;
+}
+
 .accordion p {
   margin: 0 0 1rem 0;
   font-size: 1.1rem;

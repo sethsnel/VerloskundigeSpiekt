@@ -1,5 +1,8 @@
-const { initializeApp, backups } = require('firestore-export-import')
-const fs = require('fs')
+import { initializeApp, backups } from 'firestore-export-import'
+import { findFreeFileName } from './utils'
+//import dateFormat from 'dateformat'
+//const dateFormat = require('dateformat')
+import fs from 'fs'
 
 const serviceAccount = require('./verloskundigespiekt-prod.json')
 
@@ -8,11 +11,14 @@ initializeApp(serviceAccount)
 
 // Export options
 const options = {
-  docsFromEachCollection: 100,
+  docsFromEachCollection: 200,
 }
 
-backups(['topics', 'sub-topics'], options).then((data: any) =>
-  fs.writeFileSync('export.json', JSON.stringify(data))
+//const today = dateFormat(Date.now(), 'dd-mm-yyyy')
+const collectionsToBackup = ['topics', 'sub-topics']
+
+backups(collectionsToBackup, options).then((data: any) =>
+  fs.writeFileSync(findFreeFileName(`export`, 'json'), JSON.stringify(data))
 )
 
-export {}
+export { }

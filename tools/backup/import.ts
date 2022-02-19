@@ -4,6 +4,6 @@ const serviceAccount = require('./verloskundigespiekt-dev.json')
 // Initiate Firebase App
 initializeApp(serviceAccount)
 
-restore('new.json')
+restore('topics-to-pages-migration.json')
 
-export {}
+export { }

@@ -5,3 +5,4 @@
 **/*-prod.json
 **/*-dev.json
 **/node_modules*
+**/out*

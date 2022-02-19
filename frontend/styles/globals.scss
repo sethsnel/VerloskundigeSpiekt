@@ -35,10 +35,14 @@ a {
 
 p,
 div,
-span,
-button {
+span {
   color: var(--text-color);
   font-family: 'Montserrat-ExtraLight';
+}
+
+button {
+  color: var(--text-color);
+  font-family: sans-serif;
 }
 
 p {
