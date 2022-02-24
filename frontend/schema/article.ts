@@ -1,7 +1,11 @@
 export type Article = {
-  id?: string
+  id: string
   name: string
-  notes: Record<string, Note>
+  notes?: Record<string, Note>
+}
+
+export type UpdateArticle = Omit<Article, 'id'> & {
+  id?: string
 }
 
 export type Note = {

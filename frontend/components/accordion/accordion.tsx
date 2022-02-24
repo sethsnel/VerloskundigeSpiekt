@@ -64,7 +64,9 @@ const Accordion = (props: AccordionProps) => {
                 (<>
                   <Button icon="save" onClick={() => onSave()}>opslaan</Button>
                   <Button icon="cancel" onClick={() => onCancel()}>annuleren</Button>
-                  <Button icon="delete" onClick={() => props.onDelete && props.onDelete()}>verwijderen</Button>
+                  {
+                    props.onDelete ? <Button icon="delete" onClick={() => props.onDelete && props.onDelete()}>verwijderen</Button> : undefined
+                  }
                 </>) :
                 (<Button icon="edit" onClick={() => setEditMode(true)}>bewerken</Button>)
               }

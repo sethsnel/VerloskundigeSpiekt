@@ -4,15 +4,18 @@ import { Notes } from '../../containers/notes'
 import { Article } from '../../schema/article'
 
 import fetchLayoutProps from '../../lib/shared/fetchLayoutProps'
-import { DefaultLayout, DefaultLayoutProps } from '../../components/layout'
+import { DefaultLayout } from '../../components/layout'
+import { EditablePageHeader } from '../../components/header'
 
 import styles from '../../styles/Article.module.scss'
 import getarticles from '../../lib/firestore/articles/get-articles'
 import getArticle from '../../lib/firestore/articles/get-article'
+import { getArticleQueryKey } from '../../lib/react-query'
+import { dehydrate, QueryClient, useQuery } from 'react-query'
+import { useArticles } from '../../lib/hooks/articles'
 
 interface ArticlePageProps {
-  article: Article
-  layoutProps: DefaultLayoutProps
+  articleId: string
 }
 
 type ArticlePageParams = {
@@ -20,13 +23,19 @@ type ArticlePageParams = {
 }
 
 const ArticlePage: NextPage<ArticlePageProps> = (props) => {
+  const articleQK = getArticleQueryKey(props.articleId)
+  const { data: article } = useQuery(articleQK, () => getArticle(props.articleId))
+  const { addArticleMutation } = useArticles()
+
   return (
-    <DefaultLayout {...props.layoutProps}>
+    <DefaultLayout>
       <div className={styles.container}>
-        <h1 className={styles.title}>{props.article.name}</h1>
+        <EditablePageHeader key={article?.id} title={article?.name ?? ''} onSave={(updatedTitle) => addArticleMutation.mutate({ ...article, name: updatedTitle })} />
 
         <main className={styles.main}>
-          <Notes notes={Object.values(props.article.notes)} articleId={props.article.id as string} />
+          {
+            article ? <Notes article={article} /> : undefined
+          }
         </main>
       </div>
     </DefaultLayout>
@@ -34,15 +43,17 @@ const ArticlePage: NextPage<ArticlePageProps> = (props) => {
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext<ArticlePageParams>) {
-  const layoutProps = await fetchLayoutProps()
-  const article = await getArticle(params?.articleId || '')
+  const queryClient = new QueryClient()
+  const articleQK = getArticleQueryKey(params?.articleId || '')
+  await queryClient.prefetchQuery(articleQK, () => getArticle(params?.articleId || ''))
+  await queryClient.prefetchQuery('layoutPropsQueryKey', fetchLayoutProps)
 
   return {
     props: {
-      article,
-      layoutProps,
+      articleId: params?.articleId || '',
+      dehydratedState: dehydrate(queryClient)
     },
-    revalidate: 10,
+    revalidate: 60 * 5,
   }
 }
 

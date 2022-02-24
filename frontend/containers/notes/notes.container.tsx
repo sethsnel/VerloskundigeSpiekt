@@ -1,27 +1,34 @@
-import { useEffect, useState } from 'react'
 import { nanoid } from 'nanoid'
+import { useState } from 'react'
+import { useMutation, useQueryClient } from 'react-query'
 
 import { Accordion } from '../../components/accordion'
 import { Button } from '../../components/button'
 import { useUser } from '../../lib/auth/use-user'
-import { upsertNote, deleteNote } from '../../lib/firestore/articles'
-import { Note } from '../../schema/article'
+import { upsertNote, deleteNote, getArticle } from '../../lib/firestore/articles'
+import { getArticleQueryKey } from '../../lib/react-query'
+import { Article, Note } from '../../schema/article'
+import { useArticles } from '../../lib/hooks/articles'
 
 import styles from './notes.module.scss'
 
 interface NotesProps {
-  notes: Note[]
-  articleId: string
+  article: Article
 }
 
-const Notes = (props: NotesProps) => {
+const Notes = ({ article }: NotesProps) => {
   const { user } = useUser()
-  const [notes, setNotes] = useState<Note[]>(props.notes)
-  const [newNote, setNewNote] = useState<Note | undefined>()
+  const queryClient = useQueryClient()
+  const articleQueryKey = getArticleQueryKey(article.id || '')
+  const { deleteArticleMutation } = useArticles()
 
-  useEffect(() => {
-    setNotes(props.notes)
-  }, [props.notes])
+  const onDeletePage = () => {
+    if (window.confirm("Weet je zeker dat je deze pagina wilt verwijderen?")) {
+      deleteArticleMutation.mutate(article.id)
+    }
+  }
+
+  const [newNote, setNewNote] = useState<Note | undefined>()
 
   const initialNewNote: Note = {
     id: nanoid(20),
@@ -31,20 +38,37 @@ const Notes = (props: NotesProps) => {
   const onCancel = () => {
     setNewNote(undefined)
   }
-  const removeNoteFromState = (noteId: string) => {
-    setNotes(notes.filter((st) => st.id !== noteId))
-  }
-  const addNoteToState = (note: Note) => {
-    setNotes([note, ...notes])
-  }
-  const updateNoteInState = (note: Note) => {
-    const index = notes.findIndex((st) => st.id === note.id)
-    notes[index] = note
-    //Want sorting on change name? [...notes.sort((a, b) => a.name.localeCompare(b.name))]
-    setNotes(notes)
-  }
 
-  const accordions = notes
+  const upsertNoteMutation = useMutation(
+    (newNote: Note) => upsertNote(newNote, article.id),
+    {
+      onSuccess: upsertedNote => {
+        if (upsertedNote) {
+          queryClient.setQueryData(articleQueryKey, {
+            ...article,
+            notes: {
+              ...article.notes,
+              [upsertedNote.id]: upsertedNote
+            }
+          })
+        }
+      }
+    }
+  )
+
+  const deleteNoteMutation = useMutation(
+    (noteId: string) => deleteNote(noteId, article.id),
+    {
+      onSuccess: deletedNoteId => {
+        if (deletedNoteId && article?.notes) {
+          delete article.notes[deletedNoteId]
+          queryClient.setQueryData(articleQueryKey, { ...article })
+        }
+      }
+    }
+  )
+
+  const accordions = Object.values(article?.notes ?? [])
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((note) => (
       <Accordion
@@ -54,12 +78,10 @@ const Notes = (props: NotesProps) => {
         modificationEnabled={!!user}
         onUpdate={(updated) => {
           const updatedNote = { ...note, ...updated }
-          upsertNote(updatedNote, props.articleId)
-          updateNoteInState(updatedNote)
+          upsertNoteMutation.mutate(updatedNote)
         }}
         onDelete={() => {
-          deleteNote(note.id, props.articleId)
-          removeNoteFromState(note.id || '')
+          deleteNoteMutation.mutate(note.id)
         }}
       />
     ))
@@ -78,8 +100,7 @@ const Notes = (props: NotesProps) => {
             id: newNote.id,
             ...updated
           }
-          await upsertNote(noteToUpsert, props.articleId)
-          addNoteToState({ ...(noteToUpsert) })
+          upsertNoteMutation.mutate(noteToUpsert)
           setNewNote(undefined)
         }}
       />
@@ -90,9 +111,14 @@ const Notes = (props: NotesProps) => {
     <div className={styles.container}>
       <div className={styles.buttons}>
         {newNote || !user ? undefined : (
-          <Button icon="add" onClick={() => setNewNote(initialNewNote)}>
-            maak spiekbriefje
-          </Button>
+          <>
+            <Button icon="add" onClick={() => setNewNote(initialNewNote)}>
+              onderwerp toevoegen
+            </Button>
+            <Button icon="delete" onClick={onDeletePage}>
+              verwijder pagina
+            </Button>
+          </>
         )}
       </div>
       <div className={styles.grid}>{accordions}</div>

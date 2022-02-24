@@ -1,0 +1,1 @@
+export const getArticleQueryKey = (articleId: string) => ['article', articleId]

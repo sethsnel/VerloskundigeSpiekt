@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { dehydrate, QueryClient } from 'react-query'
 
 import { DefaultLayout, DefaultLayoutProps } from '../components/layout'
 import fetchLayoutProps from '../lib/shared/fetchLayoutProps'
@@ -39,11 +40,12 @@ const Home: NextPage<HomePageProps> = ({ layoutProps }: HomePageProps) => {
 }
 
 export async function getStaticProps() {
-  const layoutProps = await fetchLayoutProps()
+  const queryClient = new QueryClient()
+  await queryClient.prefetchQuery('layoutPropsQueryKey', fetchLayoutProps)
 
   return {
     props: {
-      layoutProps
+      dehydratedState: dehydrate(queryClient)
     },
     revalidate: 60 * 10
   }

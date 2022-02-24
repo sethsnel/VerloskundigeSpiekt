@@ -5,6 +5,6 @@ export default async function fetchLayoutProps(): Promise<DefaultLayoutProps> {
   const articles = await getArticles()
 
   return {
-    articles: articles
+    articles
   }
 }

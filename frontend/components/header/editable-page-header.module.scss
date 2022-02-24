@@ -1,0 +1,56 @@
+.title {
+  margin: 1px;
+  position: relative;
+
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.title span {
+  display: inline-block;
+  line-height: 1.15;
+}
+
+.title button {
+  visibility: hidden;
+}
+
+.editable:hover {
+  border: 1px solid;
+  margin: 0;
+}
+
+.editable button {
+  visibility: inherit;
+  position: absolute;
+  right: 0;
+  top: 0.45rem;
+
+  margin: 0;
+  padding: 0.3rem 0.2rem 0 0.4rem;
+  
+  font-size: 0.5em;
+  border: 0;
+  cursor: pointer;
+
+  &:nth-last-child(1) {
+    right: 3rem;
+  }
+}
+
+.title input {
+  margin: 0;
+  padding: 0;
+  line-height: 1.15;
+  width: 100%;
+
+  text-align: center;
+  font-family: 'Kollektif';
+  font-size: 2.5rem;  
+  font-weight: 600;
+  color: var(--title-color);
+  
+  background: inherit;
+  border: 0;
+  outline: none;
+}

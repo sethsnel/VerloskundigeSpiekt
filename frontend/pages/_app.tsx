@@ -1,11 +1,16 @@
-import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import type { AppProps } from 'next/app'
+import { useState } from 'react'
+import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 
 import '../styles/_colors.scss'
 import '../styles/globals.scss'
 import styles from '../styles/App.module.scss'
 
+
 function MyApp({ Component, pageProps }: AppProps) {
+  const [queryClient] = useState(() => new QueryClient())
+
   return (
     <>
       <Head>
@@ -16,7 +21,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Component {...pageProps} />
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <Component {...pageProps} />
+        </Hydrate>
+      </QueryClientProvider>
     </>
   )
 }

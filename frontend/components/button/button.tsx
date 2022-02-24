@@ -17,6 +17,7 @@ interface ButtonProps {
 
 const Button = (props: ButtonProps) => {
   let icon = undefined
+  let warning = false
 
   if (props.icon === 'edit') {
     icon = (<FiEdit3 />)
@@ -28,6 +29,7 @@ const Button = (props: ButtonProps) => {
     icon = (<GrAddCircle />)
   }
   if (props.icon === 'delete') {
+    warning = true
     icon = (<MdDelete />)
   }
   if (props.icon === 'cancel') {
@@ -42,7 +44,7 @@ const Button = (props: ButtonProps) => {
 
 
   return (
-    <button onClick={() => props?.onClick && props.onClick()} className={styles.button}>
+    <button onClick={() => props?.onClick && props.onClick()} className={`${styles.button} ${warning && styles.warning}`}>
       <IconContext.Provider value={{ className: styles.iconColor }}>
         {icon}
       </IconContext.Provider>
