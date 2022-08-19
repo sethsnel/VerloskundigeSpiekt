@@ -4,11 +4,12 @@
 .buttons {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin: 2rem 0;
+  justify-content: space-evenly;
+  width: 100%;
+  margin: 2rem auto;
 
-  & button {
-    margin-right: 2rem;
+  @include xl {
+    width: 50%;
   }
 }
 

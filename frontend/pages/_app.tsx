@@ -3,12 +3,12 @@ import type { AppProps } from 'next/app'
 import { useState } from 'react'
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 
+import '../styles/_bootstrap.scss'
 import '../styles/_colors.scss'
 import '../styles/globals.scss'
 import styles from '../styles/App.module.scss'
 
-
-function MyApp({ Component, pageProps }: AppProps) {
+function VerloskundigeSpiektApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient())
 
   return (
@@ -30,4 +30,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   )
 }
 
-export default MyApp
+export default VerloskundigeSpiektApp

@@ -12,8 +12,10 @@ import { mapUserData } from './map-user-data'
 import { authInstance } from './firebase-auth'
 import { Unsubscribe } from 'firebase/auth'
 
+import { UserProfile } from "./types"
+
 const useUser = () => {
-  const [user, setUser] = useState<any | undefined>()
+  const [user, setUser] = useState<UserProfile | undefined>()
   const router = useRouter()
 
   const logout = async () => {
@@ -31,9 +33,9 @@ const useUser = () => {
     // Firebase updates the id token every hour, this
     // makes sure the react state and the cookie are
     // both kept up to date
-    const cancelAuthListener = authInstance.onIdTokenChanged((user) => {
+    const cancelAuthListener = authInstance.onIdTokenChanged(async (user) => {
       if (user) {
-        const userData = mapUserData(user)
+        const userData = await mapUserData(user)
         //setUserCookie(userData)
         setUser(userData)
       } else {

@@ -11,7 +11,8 @@ const useArticles = () => {
   const queryClient = useQueryClient()
   const { push } = useRouter()
 
-  const { data } = useQuery('layoutPropsQueryKey', fetchLayoutProps)
+  let { data } = useQuery('layoutPropsQueryKey', fetchLayoutProps)
+  data = data ?? { articles: [] }
   const { articles } = data as DefaultLayoutProps
 
   const addArticleMutation = useMutation(

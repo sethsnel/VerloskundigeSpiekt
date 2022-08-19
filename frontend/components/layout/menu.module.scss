@@ -7,6 +7,10 @@
   width: 100%;
   max-width: 20rem;
   min-height: 100vh;
+
+  h2 {
+    margin: 1em 0 1em 0;
+  }
 }
 
 .nav .item {
@@ -31,6 +35,22 @@
 .nav .item a:active,
 .nav .item a:hover {
   background-color: var(--background-color);
+}
+
+.nav .top {
+  margin: 1em 0;
+
+  div {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    a {
+      padding: 0.1rem;
+      margin: 0 2rem;
+      display: block;
+    }
+  }
 }
 
 .profile {

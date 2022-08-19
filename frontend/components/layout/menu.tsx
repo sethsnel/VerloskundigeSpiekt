@@ -37,12 +37,21 @@ const Menu = ({ articles }: MenuProps) => {
       <nav className={styles.nav}>
         {devNotice}
         <Profile />
-        <p>
-          <Link href={`/`}>
-            <a>Home</a>
-          </Link>
-        </p>
-        {!user ? undefined : (
+        <div className={styles.top}>
+          <div className={styles.main}>
+            <Link href={`/`}>
+              <a>Home</a>
+            </Link>
+          </div>
+          {user?.hasAdminRights() ? (
+            <div className={styles.main}>
+              <Link href={`/admin/users`}>
+                <a>Gebruikersbeheer</a>
+              </Link>
+            </div>
+          ) : undefined}
+        </div>
+        {!user?.hasContributeRights() ? undefined : (
           <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw spiekbriefje' })}>
             maak spiekbriefje
           </Button>

@@ -1,0 +1,39 @@
+// Default variable overrides
+$body-color: #455e6f;
+$body-bg: transparent;
+$input-color: #455e6f;
+
+$primary: #2d3f4e;
+$secondary: #8f9795;
+$success: #455e6f;
+$info: #fefefe;
+$warning: #F47174;
+$danger: #F47174;
+$light: #fefefe;
+// $dark: $gray-900  !default;
+
+// $font-size-root: 18px;
+// $font-family-sans-serif: "Montserrat-ExtraLight";
+
+// :root {
+//   --background-color: #ebebec;
+//   --alternate-background-color: #fefefe;
+//   --text-color: #455e6f;
+//   --title-color: #8f9795;
+//   --header-color: #2d3f4e;
+//   --link-color: #2d3f4e;
+//   --button-color: #455e6f;
+//   --button-text: #fff;
+//   --warning-color: #F47174;
+//   --high-light-color: #8f9795;
+//   --text-font: 'Montserrat Extra-Light';
+//   --header-font: 'Kollektif';
+// }
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--text-color);
+  box-shadow: inset 0 1px 1px var(--high-light-color), 0 0 8px var(--high-light-color);
+}

@@ -1,0 +1,25 @@
+@import "../../styles/breakpoints.scss";
+@import "../../styles/mixins.scss";
+
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  div {
+    display: flex;
+    padding: 0.5em;
+    align-items: center;
+
+    &:nth-child(8n),
+    &:nth-child(8n-1),
+    &:nth-child(8n-2),
+    &:nth-child(8n-3) {
+      background: #ddd;
+    }
+  }
+
+  @include md {
+    width: 75%;
+  }
+}

@@ -1,10 +1,19 @@
 .menu {
-  & > * {
+  &>* {
     display: inline-block;
   }
+
   // & > .button + * {
   //   margin-left: 0.5rem;
   // }
+
+  box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px,
+  rgba(15, 15, 15, 0.1) 0px 3px 3px,
+  rgba(15, 15, 15, 0.2) 0px 3px 10px;
+  background: var(--alternate-background-color);
+  border-radius: 0.25em;
+  margin-bottom: 0.8em;
+  padding-left: 0.4em;
 }
 
 .toolbar {
@@ -21,7 +30,8 @@
   padding: 0.3rem;
 
   &.active {
-    background-color: var(--alternate-background-color);
+    color: var(--button-text);
+    background-color: var(--high-light-color);
   }
 }
 
@@ -43,6 +53,7 @@
   cursor: default;
 
   height: 100%;
+  line-height: 40px;
 
   border-left: 1px solid var(--title-color)
 }

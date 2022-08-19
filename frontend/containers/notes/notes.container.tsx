@@ -75,7 +75,7 @@ const Notes = ({ article }: NotesProps) => {
         key={note.id}
         name={note.name}
         text={note.text}
-        modificationEnabled={!!user}
+        modificationEnabled={user?.hasContributeRights()}
         onUpdate={(updated) => {
           const updatedNote = { ...note, ...updated }
           upsertNoteMutation.mutate(updatedNote)
@@ -110,7 +110,7 @@ const Notes = ({ article }: NotesProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.buttons}>
-        {newNote || !user ? undefined : (
+        {newNote || !user?.hasContributeRights() ? undefined : (
           <>
             <Button icon="add" onClick={() => setNewNote(initialNewNote)}>
               onderwerp toevoegen

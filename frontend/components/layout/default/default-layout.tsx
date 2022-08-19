@@ -18,16 +18,28 @@ export type DefaultLayoutProps = {
 const DefaultLayout = ({ children }: DefaultLayout) => {
   const { data } = useQuery('layoutPropsQueryKey', fetchLayoutProps)
 
-  const { articles } = data as DefaultLayoutProps
+  if (data) {
+    const { articles } = data as DefaultLayoutProps
+
+    return (
+      <div className={styles.container}>
+        <Menu articles={articles} />
+        <Content>
+          {children}
+        </Content>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>
-      <Menu articles={articles} />
+      <Menu articles={[]} />
       <Content>
         {children}
       </Content>
     </div>
   )
+
 }
 
 export default DefaultLayout

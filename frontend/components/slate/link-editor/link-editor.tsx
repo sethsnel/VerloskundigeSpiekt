@@ -1,5 +1,5 @@
 import { ReactEditor } from "slate-react"
-import { ReactElement, ReactNode, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Editor } from 'slate'
 
 import styles from './link.editor.module.scss'
@@ -39,7 +39,7 @@ export default function LinkEditor({ editorOffsets, editor }: LinkEditorProps) {
         }px`
       linkEditorEl.style.left = `${nodeX - editorOffsets.x}px`
     }
-  }, [editor, editorOffsets?.x, editorOffsets?.y, linkNode])
+  }, [editor, editorOffsets, editorOffsets?.x, editorOffsets?.y, linkNode])
 
   if (editorOffsets == null) {
     return null

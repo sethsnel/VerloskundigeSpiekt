@@ -1,10 +1,10 @@
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { useUser } from '../../lib/auth/use-user'
 import { Button } from '../button'
 
 import styles from './profile.module.scss'
+import ProfilePicture from './profile.picure'
 
 interface ProfileProps {
 }
@@ -26,7 +26,7 @@ const Profile = (props: ProfileProps) => {
 
   return (
     <div className={styles.profile}>
-      {user?.profilePic ? <Image src={user.profilePic} height={75} width={75} alt="profiel foto" className={styles.picture} /> : undefined}
+      <ProfilePicture profilePic={user.profilePic ?? undefined} />
       <h3>{user?.name}</h3>
       <Button icon='logout' onClick={() => logout()}>uitloggen</Button>
     </div>
