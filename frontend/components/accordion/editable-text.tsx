@@ -18,19 +18,21 @@ import { LinkEditor } from '../slate/link-editor'
 
 import styles from './editable-text.module.scss'
 import { LinkButton } from '../slate/link-button'
+import { ImageButton } from '../slate/image-button'
 import withInlines from '../../lib/slate/withInlines'
 
 interface EditableTextProps {
   text: string
-  onChange?: (text: string) => void
+  json: Descendant[]
+  onChange?: (text: string, json: Descendant[]) => void
 }
 
 export const EditableText = (props: EditableTextProps) => {
   const editor = useMemo(() => withInlines(withHistory(withReact(createEditor() as ReactEditor))) as ReactEditor, [])
   const [selection, setSelection] = useSelection(editor)
 
-  let initialValue: Descendant[] = [{ children: [{ text: 'Voeg tekst toe' }] }]
-  if (typeof window !== 'undefined') {
+  let initialValue: Descendant[] = props.json
+  if (typeof window !== 'undefined' && props.json.length === 0) {
     const document = new DOMParser().parseFromString(props.text, 'text/html')
     initialValue = deserialize(document.body)
   }
@@ -42,7 +44,7 @@ export const EditableText = (props: EditableTextProps) => {
 
   const onContentUpdate = (value: Descendant[]) => {
     //setValue(value)
-    props.onChange && props.onChange(serializeNodes(value))
+    props.onChange && props.onChange(serializeNodes(value), value)
     setSelection(editor.selection)
   }
 
@@ -53,6 +55,7 @@ export const EditableText = (props: EditableTextProps) => {
       <BlockButton format="heading-two" icon="heading" />
       <BlockButton format="paragraph" icon="paragraph" />
       <LinkButton />
+      <ImageButton />
       <ButtonDivider />
       <MarkButton format="bold" icon="format_bold" />
       <MarkButton format="italic" icon="format_italic" />

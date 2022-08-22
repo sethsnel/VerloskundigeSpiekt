@@ -1,5 +1,8 @@
+@import "../../styles/breakpoints.scss";
+@import "../../styles/mixins.scss";
+
 .menu {
-  &>* {
+  & > * {
     display: inline-block;
   }
 
@@ -7,9 +10,8 @@
   //   margin-left: 0.5rem;
   // }
 
-  box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px,
-  rgba(15, 15, 15, 0.1) 0px 3px 3px,
-  rgba(15, 15, 15, 0.2) 0px 3px 10px;
+  box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 3px,
+    rgba(15, 15, 15, 0.2) 0px 3px 10px;
   background: var(--alternate-background-color);
   border-radius: 0.25em;
   margin-bottom: 0.8em;
@@ -55,5 +57,31 @@
   height: 100%;
   line-height: 40px;
 
-  border-left: 1px solid var(--title-color)
+  border-left: 1px solid var(--title-color);
+}
+
+.imageContainer {
+  width: 300px;
+  height: 300px;
+  position: relative;
+  margin: 0 auto 1rem auto;
+
+  @include md {
+    width: 700px;
+    height: 350px;
+  }
+
+  @include lg {
+    width: 800px;
+    height: 400px;
+  }
+
+  @include xl {
+    width: 1000px;
+    height: 500px;
+  }
+}
+
+.selected {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

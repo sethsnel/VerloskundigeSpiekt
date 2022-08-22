@@ -22,10 +22,10 @@
     "react-icons": "^4.3.1",
     "react-query": "^3.34.15",
     "sass": "^1.49.4",
-    "slate": "^0.72.8",
+    "slate": "^0.82.0",
     "slate-history": "^0.66.0",
-    "slate-hyperscript": "^0.67.0",
-    "slate-react": "^0.72.8"
+    "slate-hyperscript": "^0.77.0",
+    "slate-react": "^0.82.0"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.2",

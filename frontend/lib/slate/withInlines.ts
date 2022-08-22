@@ -1,11 +1,11 @@
-import { Editor } from "slate"
+import { BaseElement, Editor } from "slate"
 import isUrl from 'is-url'
 
 import { wrapLink } from "./utils"
 
 const withInlines = (editor: Editor) => {
   // @ts-ignore
-  const { insertData, insertText, isInline } = editor
+  const { insertData, insertText, isInline, isVoid } = editor
 
   editor.isInline = element =>
     // @ts-ignore
@@ -29,6 +29,12 @@ const withInlines = (editor: Editor) => {
       insertData(data)
     }
   }
+
+  editor.isVoid = element => {
+    // @ts-ignore
+    return element.type === 'image' ? true : isVoid(element)
+  }
+
 
   return editor
 }

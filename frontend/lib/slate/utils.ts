@@ -103,6 +103,30 @@ export const isLinkActive = (editor: BaseEditor) => {
   return !!link
 }
 
+export const insertImage = (editor: BaseEditor, url: string) => {
+  const text = { text: '' }
+  const image: ImageElement = { type: 'image', url, children: [text] }
+  Transforms.insertNodes(editor, image)
+}
+
+export const deleteImage = (editor: BaseEditor) => {
+  Transforms.removeNodes(editor, {
+    match: n =>
+      // @ts-ignore
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image',
+  })
+}
+
+export const isImageActive = (editor: BaseEditor) => {
+  // @ts-ignore
+  const [image] = Editor.nodes(editor, {
+    match: n =>
+      // @ts-ignore
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image',
+  })
+  return !!image
+}
+
 export function isLinkNodeAtSelection(editor: BaseEditor, selection: BaseRange | null) {
   if (selection == null) {
     return false
@@ -117,3 +141,4 @@ export function isLinkNodeAtSelection(editor: BaseEditor, selection: BaseRange |
 }
 
 export type LinkElement = { type: 'link'; url: string; children: Descendant[] }
+export type ImageElement = { type: 'image'; url: string; children: Descendant[] }

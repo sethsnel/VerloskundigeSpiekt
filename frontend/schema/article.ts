@@ -1,3 +1,5 @@
+import { Descendant } from "slate"
+
 export type Article = {
   id: string
   name: string
@@ -12,4 +14,5 @@ export type Note = {
   id: string
   name: string
   text: string
+  json?: Descendant[]
 }

@@ -7,9 +7,11 @@ import '../styles/_bootstrap.scss'
 import '../styles/_colors.scss'
 import '../styles/globals.scss'
 import styles from '../styles/App.module.scss'
+import { ModalContext } from '../lib/hooks/utilities/useModal'
 
 function VerloskundigeSpiektApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient())
+  const [modal, setModal] = useState<JSX.Element | undefined>(undefined)
 
   return (
     <>
@@ -23,7 +25,10 @@ function VerloskundigeSpiektApp({ Component, pageProps }: AppProps) {
       </Head>
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
-          <Component {...pageProps} />
+          <ModalContext.Provider value={[undefined, setModal]}>
+            {modal}
+            <Component {...pageProps} />
+          </ModalContext.Provider>
         </Hydrate>
       </QueryClientProvider>
     </>

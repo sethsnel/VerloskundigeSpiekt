@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { useState } from 'react'
+import { createContext, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 
 import { Accordion } from '../../components/accordion'
@@ -15,6 +15,8 @@ import styles from './notes.module.scss'
 interface NotesProps {
   article: Article
 }
+
+export const ArticleContext = createContext<string | undefined>(undefined)
 
 const Notes = ({ article }: NotesProps) => {
   const { user } = useUser()
@@ -75,6 +77,7 @@ const Notes = ({ article }: NotesProps) => {
         key={note.id}
         name={note.name}
         text={note.text}
+        json={note.json ?? []}
         modificationEnabled={user?.hasContributeRights()}
         onUpdate={(updated) => {
           const updatedNote = { ...note, ...updated }
@@ -92,6 +95,7 @@ const Notes = ({ article }: NotesProps) => {
         key="new"
         name={newNote.name}
         text={newNote.text}
+        json={newNote.json ?? []}
         editMode={true}
         modificationEnabled={true}
         onCancel={onCancel}
@@ -108,21 +112,23 @@ const Notes = ({ article }: NotesProps) => {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.buttons}>
-        {newNote || !user?.hasContributeRights() ? undefined : (
-          <>
-            <Button icon="add" onClick={() => setNewNote(initialNewNote)}>
-              onderwerp toevoegen
-            </Button>
-            <Button icon="delete" onClick={onDeletePage}>
-              verwijder pagina
-            </Button>
-          </>
-        )}
+    <ArticleContext.Provider value={article.id}>
+      <div className={styles.container}>
+        <div className={styles.buttons}>
+          {newNote || !user?.hasContributeRights() ? undefined : (
+            <>
+              <Button icon="add" onClick={() => setNewNote(initialNewNote)}>
+                onderwerp toevoegen
+              </Button>
+              <Button icon="delete" onClick={onDeletePage}>
+                verwijder pagina
+              </Button>
+            </>
+          )}
+        </div>
+        <div className={styles.grid}>{accordions}</div>
       </div>
-      <div className={styles.grid}>{accordions}</div>
-    </div>
+    </ArticleContext.Provider>
   )
 }
 

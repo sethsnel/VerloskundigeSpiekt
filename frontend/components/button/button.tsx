@@ -15,40 +15,39 @@ interface ButtonProps {
   icon?: 'edit' | 'save' | 'add' | 'delete' | 'cancel' | 'logout' | 'login'
 }
 
-const Button = (props: ButtonProps) => {
-  let icon = undefined
+const Button = ({ children, onClick, icon, ...rest }: ButtonProps) => {
+  let iconType = undefined
   let warning = false
 
-  if (props.icon === 'edit') {
-    icon = (<FiEdit3 />)
+  if (icon === 'edit') {
+    iconType = (<FiEdit3 />)
   }
-  if (props.icon === 'save') {
-    icon = (<IoSaveOutline />)
+  if (icon === 'save') {
+    iconType = (<IoSaveOutline />)
   }
-  if (props.icon === 'add') {
-    icon = (<GrAddCircle />)
+  if (icon === 'add') {
+    iconType = (<GrAddCircle />)
   }
-  if (props.icon === 'delete') {
+  if (icon === 'delete') {
     warning = true
-    icon = (<MdDelete />)
+    iconType = (<MdDelete />)
   }
-  if (props.icon === 'cancel') {
-    icon = (<ImCancelCircle />)
+  if (icon === 'cancel') {
+    iconType = (<ImCancelCircle />)
   }
-  if (props.icon === 'logout') {
-    icon = (<AiOutlineLogout />)
+  if (icon === 'logout') {
+    iconType = (<AiOutlineLogout />)
   }
-  if (props.icon === 'login') {
-    icon = (<AiOutlineLogin />)
+  if (icon === 'login') {
+    iconType = (<AiOutlineLogin />)
   }
-
 
   return (
-    <button onClick={() => props?.onClick && props.onClick()} className={`${styles.button} ${warning && styles.warning}`}>
+    <button onClick={() => onClick && onClick()} className={`${styles.button} ${warning && styles.warning}`} {...rest}>
       <IconContext.Provider value={{ className: styles.iconColor }}>
-        {icon}
+        {iconType}
       </IconContext.Provider>
-      {props.children}
+      {children}
     </button>
   )
 }

@@ -2,14 +2,17 @@ import { useState } from 'react'
 
 import { Button } from '../button'
 import { EditableText } from './editable-text'
+import { renderNodes } from '../../lib/slate/render'
 
 import { EditableHeader } from './editable-header'
 
 import styles from './accordion.module.scss'
+import { Descendant } from 'slate'
 
 interface AccordionProps {
   name: string
   text: string
+  json: Descendant[]
   modificationEnabled?: boolean
   editMode?: boolean
   onUpdate?: (update: AccordionUpdate) => void
@@ -20,6 +23,7 @@ interface AccordionProps {
 type AccordionUpdate = {
   name: string
   text: string
+  json: Descendant[]
 }
 
 const Accordion = (props: AccordionProps) => {
@@ -27,7 +31,7 @@ const Accordion = (props: AccordionProps) => {
   const [editMode, setEditMode] = useState<boolean>(props.editMode ?? false)
 
   const [name, setName] = useState<string>(props.name)
-  const [text, setText] = useState<string>(props.text)
+  const [content, setContent] = useState<{ text: string, json: Descendant[] }>({ text: props.text, json: props.json })
 
   let accordionClasses = styles.accordion
   if (collapsed) {
@@ -36,7 +40,7 @@ const Accordion = (props: AccordionProps) => {
 
   const onSave = () => {
     setEditMode(false)
-    props.onUpdate && props.onUpdate({ name, text })
+    props.onUpdate && props.onUpdate({ name, text: content.text, json: content.json })
   }
 
   const onCancel = () => {
@@ -54,8 +58,10 @@ const Accordion = (props: AccordionProps) => {
       }
       <div className={styles.content}>
         {editMode ?
-          (<EditableText text={text} onChange={(text: string) => setText(text)} />) :
-          (<div dangerouslySetInnerHTML={{ __html: text }}></div>)
+          (<EditableText text={content.text} json={content.json} onChange={(text: string, json: Descendant[]) => setContent({ text, json })} />) :
+          content.json.length > 0 ?
+            renderNodes(content.json) :
+            (<div dangerouslySetInnerHTML={{ __html: content.text }}></div>)
         }
         {
           (props.modificationEnabled) ? (

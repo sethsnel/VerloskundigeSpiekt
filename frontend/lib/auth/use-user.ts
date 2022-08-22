@@ -10,12 +10,14 @@ import {
 } from './user-cookies'
 import { mapUserData } from './map-user-data'
 import { authInstance } from './firebase-auth'
-import { Unsubscribe } from 'firebase/auth'
+import { Unsubscribe, updateProfile, User } from 'firebase/auth'
+import useFileCenter from '../hooks/utilities/useFileCenter'
 
 import { UserProfile } from "./types"
 
 const useUser = () => {
   const [user, setUser] = useState<UserProfile | undefined>()
+  const { uploadFile } = useFileCenter()
   const router = useRouter()
 
   const logout = async () => {
@@ -56,7 +58,23 @@ const useUser = () => {
     }
   }, [])
 
-  return { user, logout }
+  const uploadAndUpdateProfile = async (file: File) => {
+    const fileName = `profilePictures/${user?.id}.${file.name.split('.').pop()}`
+    const profileUrl = await uploadFile(fileName, file)
+    await updateProfile(authInstance.currentUser as User, {
+      photoURL: profileUrl,
+    })
+    setUser(await mapUserData(authInstance.currentUser as User))
+  }
+
+  const uploadAndUpdateProfileByUrl = async (profileUrl: string) => {
+    await updateProfile(authInstance.currentUser as User, {
+      photoURL: profileUrl,
+    })
+    setUser(await mapUserData(authInstance.currentUser as User))
+  }
+
+  return { user, uploadAndUpdateProfile, uploadAndUpdateProfileByUrl, logout }
 }
 
 export { useUser }
