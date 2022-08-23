@@ -45,6 +45,7 @@ const Accordion = (props: AccordionProps) => {
 
   const onCancel = () => {
     setEditMode(false)
+    setContent({ text: props.text, json: props.json })
     props.onCancel && props.onCancel()
   }
 
@@ -56,30 +57,30 @@ const Accordion = (props: AccordionProps) => {
           {name}
         </h2>
       }
-      <div className={styles.content}>
+      <div className={`${styles.content} ${props.modificationEnabled && !collapsed && styles.edit}`}>
         {editMode ?
           (<EditableText text={content.text} json={content.json} onChange={(text: string, json: Descendant[]) => setContent({ text, json })} />) :
           content.json.length > 0 ?
             renderNodes(content.json) :
             (<div dangerouslySetInnerHTML={{ __html: content.text }}></div>)
         }
-        {
-          (props.modificationEnabled) ? (
-            <div className={styles.buttons}>
-              {editMode ?
-                (<>
-                  <Button icon="save" onClick={() => onSave()}>opslaan</Button>
-                  <Button icon="cancel" onClick={() => onCancel()}>annuleren</Button>
-                  {
-                    props.onDelete ? <Button icon="delete" onClick={() => props.onDelete && props.onDelete()}>verwijderen</Button> : undefined
-                  }
-                </>) :
-                (<Button icon="edit" onClick={() => setEditMode(true)}>bewerken</Button>)
-              }
-            </div>
-          ) : undefined
-        }
       </div>
+      {
+        (props.modificationEnabled && !collapsed) ? (
+          <div className={styles.buttons}>
+            {editMode ?
+              (<>
+                <Button icon="save" onClick={() => onSave()}>opslaan</Button>
+                <Button icon="cancel" onClick={() => onCancel()}>annuleren</Button>
+                {
+                  props.onDelete ? <Button icon="delete" onClick={() => props.onDelete && props.onDelete()}>verwijderen</Button> : undefined
+                }
+              </>) :
+              (<Button icon="edit" onClick={() => setEditMode(true)}>bewerken</Button>)
+            }
+          </div>
+        ) : undefined
+      }
     </div >
   )
 }

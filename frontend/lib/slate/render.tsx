@@ -1,8 +1,7 @@
-import escapeHtml from 'escape-html'
 import Image from 'next/image'
 import { Descendant, Text } from 'slate'
 
-import styles from '../../components/slate/slate.module.scss'
+import styles from '../../styles/Article.module.scss'
 
 export const renderNodes = (nodes: Descendant[]): JSX.Element[] => {
   return nodes.map((n, i) => renderNode(n, i) as JSX.Element)
@@ -10,12 +9,21 @@ export const renderNodes = (nodes: Descendant[]): JSX.Element[] => {
 
 const renderNode = (node: Descendant, index: number): JSX.Element | string => {
   if (Text.isText(node)) {
-    let string = escapeHtml(node.text)
+    let classNames: string = ''
     // @ts-ignore
     if (node.bold) {
-      string = `<strong>${string}</strong>`
+      classNames += ' ' + styles.bold
     }
-    return string
+    // @ts-ignore
+    if (node.italic) {
+      classNames += ' ' + styles.italic
+    }
+    // @ts-ignore
+    if (node.underline) {
+      classNames += ' ' + styles.underline
+    }
+
+    return classNames !== '' ? <span key={index} className={classNames}>{node.text}</span> : node.text
   }
 
   const children = node.children.map((n, i) => renderNode(n, i))
@@ -38,17 +46,18 @@ const renderNode = (node: Descendant, index: number): JSX.Element | string => {
       return <li key={index}>{children}</li>
     case 'link':
       // @ts-ignore
-      return <a key={index} href="${escapeHtml(node.url)}" target="_blank" rel="external">{children}</a>
+      return <a key={index} href={node.url} target="_blank" rel="noreferrer external">{children}</a>
     case 'image':
       // @ts-ignore
       return <div
         key={index}
-        className={styles.imageContainer}
+        // @ts-ignore
+        className={`${styles.imageContainer} ${node.position === 'floatLeft' && styles.floatLeft} ${node.position === 'floatRight' && styles.floatRight}`} style={{ height: node?.height }}
       >
         <Image
           // @ts-ignore
-          src={escapeHtml(node.url)} alt={escapeHtml(node.url)}
-          layout='fill'
+          src={node.url} alt={node.url}
+          layout={'fill'}
           objectFit='scale-down'
         />
       </div>

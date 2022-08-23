@@ -12,13 +12,13 @@ import { Leaf } from '../slate/leaf'
 import { Element as SlateElement } from '../slate/element'
 import { Toolbar } from '../slate/toolbar'
 import ButtonDivider from '../slate/button-divider'
-import { isLinkNodeAtSelection } from '../../lib/slate/utils'
+import { isImageActive, isLinkNodeAtSelection } from '../../lib/slate/utils'
 import useSelection from '../../lib/slate/useSelection'
 import { LinkEditor } from '../slate/link-editor'
 
 import styles from './editable-text.module.scss'
 import { LinkButton } from '../slate/link-button'
-import { ImageButton } from '../slate/image-button'
+import { ImageButton, ImageFloatLeftButton, ImageFloatNoneButton, ImageFloatRightButton } from '../slate/image-button'
 import withInlines from '../../lib/slate/withInlines'
 
 interface EditableTextProps {
@@ -43,7 +43,6 @@ export const EditableText = (props: EditableTextProps) => {
   const renderLeaf = useCallback(props => <Leaf {...props} />, [])
 
   const onContentUpdate = (value: Descendant[]) => {
-    //setValue(value)
     props.onChange && props.onChange(serializeNodes(value), value)
     setSelection(editor.selection)
   }
@@ -55,7 +54,16 @@ export const EditableText = (props: EditableTextProps) => {
       <BlockButton format="heading-two" icon="heading" />
       <BlockButton format="paragraph" icon="paragraph" />
       <LinkButton />
+      <ButtonDivider />
       <ImageButton />
+      {
+        isImageActive(editor) ?
+          <>
+            <ImageFloatLeftButton />
+            <ImageFloatNoneButton />
+            <ImageFloatRightButton />
+          </> : undefined
+      }
       <ButtonDivider />
       <MarkButton format="bold" icon="format_bold" />
       <MarkButton format="italic" icon="format_italic" />

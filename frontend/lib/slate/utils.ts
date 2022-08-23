@@ -103,9 +103,9 @@ export const isLinkActive = (editor: BaseEditor) => {
   return !!link
 }
 
-export const insertImage = (editor: BaseEditor, url: string) => {
+export const insertImage = (editor: BaseEditor, url: string, width: number, height: number) => {
   const text = { text: '' }
-  const image: ImageElement = { type: 'image', url, children: [text] }
+  const image: ImageElement = { type: 'image', url, width, height, children: [text] }
   Transforms.insertNodes(editor, image)
 }
 
@@ -117,6 +117,17 @@ export const deleteImage = (editor: BaseEditor) => {
   })
 }
 
+export const updateImage = (editor: BaseEditor, url: string, width: number, height: number, position?: 'floatLeft' | 'floatRight') => {
+  const text = { text: '' }
+  const image: ImageElement = { type: 'image', url, width, height, children: [text], position }
+  Transforms.setNodes(editor, image, {
+    match: n => {
+      // @ts-ignore
+      return !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image'
+    },
+  })
+}
+
 export const isImageActive = (editor: BaseEditor) => {
   // @ts-ignore
   const [image] = Editor.nodes(editor, {
@@ -125,6 +136,16 @@ export const isImageActive = (editor: BaseEditor) => {
       !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image',
   })
   return !!image
+}
+
+export const imageHasPosition = (editor: BaseEditor, position?: ImagePosition) => {
+  // @ts-ignore
+  const [image] = Editor.nodes(editor, {
+    match: n =>
+      // @ts-ignore
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image',
+  })
+  return !!image && image && image[0]?.position === position
 }
 
 export function isLinkNodeAtSelection(editor: BaseEditor, selection: BaseRange | null) {
@@ -141,4 +162,9 @@ export function isLinkNodeAtSelection(editor: BaseEditor, selection: BaseRange |
 }
 
 export type LinkElement = { type: 'link'; url: string; children: Descendant[] }
-export type ImageElement = { type: 'image'; url: string; children: Descendant[] }
+export type ImageElement = {
+  type: 'image'; url: string; width: number, height: number, children: Descendant[],
+  position?: ImagePosition
+}
+
+type ImagePosition = 'floatLeft' | 'floatRight'

@@ -24,3 +24,33 @@
   display: block;
   width: 100%;
 }
+
+.imageContainer {
+  position: relative;
+  display: block;
+  margin: 0 auto 1rem auto;
+  min-height: 10px;
+  width: 100%;
+
+  &.floatLeft {
+    float: left;
+    width: 50%;
+  }
+
+  &.floatRight {
+    float: right;
+    width: 50%;
+  }
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.underline {
+  text-decoration: underline;
+}

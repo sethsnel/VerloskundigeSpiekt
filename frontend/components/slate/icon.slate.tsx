@@ -1,5 +1,6 @@
 import React, { PropsWithChildren, Ref } from "react"
 import { RiBold, RiHeading, RiItalic, RiParagraph, RiUnderline, RiListUnordered, RiListOrdered, RiLinkM, RiLinkUnlinkM, RiImageAddFill, RiFileDamageFill } from "react-icons/ri"
+import { TbFloatLeft, TbFloatNone, TbFloatRight } from "react-icons/tb"
 
 import { BaseProps, OrNull } from "../../lib/slate/types"
 
@@ -41,6 +42,15 @@ export const SlateIcon = React.forwardRef(
     }
     if (iconType === 'image') {
       icon = (<RiImageAddFill />)
+    }
+    if (iconType === 'floatLeft') {
+      icon = (<TbFloatLeft />)
+    }
+    if (iconType === 'floatNone') {
+      icon = (<TbFloatNone />)
+    }
+    if (iconType === 'floatRight') {
+      icon = (<TbFloatRight />)
     }
     // if (iconType === 'image' && active) {
     //   icon = (<RiFileDamageFill />)
