@@ -13,7 +13,7 @@ const withInlines = (editor: Editor) => {
 
   editor.insertText = text => {
     if (text && isUrl(text)) {
-      wrapLink(editor, text)
+      wrapLink(editor, text, 'external')
     } else {
       insertText(text)
     }
@@ -24,7 +24,7 @@ const withInlines = (editor: Editor) => {
     const text = data.getData('text/plain')
 
     if (text && isUrl(text)) {
-      wrapLink(editor, text)
+      wrapLink(editor, text, 'external')
     } else {
       insertData(data)
     }
