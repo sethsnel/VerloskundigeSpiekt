@@ -20,6 +20,7 @@ import styles from './editable-text.module.scss'
 import { LinkButton } from '../slate/link-button'
 import { ImageButton, ImageFloatLeftButton, ImageFloatNoneButton, ImageFloatRightButton } from '../slate/image-button'
 import withInlines from '../../lib/slate/withInlines'
+import { LinkFileButton } from '../slate/pdf-button'
 
 interface EditableTextProps {
   text: string
@@ -53,7 +54,16 @@ export const EditableText = (props: EditableTextProps) => {
     <Toolbar>
       <BlockButton format="heading-two" icon="heading" />
       <BlockButton format="paragraph" icon="paragraph" />
+      <ButtonDivider />
+      <MarkButton format="bold" icon="format_bold" />
+      <MarkButton format="italic" icon="format_italic" />
+      <MarkButton format="underline" icon="format_underlined" />
+      <ButtonDivider />
+      <BlockButton format="bulleted-list" icon="u_list" />
+      <BlockButton format="numbered-list" icon="o_list" />
+      <ButtonDivider />
       <LinkButton />
+      <LinkFileButton />
       <ButtonDivider />
       <ImageButton />
       {
@@ -64,13 +74,6 @@ export const EditableText = (props: EditableTextProps) => {
             <ImageFloatRightButton />
           </> : undefined
       }
-      <ButtonDivider />
-      <MarkButton format="bold" icon="format_bold" />
-      <MarkButton format="italic" icon="format_italic" />
-      <MarkButton format="underline" icon="format_underlined" />
-      <ButtonDivider />
-      <BlockButton format="bulleted-list" icon="u_list" />
-      <BlockButton format="numbered-list" icon="o_list" />
     </Toolbar>
     <div className={styles.editor} ref={editorRef}>
       {/* {isLinkNodeAtSelection(editor, selection) ? (

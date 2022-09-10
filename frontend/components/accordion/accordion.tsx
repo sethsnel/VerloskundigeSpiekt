@@ -37,6 +37,9 @@ const Accordion = (props: AccordionProps) => {
   if (collapsed) {
     accordionClasses = `${styles.accordion} ${styles.collapsed}`
   }
+  if (!collapsed && props.modificationEnabled) {
+    accordionClasses = `${accordionClasses} ${styles.edit}`
+  }
 
   const onSave = () => {
     setEditMode(false)
@@ -67,7 +70,7 @@ const Accordion = (props: AccordionProps) => {
       </div>
       {
         (props.modificationEnabled && !collapsed) ? (
-          <div className={styles.buttons}>
+          <div className={`${styles.buttons} ${editMode && styles.edit}`}>
             {editMode ?
               (<>
                 <Button icon="save" onClick={() => onSave()}>opslaan</Button>

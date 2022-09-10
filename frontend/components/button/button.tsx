@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { HTMLProps, ReactNode } from 'react'
 import { IconContext } from 'react-icons'
 import { FiEdit3 } from 'react-icons/fi'
 import { IoSaveOutline } from 'react-icons/io5'
@@ -9,13 +9,12 @@ import { AiOutlineLogout, AiOutlineLogin } from 'react-icons/ai'
 
 import styles from './button.module.scss'
 
-interface ButtonProps {
+interface ButtonProps extends HTMLProps<HTMLButtonElement> {
   children: ReactNode
-  onClick?: Function
   icon?: 'edit' | 'save' | 'add' | 'delete' | 'cancel' | 'logout' | 'login'
 }
 
-const Button = ({ children, onClick, icon, ...rest }: ButtonProps) => {
+const Button = ({ children, icon, type, className, ...rest }: ButtonProps) => {
   let iconType = undefined
   let warning = false
 
@@ -43,8 +42,8 @@ const Button = ({ children, onClick, icon, ...rest }: ButtonProps) => {
   }
 
   return (
-    <button onClick={() => onClick && onClick()} className={`${styles.button} ${warning && styles.warning}`} {...rest}>
-      <IconContext.Provider value={{ className: styles.iconColor }}>
+    <button type="button" className={`${styles.button} ${warning && styles.warning} ${className}`} {...rest}>
+      <IconContext.Provider value={{ className: warning ? styles.iconWarningColor : styles.iconColor }}>
         {iconType}
       </IconContext.Provider>
       {children}

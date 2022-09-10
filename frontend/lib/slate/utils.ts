@@ -58,21 +58,22 @@ export const isMarkActive = (editor: BaseEditor, format: string) => {
   return marks ? marks[format] === true : false
 }
 
-export const insertLink = (editor: BaseEditor, url: string) => {
+export const insertLink = (editor: BaseEditor, url: string, type: LinkSubType) => {
   if (editor.selection) {
-    wrapLink(editor, url)
+    wrapLink(editor, url, type)
   }
 }
 
-export const wrapLink = (editor: BaseEditor, url: string) => {
-  if (isLinkActive(editor)) {
-    unwrapLink(editor)
+export const wrapLink = (editor: BaseEditor, url: string, type: LinkSubType) => {
+  if (isLinkActive(editor, type)) {
+    unwrapLink(editor, type)
   }
 
   const { selection } = editor
   const isCollapsed = selection && SlateRange.isCollapsed(selection)
   const link: LinkElement = {
     type: 'link',
+    subType: type,
     url,
     children: isCollapsed ? [{ text: url }] : [],
   }
@@ -85,20 +86,20 @@ export const wrapLink = (editor: BaseEditor, url: string) => {
   }
 }
 
-export const unwrapLink = (editor: BaseEditor) => {
+export const unwrapLink = (editor: BaseEditor, type: LinkSubType) => {
   Transforms.unwrapNodes(editor, {
     match: n =>
       // @ts-ignore
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link' && n.subType === type,
   })
 }
 
-export const isLinkActive = (editor: BaseEditor) => {
+export const isLinkActive = (editor: BaseEditor, type?: LinkSubType) => {
   // @ts-ignore
   const [link] = Editor.nodes(editor, {
     match: n =>
       // @ts-ignore
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link' && (n.subType === type || type === undefined),
   })
   return !!link
 }
@@ -161,10 +162,16 @@ export function isLinkNodeAtSelection(editor: BaseEditor, selection: BaseRange |
   )
 }
 
-export type LinkElement = { type: 'link'; url: string; children: Descendant[] }
+export type LinkElement = {
+  type: 'link'
+  url: string
+  subType: LinkSubType
+  children: Descendant[]
+}
 export type ImageElement = {
   type: 'image'; url: string; width: number, height: number, children: Descendant[],
   position?: ImagePosition
 }
 
 type ImagePosition = 'floatLeft' | 'floatRight'
+type LinkSubType = 'external' | 'document'

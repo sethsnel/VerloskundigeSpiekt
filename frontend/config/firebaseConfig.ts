@@ -8,6 +8,7 @@ import 'firebase/performance'
 import { getAnalytics } from 'firebase/analytics'
 import { getPerformance } from 'firebase/performance'
 import { getFirestore } from 'firebase/firestore'
+// import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const clientCredentials = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -25,6 +26,11 @@ export const firestoreDb = getFirestore()
 if (typeof window !== 'undefined') {
     const analytics = getAnalytics(firebaseApp)
     const performance = getPerformance(firebaseApp)
+
+    // initializeAppCheck(firebaseApp, {
+    //     provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITEKEY as string),
+    //     isTokenAutoRefreshEnabled: true
+    // })
 }
 
 export default firebaseApp

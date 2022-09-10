@@ -1,7 +1,6 @@
 .button {
   padding: 0.3em;
   font-size: 0.9em;
-  cursor: pointer;
   display: flex;
   align-items: center;
 
@@ -9,16 +8,34 @@
   border: 1px solid;
   border-radius: 0.25rem;
 
-  &:hover {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
+  &.warning {
+    color: var(--warning-color);
+    border-color: var(--warning-color);
   }
 
-  &.warning {
-    background-color: var(--warning-color);
+  &:disabled {
+    border-color: var(--accent-3);
+  }
+
+  &:enabled {
+    cursor: pointer;
+  }
+
+  &:hover:enabled {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
+
+    &.warning {
+      background-image: linear-gradient(rgba(244, 113, 116, 0.1) 0 0);
+    }
   }
 }
 
 .iconColor {
   color: var(--text-color);
+  margin-right: 0.3rem;
+}
+
+.iconWarningColor {
+  color: var(--warning-color);
   margin-right: 0.3rem;
 }

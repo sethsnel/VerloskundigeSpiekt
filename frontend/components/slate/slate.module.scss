@@ -36,11 +36,18 @@
     color: var(--button-text);
     background-color: var(--high-light-color);
   }
+
+  &.disabled {
+    cursor: inherit;
+    color: var(--high-light-color);
+  }
 }
 
 .button:hover {
-  color: var(--button-text);
-  background-color: var(--header-color);
+  &:not(.disabled) {
+    color: var(--button-text);
+    background-color: var(--header-color);
+  }
 }
 
 .icon {

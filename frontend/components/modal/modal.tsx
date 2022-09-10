@@ -1,44 +1,36 @@
 
-import { ReactNode, useCallback, useEffect, useRef } from "react"
+import { useCallback, useContext, useEffect, useRef } from "react"
 import { Modal } from "bootstrap"
+
+import { ModalContext } from "../../containers/modalProvider"
+
 import { Button } from "../button"
 
-type actionType = 'edit' | 'save' | 'add' | 'delete' | 'cancel'
-
-export type ModalProps = {
-  title?: string
-  children?: ReactNode
-  display?: boolean
-  actions?: { type: actionType, label: string, onClick?: () => void }[]
-  onClose?: () => void
-}
-
-const ModalComponent = ({ title, children, actions, onClose }: ModalProps) => {
+const ModalComponent = () => {
   const modalRef = useRef<HTMLDivElement>(null)
+  const [modalState, setModalState] = useContext(ModalContext)
+  const { title, modalBody: children, actions, display, onClose } = modalState || {}
 
   const onModalClose = useCallback(() => {
-    modalRef.current && (modalRef.current as HTMLElement).removeEventListener('hidden.bs.modal', onModalClose)
+    setModalState({ display: false })
     onClose && onClose()
-  }, [onClose])
+  }, [onClose, setModalState])
 
   useEffect(() => {
     let modalElement = modalRef.current as HTMLElement
     new Modal(modalElement).show()
     modalElement.addEventListener('hidden.bs.modal', onModalClose)
-    modalElement = modalRef.current as HTMLElement
 
     return function cleanup() {
-      if (modalElement) {
-        //@ts-ignore
-        Modal.getInstance(modalElement).hide()
-      }
+      modalElement.removeEventListener('hidden.bs.modal', onModalClose)
+      Modal.getInstance(modalElement)?.hide()
     }
-  }, [])
+  }, [onModalClose, display])
 
   let actionButtons: JSX.Element[] = []
   if (actions) {
     actionButtons = actions.map(action => (
-      <Button key={action.label} icon={action.type} onClick={() => { action.onClick && action.onClick() }}>
+      <Button key={action.label} icon={action.type} disabled={action.disabled} onClick={() => { action.onClick && action.onClick() }}>
         {action.label}
       </Button>
     ))

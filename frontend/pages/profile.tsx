@@ -5,12 +5,14 @@ import { useRef } from 'react'
 import { useUser } from '../lib/auth/use-user'
 import styles from '../styles/User.module.scss'
 import { ProfilePicture } from '../components/profile'
-import { useFileCenterModal } from '../lib/hooks/fileCenterModal'
+import { useFileCenterModal } from '../lib/hooks/files'
+import { useManageUser } from '../lib/auth/use-manage-user'
 
 const Profile: NextPage = () => {
-  const { user, uploadAndUpdateProfile, uploadAndUpdateProfileByUrl, logout } = useUser()
+  const { user, logout } = useUser()
+  const { uploadAndUpdateProfile, uploadAndUpdateProfileByUrl } = useManageUser(user)
   const imageInput = useRef<null | HTMLInputElement>(null)
-  const { showFileCenterModal } = useFileCenterModal('/profilePictures')
+  const { showFileCenterModal } = useFileCenterModal('/profilePictures', uploadAndUpdateProfileByUrl)
 
   const updateProfilePicture = async () => {
     if (imageInput.current != null && imageInput.current.files && imageInput.current.files.length > 0) {
@@ -18,9 +20,9 @@ const Profile: NextPage = () => {
     }
   }
 
-  const updateProfilePictureByUrl = async (url: string) => {
-    await uploadAndUpdateProfileByUrl(url)
-  }
+  // const updateProfilePictureByUrl = async (url: string) => {
+  //   await uploadAndUpdateProfileByUrl(url)
+  // }
 
   return (
     <div className={styles.container}>
@@ -34,7 +36,7 @@ const Profile: NextPage = () => {
       </Head>
 
       <h1>Je bent ingelogd!</h1>
-      <button onClick={() => showFileCenterModal(updateProfilePictureByUrl)}>kies afbeelding</button>
+      <button onClick={showFileCenterModal}>kies afbeelding</button>
       <div>
         <h1>{user?.name}</h1>
         <h3>{user?.email}</h3>

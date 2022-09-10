@@ -33,15 +33,20 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .selectableImage {
+  .selectableImage,
+  .selectableFile {
     width: 200px;
     height: 200px;
-    display: flex;
     position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     cursor: pointer;
 
     &.selected {
-      border: 3px dashed var(--high-light-color);
+      box-shadow: 0 1px 1px var(--high-light-color), 0 0 8px var(--high-light-color);
     }
 
     span {
@@ -50,6 +55,16 @@
       background-color: var(--button-color);
       color: var(--button-text);
       font-size: 14px;
+    }
+
+    .button {
+      display: none;
+      position: absolute;
+      top: 80px;
+    }
+
+    &:hover .button {
+      display: inherit;
     }
   }
 
@@ -61,7 +76,12 @@
 
     label {
       cursor: pointer;
-      margin: auto;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      justify-items: center;
+      align-items: center;
     }
 
     .spinner-grow {
@@ -77,8 +97,15 @@
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
+      font-size: 1.2rem;
+    }
 
-      font-size: 16px;
+    .icon > * {
+      fill: var(--high-light-color);
+    }
+
+    &:hover .icon > * {
+      fill: var(--link-color);
     }
   }
 }

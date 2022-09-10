@@ -1,10 +1,13 @@
 import React, { PropsWithChildren, Ref } from "react"
+import { IconContext } from "react-icons"
+import { TiDocumentAdd, TiDocumentDelete } from "react-icons/ti"
 import { RiBold, RiHeading, RiItalic, RiParagraph, RiUnderline, RiListUnordered, RiListOrdered, RiLinkM, RiLinkUnlinkM, RiImageAddFill, RiFileDamageFill } from "react-icons/ri"
 import { TbFloatLeft, TbFloatNone, TbFloatRight } from "react-icons/tb"
 
 import { BaseProps, OrNull } from "../../lib/slate/types"
 
 import styles from './slate.module.scss'
+import iconStyles from '../icon/icon.module.scss'
 
 export const SlateIcon = React.forwardRef(
   (
@@ -40,6 +43,12 @@ export const SlateIcon = React.forwardRef(
     if (iconType === 'link' && active) {
       icon = (<RiLinkUnlinkM />)
     }
+    if (iconType === 'link-document') {
+      icon = (<TiDocumentAdd />)
+    }
+    if (iconType === 'link-document' && active) {
+      icon = (<TiDocumentDelete />)
+    }
     if (iconType === 'image') {
       icon = (<RiImageAddFill />)
     }
@@ -57,6 +66,7 @@ export const SlateIcon = React.forwardRef(
     // }
 
     return (
+      // <IconContext.Provider value={{ className: iconStyles.iconColor }}>
       <span
         {...props}
         // @ts-ignore
@@ -64,6 +74,7 @@ export const SlateIcon = React.forwardRef(
         title={iconType}
         className={styles.icon}
       >{icon}</span>
+      // </IconContext.Provider>
     )
   }
 )

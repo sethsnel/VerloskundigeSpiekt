@@ -46,7 +46,14 @@ const renderNode = (node: Descendant, index: number): JSX.Element | string => {
       return <li key={index}>{children}</li>
     case 'link':
       // @ts-ignore
-      return <a key={index} href={node.url} target="_blank" rel="noreferrer external">{children}</a>
+      if (node.subType === 'document') {
+        // @ts-ignore
+        return <a key={index} href={node.url} target="_blank" rel="noreferrer">{children}</a>
+      }
+      else {
+        // @ts-ignore
+        return <a key={index} href={node.url} target="_blank" rel="noreferrer external">{children}</a>
+      }
     case 'image':
       // @ts-ignore
       return <div

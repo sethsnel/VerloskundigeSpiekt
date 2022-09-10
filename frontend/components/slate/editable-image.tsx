@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import Image from 'next/image'
 import { useFocused, useSelected, useSlate } from 'slate-react'
 
@@ -15,18 +15,9 @@ const EditableImage = ({ attributes, children, element }) => {
   const target = useRef<null | HTMLDivElement>(null)
   const [width, height] = useSize(target.current?.firstChild as HTMLElement ?? null)
 
-  const { selection } = editor
-
-  useEffect(() => {
-    return () => {
-      //@ts-ignore
-      const currentImage = selection?.anchor?.path[0] ? editor.children[selection?.anchor?.path[0]] : undefined
-      //@ts-ignore
-      if (height > 10 && element?.url === currentImage?.url && element?.position === currentImage?.position) {
-        updateImage(editor, element.url, element?.width, height, element?.position)
-      }
-    }
-  }, [editor, height, element, selection?.anchor?.path])
+  if (height > 10 && element.url && element?.height !== height) {
+    updateImage(editor, element.url, element?.width, height, element?.position)
+  }
 
   return (
     <div {...attributes}>

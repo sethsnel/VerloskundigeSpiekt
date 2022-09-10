@@ -1,9 +1,24 @@
+@import "../../styles/mixins.scss";
+
 .accordion {
   width: 100%;
   position: relative;
 
   border-top: 1px solid var(--text-color);
   transition: color 0.15s ease, border-color 0.15s ease;
+
+  .buttons {
+    display: none;
+  }
+
+  &.edit {
+    padding-bottom: 3em;
+  }
+
+  &:hover .buttons,
+  .edit.buttons {
+    display: flex;
+  }
 
   &:nth-last-child(1) {
     border-bottom: 1px solid var(--text-color);
@@ -65,14 +80,6 @@
   padding: 1rem;
   padding-top: 0;
   transition: all 0.3s ease-in-out;
-
-  &.edit {
-    padding-bottom: 3em;
-  }
-
-  &:nth-last-child(1) {
-    clear: both
-  }
 }
 
 .accordion h2 {
@@ -90,7 +97,7 @@
   font-size: 1.2rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-weight: 600;
+  //font-weight: 600;
   color: var(--header-color);
 
   background: inherit;
@@ -112,10 +119,10 @@
 }
 
 .buttons {
+  width: 100%;
   position: absolute;
-  bottom: 1em;
 
-  display: flex;
+  justify-content: flex-end;
   flex-direction: row;
 }
 

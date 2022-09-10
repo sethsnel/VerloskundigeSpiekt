@@ -8,6 +8,7 @@ export const BaseButton = React.forwardRef(
     {
       className,
       active,
+      disabled,
       reversed,
       ...props
     }: PropsWithChildren<
@@ -25,6 +26,7 @@ export const BaseButton = React.forwardRef(
       className={`
         ${styles.button}
         ${active ? styles.active : undefined}
+        ${disabled ? styles.disabled : undefined}
       `}
     />
   )

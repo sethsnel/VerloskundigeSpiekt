@@ -56,8 +56,12 @@ const Menu = ({ articles }: MenuProps) => {
             maak spiekbriefje
           </Button>
         )}
-        <h2>Spiekbriefjes</h2>
-        {articleLinks}
+        {
+          user ? <>
+            <h2>Spiekbriefjes</h2>
+            {articleLinks}
+          </> : undefined
+        }
       </nav>
     </>
   )

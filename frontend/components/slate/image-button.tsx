@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useSlate } from 'slate-react'
 import { ArticleContext } from '../../containers/notes/notes.container'
-import { useFileCenterModal } from '../../lib/hooks/fileCenterModal'
+import { useFileCenterModal } from '../../lib/hooks/files'
 
 import { deleteImage, imageHasPosition, insertImage, isImageActive, updateImage } from '../../lib/slate/utils'
 
@@ -14,23 +14,22 @@ export const ImageButton = () => {
 
   const active = isImageActive(editor)
   const articleId = useContext(ArticleContext)
-  const { showFileCenterModal } = useFileCenterModal(`/articles/${articleId}`)
+
+  const onSelectImage = async (url: string) => {
+    const { width, height } = await getImageSize(url)
+    if (active) {
+      deleteImage(editor)
+    }
+    insertImage(editor, url, width, height)
+  }
+  const { showFileCenterModal } = useFileCenterModal(`/articles/${articleId}`, onSelectImage)
 
   return (
     <BaseButton
       active={active}
       onMouseDown={(event: any) => {
         event.preventDefault()
-
-        const onSelectImage = async (url: string) => {
-          const { width, height } = await getImageSize(url)
-          if (active) {
-            deleteImage(editor)
-          }
-          insertImage(editor, url, width, height)
-        }
-
-        showFileCenterModal(onSelectImage)
+        showFileCenterModal()
       }}
     >
       <SlateIcon iconType='image' />
