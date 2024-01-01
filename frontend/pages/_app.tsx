@@ -16,10 +16,10 @@ function VerloskundigeSpiektApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title className={styles.title}>Verloskundige Spiekt</title>
+        <title className={styles.title}>Recepten Snel de Haas</title>
         <meta
           name='description'
-          content='Eeerste hulp bij verloskudige kennis'
+          content='Eeerste hulp bij inspiratie'
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>

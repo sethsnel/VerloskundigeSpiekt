@@ -21,7 +21,7 @@ const Login: NextPage<LoginPageProps> = ({ layoutProps }) => {
   return (
     <>
       <Head>
-        <title className={styles.title}>Verloskundige Spiekt</title>
+        <title className={styles.title}>Recepten Snel de Haas</title>
         <meta
           name='description'
           content='Eeerste hulp bij verloskudige kennis'
@@ -31,7 +31,7 @@ const Login: NextPage<LoginPageProps> = ({ layoutProps }) => {
 
       <DefaultLayout {...layoutProps}>
         <div className={styles.main}>
-          <h1>Verloskundige spiekt</h1>
+          <h1>Recpten</h1>
           <div id="firebaseui-auth-container"></div>
         </div>
       </DefaultLayout>
