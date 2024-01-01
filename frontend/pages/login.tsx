@@ -31,7 +31,7 @@ const Login: NextPage<LoginPageProps> = ({ layoutProps }) => {
 
       <DefaultLayout {...layoutProps}>
         <div className={styles.main}>
-          <h1>Recpten</h1>
+          <h1>Recepten</h1>
           <div id="firebaseui-auth-container"></div>
         </div>
       </DefaultLayout>

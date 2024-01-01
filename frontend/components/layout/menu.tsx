@@ -52,13 +52,13 @@ const Menu = ({ articles }: MenuProps) => {
           ) : undefined}
         </div>
         {!user?.hasContributeRights() ? undefined : (
-          <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw spiekbriefje' })}>
-            maak spiekbriefje
+          <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw Recept' })}>
+            maak Recept
           </Button>
         )}
         {
           user ? <>
-            <h2>Spiekbriefjes</h2>
+            <h2>Recepten</h2>
             {articleLinks}
           </> : undefined
         }
