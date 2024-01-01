@@ -53,7 +53,7 @@ const Menu = ({ articles }: MenuProps) => {
         </div>
         {!user?.hasContributeRights() ? undefined : (
           <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw Recept' })}>
-            maak Recept
+            maak recept
           </Button>
         )}
         {
