@@ -8,7 +8,7 @@ import { DefaultLayout } from '../../components/layout'
 import { EditablePageHeader } from '../../components/header'
 
 import styles from '../../styles/Article.module.scss'
-import getarticles from '../../lib/firestore/articles/get-articles'
+import getArticles from '../../lib/firestore/articles/get-articles'
 import getArticle from '../../lib/firestore/articles/get-article'
 import { getArticleQueryKey } from '../../lib/react-query'
 import { dehydrate, QueryClient, useQuery } from 'react-query'
@@ -53,12 +53,12 @@ export async function getStaticProps({ params }: GetStaticPropsContext<ArticlePa
       articleId: params?.articleId || '',
       dehydratedState: dehydrate(queryClient)
     },
-    revalidate: 60 * 5,
+    revalidate: 30,
   }
 }
 
 export async function getStaticPaths() {
-  const articles = await getarticles()
+  const articles = await getArticles()
 
   return {
     paths: articles.map((p) => ({ params: { articleId: p.id } })),

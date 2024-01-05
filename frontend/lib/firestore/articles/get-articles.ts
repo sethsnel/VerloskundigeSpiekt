@@ -3,7 +3,7 @@ import { collection, getDocs } from 'firebase/firestore'
 import { firestoreDb } from '../../../config/firebaseConfig'
 import { Article } from '../../../schema/article'
 
-const getarticles = async (): Promise<Article[]> => {
+const getArticles = async (): Promise<Article[]> => {
   try {
     const articleSnapshots = await getDocs(collection(firestoreDb, `articles`))
     const articles: Article[] = []
@@ -25,4 +25,4 @@ const getarticles = async (): Promise<Article[]> => {
   return []
 }
 
-export default getarticles
+export default getArticles

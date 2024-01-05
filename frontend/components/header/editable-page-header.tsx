@@ -30,7 +30,7 @@ const EditablePageHeader = ({ title, onSave }: EditablePageHeaderProps) => {
   } else {
     return <h1 className={`${styles.title} ${user?.hasContributeRights() && styles.editable}`} onClick={() => setEditMode(user?.hasContributeRights() ?? false)}>
       <span>
-        {updatedTitle}
+        {title}
       </span>
     </h1>
   }
