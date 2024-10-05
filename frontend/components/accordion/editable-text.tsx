@@ -41,7 +41,7 @@ export const EditableText = (props: EditableTextProps) => {
   // @ts-ignore
   //const [value, setValue] = useState<Descendant[]>(initialValue ?? [{ children: [{ text: 'Voeg tekst toe' }] }])
   const renderElement = useCallback(props => <SlateElement {...props} />, [])
-  const renderLeaf = useCallback(props => <Leaf {...props} />, [])
+  const renderLeaf = useCallback((props: any) => <Leaf {...props} />, [])
 
   const onContentUpdate = (value: Descendant[]) => {
     props.onChange && props.onChange(serializeNodes(value), value)

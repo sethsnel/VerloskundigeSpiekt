@@ -7,7 +7,8 @@ import styles from './slate.module.scss'
 
 export const Toolbar = React.forwardRef(
   (
-    { className, ...props }: PropsWithChildren<BaseProps>,
+    //{ className, ...props }: PropsWithChildren<BaseProps>,
+    { className, ...props }: any,
     ref: Ref<OrNull<HTMLDivElement>>
   ) => (
     <Menu

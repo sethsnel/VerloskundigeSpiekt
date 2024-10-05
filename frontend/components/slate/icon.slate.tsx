@@ -11,7 +11,8 @@ import iconStyles from '../icon/icon.module.scss'
 
 export const SlateIcon = React.forwardRef(
   (
-    { className, iconType, active, ...props }: PropsWithChildren<BaseProps>,
+    //{ className, iconType, active, ...props }: PropsWithChildren<BaseProps>,
+    { className, iconType, active, ...props }: any,
     ref: Ref<OrNull<HTMLSpanElement>>
   ) => {
     let icon = undefined

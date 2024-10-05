@@ -5,7 +5,7 @@ export default function useSelection(editor: BaseEditor): [BaseRange | null, (ne
   const [selection, setSelection] = useState(editor.selection)
   const previousSelection = useRef<BaseRange | null>(null)
   const setSelectionOptimized = useCallback(
-    (newSelection) => {
+    (newSelection: any) => {
       if (JSON.stringify(selection) === JSON.stringify(newSelection)) {
         return
       }

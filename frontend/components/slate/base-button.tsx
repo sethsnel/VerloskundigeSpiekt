@@ -3,6 +3,12 @@ import { BaseProps, OrNull } from "../../lib/slate/types"
 
 import styles from './slate.module.scss'
 
+type BaseButtonProps = PropsWithChildren<BaseProps & {
+  disabled: boolean
+  reversed: boolean
+}>
+
+// @ts-ignore
 export const BaseButton = React.forwardRef(
   (
     {
@@ -11,12 +17,7 @@ export const BaseButton = React.forwardRef(
       disabled,
       reversed,
       ...props
-    }: PropsWithChildren<
-      {
-        active: boolean
-        reversed: boolean
-      } & BaseProps
-    >,
+    }: any,
     ref: Ref<OrNull<HTMLSpanElement>>
   ) => (
     <span
