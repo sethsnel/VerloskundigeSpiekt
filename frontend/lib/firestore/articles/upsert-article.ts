@@ -2,6 +2,7 @@ import { doc, updateDoc, setDoc, collection } from 'firebase/firestore'
 
 import { firestoreDb } from '../../../config/firebaseConfig'
 import { Article, UpdateArticle } from '../../../schema/article'
+import revalidatePath from './revalidate'
 
 const upsertArticle = async (article: UpdateArticle): Promise<Article | undefined> => {
   try {
@@ -24,6 +25,7 @@ const upsertArticle = async (article: UpdateArticle): Promise<Article | undefine
         { ...updatedArticle }
       )
     }
+    revalidatePath('/', 'layout')
 
     return { id, ...updatedArticle }
   } catch (error) {

@@ -1,6 +1,7 @@
 import { doc, deleteField, updateDoc } from 'firebase/firestore'
 
 import { firestoreDb } from '../../../config/firebaseConfig'
+import revalidatePath from './revalidate'
 
 const deleteNote = async (noteId: string, articleId: string): Promise<string | undefined> => {
   try {
@@ -17,7 +18,7 @@ const deleteNote = async (noteId: string, articleId: string): Promise<string | u
       console.error(error)
     }
   }
-
+  revalidatePath(`/artikel/${articleId}`)
 }
 
 export default deleteNote

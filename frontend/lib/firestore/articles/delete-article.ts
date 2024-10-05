@@ -1,6 +1,7 @@
 import { doc, deleteDoc } from 'firebase/firestore'
 
 import { firestoreDb } from '../../../config/firebaseConfig'
+import revalidatePath from './revalidate'
 
 const deleteArticle = async (articleId: string): Promise<string> => {
   try {
@@ -12,6 +13,7 @@ const deleteArticle = async (articleId: string): Promise<string> => {
       console.error(error)
     }
   }
+  revalidatePath('/', 'layout')
 
   return articleId
 }
