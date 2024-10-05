@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 
 import { useUser } from '../../lib/auth/use-user'
@@ -17,10 +19,10 @@ const Profile = (props: ProfileProps) => {
       <div className={styles.profile}>
         <Button icon='login'>
           <Link href={`/login`}>
-            <a>Aanmelden</a>
+            Aanmelden
           </Link>
         </Button>
-      </div>
+      </div >
     )
   }
 

@@ -1,36 +1,31 @@
 import { auth } from "firebase-admin"
-import { NextApiRequest, NextApiResponse } from "next"
+import { headers } from 'next/headers'
 
 import { firebaseAdmin } from "."
 
-export default async function validateAdminRequest(
-  req: NextApiRequest,
-  res: NextApiResponse): Promise<boolean> {
-  const idToken = req.headers['vs-auth-token']
+export default async function validateAdminRequest(): Promise<number> {
+  const headersList = headers()
+  const idToken = headersList.get('vs-auth-token')
 
   if (idToken === undefined || !idToken || typeof idToken === 'undefined') {
-    res.status(401).end()
-    return false
+    return 401
   }
 
   try {
     const decodedToken = await auth(firebaseAdmin).verifyIdToken(idToken as string)
 
     if (!decodedToken.admin) {
-      res.status(403).end()
-      return false
+      return 403
     }
   }
   catch (error: any) {
     if (error.codePrefix === 'auth') {
-      res.status(401).end()
-      return false
+      return 401
     }
     else {
-      res.status(500).end()
-      return false
+      return 500
     }
   }
 
-  return true
+  return 200
 }

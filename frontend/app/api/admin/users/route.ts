@@ -1,19 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
 import { auth } from 'firebase-admin'
 import { ListUsersResult } from 'firebase-admin/lib/auth/base-auth'
-import { UserRecord } from 'firebase-admin/lib/auth/user-record'
 
-import { firebaseAdmin } from '../../../lib/server'
-import { validateAdminRequest } from '../../../lib/server'
+import { firebaseAdmin } from '../../../../lib/server'
+import { validateAdminRequest } from '../../../../lib/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<UserRecord[]>
+export async function GET(
+  req: NextRequest
 ) {
-  var validRequest = await validateAdminRequest(req, res)
-
-  if (!validRequest) {
-    return
+  var requestResponseCode = await validateAdminRequest()
+  if (requestResponseCode !== 200) {
+    return NextResponse.json([], { status: requestResponseCode })
   }
 
   const listAllUsers = async (depth: number = 0, nextPageToken?: string): Promise<ListUsersResult> => {
@@ -27,6 +24,5 @@ export default async function handler(
   }
 
   var fetchedUsers = await listAllUsers()
-
-  res.status(200).json(fetchedUsers.users)
+  return NextResponse.json(fetchedUsers.users)
 }

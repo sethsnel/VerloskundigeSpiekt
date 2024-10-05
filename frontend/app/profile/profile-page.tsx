@@ -1,14 +1,14 @@
-import { NextPage } from 'next'
+'use client'
 import Head from 'next/head'
 import { useRef } from 'react'
 
-import { useUser } from '../lib/auth/use-user'
-import styles from '../styles/User.module.scss'
-import { ProfilePicture } from '../components/profile'
-import { useFileCenterModal } from '../lib/hooks/files'
-import { useManageUser } from '../lib/auth/use-manage-user'
+import { useUser } from '../../lib/auth/use-user'
+import styles from '../../styles/User.module.scss'
+import { ProfilePicture } from '../../components/profile'
+import { useFileCenterModal } from '../../lib/hooks/files'
+import { useManageUser } from '../../lib/auth/use-manage-user'
 
-const Profile: NextPage = () => {
+const ProfilePage = () => {
   const { user, logout } = useUser()
   const { uploadAndUpdateProfile, uploadAndUpdateProfileByUrl } = useManageUser(user)
   const imageInput = useRef<null | HTMLInputElement>(null)
@@ -61,4 +61,4 @@ const Profile: NextPage = () => {
   )
 }
 
-export default Profile
+export default ProfilePage

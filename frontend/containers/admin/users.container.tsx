@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import { Fragment } from 'react'
 
@@ -18,7 +19,7 @@ const Users = () => {
           <div><ProfilePicture profilePic={userData.photoURL ?? undefined} size={50} /></div>
           <div>{userData.displayName}</div>
           <div>{userData.email}</div>
-          <div><Link href={`/admin/users/${userData.uid}`}><a>{role}</a></Link></div>
+          <div><Link href={`/admin/users/${userData.uid}`}>{role}</Link></div>
         </Fragment>
       )
     })

@@ -1,27 +1,22 @@
 import Link from 'next/link'
 
-import { useUser } from '../../lib/auth/use-user'
-import { useArticles } from '../../lib/hooks/articles'
 import { Article } from '../../schema/article'
-import { Button } from '../button'
 import { Profile } from '../profile'
 
 import styles from './menu.module.scss'
+import UserLinks from './userLinks'
 
 interface MenuProps {
   articles: Article[]
 }
 
 const Menu = ({ articles }: MenuProps) => {
-  const { user } = useUser()
-  const { addArticleMutation } = useArticles()
-
   const articleLinks = articles
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((article) => (
       <div key={article.id} className={styles.item}>
         <Link href={`/artikel/${article.id}`} prefetch={false}>
-          <a>{article.name}</a>
+          {article.name}
         </Link>
       </div>
     ))
@@ -40,28 +35,11 @@ const Menu = ({ articles }: MenuProps) => {
         <div className={styles.top}>
           <div className={styles.main}>
             <Link href={`/`}>
-              <a>Home</a>
+              Home
             </Link>
           </div>
-          {user?.hasAdminRights() ? (
-            <div className={styles.main}>
-              <Link href={`/admin/users`}>
-                <a>Gebruikersbeheer</a>
-              </Link>
-            </div>
-          ) : undefined}
         </div>
-        {!user?.hasContributeRights() ? undefined : (
-          <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw Recept' })}>
-            maak recept
-          </Button>
-        )}
-        {
-          user ? <>
-            <h2>Recepten</h2>
-            {articleLinks}
-          </> : undefined
-        }
+        <UserLinks articleLinks={articleLinks} />
       </nav>
     </>
   )

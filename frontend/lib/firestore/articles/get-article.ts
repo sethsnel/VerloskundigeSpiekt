@@ -3,7 +3,7 @@ import { collection, doc, getDoc } from 'firebase/firestore'
 import { Article } from '../../../schema/article'
 import { firestoreDb } from '../../../config/firebaseConfig'
 
-const getArticle = async (articleId: string): Promise<Article | undefined> => {
+const getArticle = async (articleId: string): Promise<Article> => {
   try {
     const articlesRef = collection(firestoreDb, 'articles')
     const articleDoc = await getDoc(doc(articlesRef, articleId))
@@ -18,7 +18,7 @@ const getArticle = async (articleId: string): Promise<Article | undefined> => {
     }
   }
 
-  return undefined
+  throw new Error('No article found')
 }
 
 export default getArticle

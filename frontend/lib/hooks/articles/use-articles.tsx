@@ -1,4 +1,6 @@
-import { useRouter } from "next/router"
+'use client'
+
+import { useRouter } from "next/navigation"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 
 import { DefaultLayoutProps } from "../../../components/layout"

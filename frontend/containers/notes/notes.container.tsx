@@ -1,3 +1,5 @@
+
+'use client'
 import { nanoid } from 'nanoid'
 import { createContext, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'

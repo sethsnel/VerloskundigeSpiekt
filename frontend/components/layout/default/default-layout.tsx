@@ -1,7 +1,5 @@
 import { ReactNode } from 'react'
-import { useQuery } from 'react-query'
 
-import fetchLayoutProps from '../../../lib/shared/fetchLayoutProps'
 import { Article } from '../../../schema/article'
 import { Content, Menu } from '..'
 
@@ -15,12 +13,8 @@ export type DefaultLayoutProps = {
   articles: Article[]
 }
 
-const DefaultLayout = ({ children }: DefaultLayout) => {
-  const { data } = useQuery('layoutPropsQueryKey', fetchLayoutProps)
-
-  if (data) {
-    const { articles } = data as DefaultLayoutProps
-
+const DefaultLayout = ({ children, articles }: DefaultLayoutProps & { children: ReactNode }) => {
+  if (articles && articles.length > 0) {
     return (
       <div className={styles.container}>
         <Menu articles={articles} />
