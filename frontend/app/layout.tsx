@@ -9,7 +9,7 @@ import fetchLayoutProps from '../lib/shared/fetchLayoutProps'
 
 export const metadata: Metadata = {
   title: 'Recepten Snel de Haas',
-  description: 'Eeerste hulp bij inspiratie',
+  description: 'Het online receptenboek',
   icons: ['/favicon.ico']
 }
 
