@@ -42,7 +42,7 @@ const Button = ({ children, icon, type, className, ...rest }: ButtonProps) => {
   }
 
   return (
-    <button type="button" className={`${styles.button} ${warning && styles.warning} ${className}`} {...rest}>
+    <button type="button" className={`${className?.includes('btn') ? '' : styles.button} ${warning && styles.warning} ${className}`} {...rest}>
       <IconContext.Provider value={{ className: warning ? styles.iconWarningColor : styles.iconColor }}>
         {iconType}
       </IconContext.Provider>
