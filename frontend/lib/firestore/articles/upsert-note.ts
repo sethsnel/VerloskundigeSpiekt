@@ -8,12 +8,9 @@ const upsertNote = async (note: Note, articleId: string): Promise<Note | undefin
   try {
     const articleDoc = doc(firestoreDb, 'articles', articleId)
 
-    await updateDoc(
-      articleDoc,
-      {
-        [`notes.${note.id}`]: { ...note }
-      }
-    )
+    await updateDoc(articleDoc, {
+      [`notes.${note.id}`]: { ...note },
+    })
 
     revalidatePath(`/artikel/${articleId}`)
     return { ...note }

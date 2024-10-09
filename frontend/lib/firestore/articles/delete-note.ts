@@ -7,10 +7,7 @@ const deleteNote = async (noteId: string, articleId: string): Promise<string | u
   try {
     const articleDoc = doc(firestoreDb, 'articles', articleId)
 
-    await updateDoc(
-      articleDoc,
-      { [`notes.${noteId}`]: deleteField() }
-    )
+    await updateDoc(articleDoc, { [`notes.${noteId}`]: deleteField() })
 
     return noteId
   } catch (error) {
@@ -18,6 +15,7 @@ const deleteNote = async (noteId: string, articleId: string): Promise<string | u
       console.error(error)
     }
   }
+
   revalidatePath(`/artikel/${articleId}`)
 }
 
