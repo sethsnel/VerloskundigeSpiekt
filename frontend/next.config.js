@@ -2,11 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['lh3.googleusercontent.com', 'firebasestorage.googleapis.com', 'googleusercontent.com'],
+    remotePatterns: [
+      { hostname: 'lh3.googleusercontent.com' },
+      { hostname: 'firebasestorage.googleapis.com' },
+      { hostname: 'googleusercontent.com' },
+    ]
   },
-  experimental: {
-    serverActions: true
-  }
+  devIndicators: {
+    appIsrStatus: false,
+  },
 }
 
 module.exports = nextConfig

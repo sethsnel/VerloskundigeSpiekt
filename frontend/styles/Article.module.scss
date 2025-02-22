@@ -1,5 +1,5 @@
-@import './_breakpoints.scss';
-@import './_mixins.scss';
+@use '_breakpoints.scss';
+@use '_mixins.scss';
 
 .main {
   min-height: 90%;

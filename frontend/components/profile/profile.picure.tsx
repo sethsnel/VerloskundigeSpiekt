@@ -9,7 +9,7 @@ type ProfilePictureProps = {
 
 const ProfilePicture = ({ profilePic, size = 75 }: ProfilePictureProps) => {
   if (profilePic) {
-    return <Image src={profilePic} height={size} width={size} alt="profiel foto" className={styles.picture} />
+    return <Image src={profilePic} height={size} width={size} alt="profiel foto" className={styles.picture} loading="eager" priority={true} />
   }
   else {
     return <div></div>

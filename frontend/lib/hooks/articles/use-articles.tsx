@@ -13,9 +13,9 @@ const useArticles = () => {
   const queryClient = useQueryClient()
   const { push } = useRouter()
 
-  let { data } = useQuery('layoutPropsQueryKey', fetchLayoutProps)
-  data = data ?? { articles: [] }
-  const { articles } = data as DefaultLayoutProps
+  // let { data } = useQuery('layoutPropsQueryKey', fetchLayoutProps)
+  // data = data ?? { articles: [] }
+  // const { articles } = data as DefaultLayoutProps
 
   const addArticleMutation = useMutation(
     (article: UpdateArticle) => upsertArticle(article),
@@ -25,12 +25,12 @@ const useArticles = () => {
           const keyToUpdate = getArticleQueryKey(upsertedArticle.id || '')
           queryClient.setQueryData(keyToUpdate, { ...upsertedArticle })
 
-          const articleIndex = articles.findIndex(a => a.id == upsertedArticle.id)
+          // const articleIndex = articles.findIndex(a => a.id == upsertedArticle.id)
 
-          if (articleIndex !== -1) {
-            articles[articleIndex] = { ...upsertedArticle }
-            queryClient.setQueryData('layoutPropsQueryKey', { ...data, articles })
-          }
+          // if (articleIndex !== -1) {
+          //   articles[articleIndex] = { ...upsertedArticle }
+          //   queryClient.setQueryData('layoutPropsQueryKey', { ...data, articles })
+          // }
 
           if (!upsertedArticle.notes) {
             push(`/artikel/${upsertedArticle.id}`)

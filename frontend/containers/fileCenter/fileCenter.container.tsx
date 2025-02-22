@@ -90,7 +90,8 @@ function mapFileToTile(file: FileListItem, isLoading: boolean, isSelected: boole
         <span>{file.name}</span>
       </div> :
       <div key={file.name} className={`${styles.selectableImage} ${isSelected && styles.selected} `} onClick={(event) => { event.stopPropagation(); selectFile(file) }}>
-        <Image src={file.url} alt={file.name} objectFit='cover' layout='fill' blurDataURL={`/_next/image?url=${encodeURI(file.url)}&w=1920&q=10`} placeholder="blur" />
+        <Image src={file.url} alt={file.name}
+          objectFit='cover' fill={true} blurDataURL={`/_next/image?url=${encodeURI(file.url)}&w=1920&q=10`} placeholder="blur" />
         <span>{file.name}</span>
       </div>
 }

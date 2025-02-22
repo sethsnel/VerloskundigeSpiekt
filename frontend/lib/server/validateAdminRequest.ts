@@ -4,7 +4,7 @@ import { headers } from 'next/headers'
 import { firebaseAdmin } from "."
 
 export default async function validateAdminRequest(): Promise<number> {
-  const headersList = headers()
+  const headersList = await headers()
   const idToken = headersList.get('vs-auth-token')
 
   if (idToken === undefined || !idToken || typeof idToken === 'undefined') {

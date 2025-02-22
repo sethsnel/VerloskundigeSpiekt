@@ -35,7 +35,8 @@ try {
    * We skip the "already exists" message which is
    * not an actual error when we're hot-reloading.
    */
-  if (!/already exists/u.test(error.message)) {
+  const errorMessageTest = new RegExp("/already exists/u")
+  if (!errorMessageTest.test(error.message)) {
     console.error('Firebase admin initialization error', error.stack)
   }
 }

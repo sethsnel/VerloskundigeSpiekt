@@ -11,7 +11,7 @@ interface EditableBannerProps {
 export default function EditableBanner({ url, articleId, onSave }: EditableBannerProps) {
   if (url) {
     return <div className='position-relative w-100' style={{ minHeight: '60vh' }}>
-      <Image src={url} alt='Banner illustration of article' fill={true} style={{ objectFit: 'cover' }} />
+      <Image src={url} alt='Banner illustration of article' fill={true} style={{ objectFit: 'cover' }} loading="eager" priority={true} />
       <EditBanner articleId={articleId} onSave={onSave} />
     </div>
   }

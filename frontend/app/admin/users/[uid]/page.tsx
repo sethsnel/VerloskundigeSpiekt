@@ -1,8 +1,18 @@
+import { Suspense } from 'react'
+
 import EditUser from './edit-user'
 
-const UserPage = ({ params: { uid } }: { params: { uid: string } }) => {
+async function LoadUserPage({ params }: { params: Promise<{ uid: string }> }) {
+  const { uid } = await params
+
+  return <EditUser uid={uid} />
+}
+
+const UserPage = async ({ params }: { params: Promise<{ uid: string }> }) => {
   return (
-    <EditUser uid={uid} />
+    <Suspense fallback={<div>Gebruiker laden</div>}>
+      <LoadUserPage params={params} />
+    </Suspense>
   )
 }
 

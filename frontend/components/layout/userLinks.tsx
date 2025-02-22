@@ -22,12 +22,9 @@ const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
           maak recept
         </Button>
       )}
-      {
-        user ? <>
-          <h2>Recepten</h2>
-          {articleLinks}
-        </> : undefined
-      }
+
+      <h2>Recepten</h2>
+      {articleLinks}
     </>
   )
 }

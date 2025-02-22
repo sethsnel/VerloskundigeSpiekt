@@ -1,4 +1,4 @@
-import { setCookies, getCookie, removeCookies } from 'cookies-next'
+import { setCookie, getCookie, deleteCookie } from 'cookies-next'
 
 import { UserProfile } from './types'
 
@@ -7,11 +7,11 @@ export const getUserFromCookie = () => {
 }
 
 export const setUserCookie = (user: UserProfile) => {
-  setCookies('auth', user, {
+  setCookie('auth', user, {
     // firebase id tokens expire in one hour
     // set cookie expiry to match
     maxAge: 60 * 60
   })
 }
 
-export const removeUserCookie = () => removeCookies('auth')
+export const removeUserCookie = () => deleteCookie('auth')

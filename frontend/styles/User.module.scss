@@ -1,5 +1,5 @@
-@import "./_breakpoints.scss";
-@import "./_mixins.scss";
+@use "_breakpoints.scss";
+@use "_mixins.scss";
 
 .container {
   display: flex;
@@ -27,7 +27,7 @@
     margin-top: 1em;
   }
 
-  @include md {
+  @include mixins.md {
     width: 25%;
     margin: 0 auto;
   }

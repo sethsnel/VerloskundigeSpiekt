@@ -1,5 +1,5 @@
-@import '../../styles/breakpoints.scss';
-@import '../../styles/mixins.scss';
+@use '../../styles/breakpoints.scss';
+@use '../../styles/mixins.scss';
 
 .buttons {
   display: flex;
@@ -8,7 +8,7 @@
   width: 100%;
   margin: 2rem auto;
 
-  @include xl {
+  @include mixins.xl {
     width: 50%;
   }
 }
@@ -24,7 +24,7 @@
   justify-content: center;
   flex-wrap: wrap;
 
-  @include sm {
+  @include mixins.sm {
     width: 100%;
     flex-direction: column;
   }

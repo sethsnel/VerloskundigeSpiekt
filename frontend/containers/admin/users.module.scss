@@ -1,5 +1,5 @@
-@import "../../styles/breakpoints.scss";
-@import "../../styles/mixins.scss";
+@use "../../styles/breakpoints.scss";
+@use "../../styles/mixins.scss";
 
 .grid {
   width: 100%;
@@ -19,7 +19,7 @@
     }
   }
 
-  @include md {
+  @include mixins.md {
     width: 75%;
   }
 }

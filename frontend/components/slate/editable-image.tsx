@@ -31,8 +31,9 @@ const EditableImage = ({ attributes, children, element }) => {
         <Image
           src={element.url}
           alt={element.url}
-          layout={'fill'}
-          objectFit='scale-down'
+          fill={true}
+          style={{ objectFit: 'scale-down' }}
+          loading="eager" priority={true}
         />
         {/* <Button
           active

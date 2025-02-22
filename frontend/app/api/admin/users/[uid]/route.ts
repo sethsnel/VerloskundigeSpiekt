@@ -6,8 +6,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
   req: NextRequest,
-  { params: { uid } }: { params: { uid: string } }
+  { params }: { params: Promise<{ uid: string }> }
 ) {
+  var { uid } = await params
   var requestResponseCode = await validateAdminRequest()
   if (requestResponseCode !== 200) {
     return NextResponse.json({}, { status: requestResponseCode })

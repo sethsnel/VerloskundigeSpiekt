@@ -64,8 +64,8 @@ const renderNode = (node: Descendant, index: number): JSX.Element | string => {
         <Image
           // @ts-ignore
           src={node.url} alt={node.url}
-          layout={'fill'}
-          objectFit='scale-down'
+          fill={true}
+          style={{ objectFit: 'scale-down' }}
         />
       </div>
     default:

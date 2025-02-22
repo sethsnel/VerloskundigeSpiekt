@@ -1,10 +1,16 @@
+'use client'
 import Link from 'next/link'
+import dynamic from "next/dynamic"
 
 import { Article } from '../../schema/article'
 import { Profile } from '../profile'
 
 import styles from './menu.module.scss'
 import UserLinks from './userLinks'
+
+const OffcanvasMenu = dynamic(() => import('./offcanvas-menu').then((mod) => mod.default), {
+  ssr: false,
+})
 
 interface MenuProps {
   articles: Article[]
@@ -27,20 +33,27 @@ const Menu = ({ articles }: MenuProps) => {
     devNotice = <h1>DEV</h1>
   }
 
+  const menuBody = <>
+    {devNotice}
+    <Profile />
+    <div className={styles.top}>
+      <div className={styles.main}>
+        <Link href={`/`}>
+          Home
+        </Link>
+      </div>
+    </div>
+    <UserLinks articleLinks={articleLinks} />
+  </>
+
   return (
     <>
-      <nav className={styles.nav}>
-        {devNotice}
-        <Profile />
-        <div className={styles.top}>
-          <div className={styles.main}>
-            <Link href={`/`}>
-              Home
-            </Link>
-          </div>
-        </div>
-        <UserLinks articleLinks={articleLinks} />
+      <nav className={`d-none d-md-block ${styles.nav}`}>
+        {menuBody}
       </nav>
+      <OffcanvasMenu>
+        {menuBody}
+      </OffcanvasMenu>
     </>
   )
 }
