@@ -12,8 +12,8 @@ import '../styles/globals.scss'
 
 export const dynamic = 'force-static'
 export const metadata: Metadata = {
-  title: 'Recepten Snel de Haas',
-  description: 'Het online receptenboek',
+  title: 'Verloskundige Spiekt',
+  description: 'Eerste hulp bij verloskudige kennis',
   icons: ['/favicon.ico'],
 }
 

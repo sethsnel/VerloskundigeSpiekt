@@ -18,12 +18,12 @@ const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
           </Button>
         </Link>) : undefined}
       {!user?.hasContributeRights() ? undefined : (
-        <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw Recept' })}>
-          maak recept
+        <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw spiekbriefje' })}>
+          maak spiekbriefje
         </Button>
       )}
 
-      <h2>Recepten</h2>
+      <h2>Spiekbriefjes</h2>
       {articleLinks}
     </>
   )

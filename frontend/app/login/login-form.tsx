@@ -11,7 +11,7 @@ const LoginForm = () => {
 
   return (
     <div className={styles.main}>
-      <h1>Recepten</h1>
+      <h1>Spiekbriefjes</h1>
       <div id="firebaseui-auth-container"></div>
     </div>
   )
