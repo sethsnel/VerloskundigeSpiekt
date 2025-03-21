@@ -5,9 +5,10 @@ export type Article = {
   name: string
   headerUrl?: string
   notes?: Record<string, Note>
+  tagIds: string[]
 }
 
-export type UpdateArticle = Omit<Article, 'id'> & {
+export type UpsertArticle = Omit<Article, 'id'> & {
   id?: string
 }
 
@@ -16,4 +17,14 @@ export type Note = {
   name: string
   text: string
   json?: Descendant[]
+}
+
+export type Tag = {
+  id: string
+  name: string
+  articleIds: string[]
+}
+
+export type UpsertTag = Omit<Tag, 'id'> & {
+  id?: string
 }

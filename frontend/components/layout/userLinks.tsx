@@ -18,7 +18,7 @@ const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
           </Button>
         </Link>) : undefined}
       {!user?.hasContributeRights() ? undefined : (
-        <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw Recept' })}>
+        <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw Recept', tagIds: [] })}>
           maak recept
         </Button>
       )}
