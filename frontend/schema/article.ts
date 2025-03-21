@@ -4,6 +4,7 @@ export type Article = {
   id: string
   name: string
   headerUrl?: string
+  tags: string[]
   notes?: Record<string, Note>
 }
 

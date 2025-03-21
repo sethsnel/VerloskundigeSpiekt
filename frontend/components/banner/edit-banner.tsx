@@ -13,7 +13,7 @@ export default function EditBanner({ articleId, onSave }: EditBannerProps) {
 
   return <>
     {!user?.hasContributeRights() ? undefined : (
-      <Button onClick={showFileCenterModal} icon='edit' className='position-absolute bottom-0 end-0 m-3 btn btn-info'>Update banner</Button>
+      <Button onClick={showFileCenterModal} icon='edit' className='position-absolute bottom-0 end-0 m-3 btn btn-info'>update banner</Button>
     )}
   </>
 }
