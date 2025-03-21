@@ -5,7 +5,7 @@ export type Article = {
   name: string
   headerUrl?: string
   notes?: Record<string, Note>
-  tagIds: string[]
+  tagIds?: string[]
 }
 
 export type UpsertArticle = Omit<Article, 'id'> & {
