@@ -12,38 +12,48 @@ import styles from './button.module.scss'
 interface ButtonProps extends HTMLProps<HTMLButtonElement> {
   children: ReactNode
   icon?: 'edit' | 'save' | 'add' | 'delete' | 'cancel' | 'logout' | 'login'
+  iconElement?: JSX.Element
 }
 
-const Button = ({ children, icon, type, className, ...rest }: ButtonProps) => {
+const Button = ({ children, icon, iconElement, type, className, ...rest }: ButtonProps) => {
   let iconType = undefined
   let warning = false
 
-  if (icon === 'edit') {
-    iconType = (<FiEdit3 />)
+  if (iconElement) {
+    iconType = iconElement
+  } else {
+    if (icon === 'edit') {
+      iconType = (<FiEdit3 />)
+    }
+    if (icon === 'save') {
+      iconType = (<IoSaveOutline />)
+    }
+    if (icon === 'add') {
+      iconType = (<GrAddCircle />)
+    }
+    if (icon === 'delete') {
+      warning = true
+      iconType = (<MdDelete />)
+    }
+    if (icon === 'cancel') {
+      iconType = (<ImCancelCircle />)
+    }
+    if (icon === 'logout') {
+      iconType = (<AiOutlineLogout />)
+    }
+    if (icon === 'login') {
+      iconType = (<AiOutlineLogin />)
+    }
   }
-  if (icon === 'save') {
-    iconType = (<IoSaveOutline />)
-  }
-  if (icon === 'add') {
-    iconType = (<GrAddCircle />)
-  }
-  if (icon === 'delete') {
-    warning = true
-    iconType = (<MdDelete />)
-  }
-  if (icon === 'cancel') {
-    iconType = (<ImCancelCircle />)
-  }
-  if (icon === 'logout') {
-    iconType = (<AiOutlineLogout />)
-  }
-  if (icon === 'login') {
-    iconType = (<AiOutlineLogin />)
+
+  let iconClassName = warning ? styles.iconWarningColor : styles.iconColor
+  if (className?.includes('btn-primary')) {
+    iconClassName += ` ${styles.iconPrimaryColor}`
   }
 
   return (
     <button type="button" className={`${className?.includes('btn') ? '' : styles.button} ${warning && styles.warning} ${className}`} {...rest}>
-      <IconContext.Provider value={{ className: warning ? styles.iconWarningColor : styles.iconColor }}>
+      <IconContext.Provider value={{ className: iconClassName }}>
         {iconType}
       </IconContext.Provider>
       {children}

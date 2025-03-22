@@ -7,42 +7,45 @@ import { useModal } from "../utilities"
 import { Tag, UpsertTag } from "../../../schema/article"
 
 const useTagsModal = (tags: Tag[], onSave: (newTags: UpsertTag[]) => void) => {
-  const { showModal, updateModal, closeModal, isVisible: modalIsOpen } = useModal()
+  const { showModal, closeModal, isVisible: modalIsOpen } = useModal()
   const [newTags, setNewTags] = useState<UpsertTag[]>(tags)
-  const onTagSelect = (tag: UpsertTag) => {
-    console.info('On tag select', tag)
-    console.info(!newTags.map(nt => nt.id).includes(tag.id))
-    if (!newTags.map(nt => nt.id).includes(tag.id)) {
+  const onTagAdd = (tag: UpsertTag) => {
+    if (!newTags.map(nt => nt.name).includes(tag.name)) {
       setNewTags([...newTags, tag])
+    }
+  }
+  const onTagRemove = (tag: UpsertTag) => {
+    const tagIndex = newTags.map(nt => nt.name).indexOf(tag.name)
+    if (tagIndex > -1) {
+      newTags.splice(tagIndex, 1)
+      setNewTags([...newTags])
     }
   }
 
   //Reset tags when modal is closed
-  const haveTagsChanged = tags.map(t => t.id).filter(tagId => !newTags.map(nt => nt.id).includes(tagId)).length > 0
+  const newTagNames = newTags.map(nt => nt.name)
+  const existingTagNames = tags.map(nt => nt.name)
+  const haveTagsChanged = existingTagNames
+    .filter(x => !newTagNames.includes(x))
+    .concat(newTagNames.filter(x => !existingTagNames.includes(x))).length > 0
   if (!modalIsOpen && haveTagsChanged) {
     setNewTags(tags)
   }
 
-  const saveTags = () => {
-    onSave(newTags)
+  const saveTags = (tags: UpsertTag[]) => {
+    onSave(tags)
     closeModal()
   }
 
   const modalProps: ModalState = {
     title: "Beheer tags",
-    modalBody: <EditTags tags={newTags} onTagSelect={onTagSelect} />,
-    actions: [
-      { label: "Opslaan", onClick: saveTags, type: 'save', disabled: tags === newTags },
-      { label: "Annuleer", type: 'cancel', onClick: closeModal }
-    ]
+    modalBody: <EditTags articleTags={newTags} onTagAdd={onTagAdd} onTagRemove={onTagRemove} saveTags={saveTags} closeModal={closeModal} />,
+    actions: []
   }
 
   const showTagsModal = async () => {
     showModal(modalProps)
   }
-
-  //Update modal when props change
-  //updateModal(modalProps)
 
   return { showTagsModal }
 }

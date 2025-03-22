@@ -13,7 +13,7 @@ export default function EditableTags({ article, tags }: EditableTagsProps) {
   const { addTagToArticleMutation, removeTagFromArticleMutation } = useMutationTags(article)
   const onSaveTags = (newTags: UpsertTag[]) => {
     const currentTags = article.tagIds ?? []
-    const tagsToAdd = newTags.filter(tag => !currentTags.includes(tag.id ?? ''))
+    const tagsToAdd = newTags.filter(tag => !tag.id || !currentTags.includes(tag.id))
     const tagIdsToRemove = currentTags.filter(tagId => !newTags.map(t => t.id ?? '').includes(tagId))
     const tagsToRemove = tags.filter(tag => tagIdsToRemove.includes(tag.id ?? ''))
 
