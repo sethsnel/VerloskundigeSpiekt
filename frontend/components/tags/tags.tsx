@@ -44,6 +44,11 @@ export default function EditableTags({ article, tags }: EditableTagsProps) {
             </Link>
           })
         }
+        {
+          tagsConnected.length === 0 && (
+            <span className="badge rounded-pill text-bg-light">Nog geen tags</span>
+          )
+        }
       </div>
       {hasEditRights && (
         <div className={styles.buttonContainer}>
