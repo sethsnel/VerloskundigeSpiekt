@@ -28,11 +28,11 @@ export default function EditTags({ articleTags, onTagAdd, onTagRemove, saveTags,
   }
 
   const actions = [
-    { label: "Opslaan", onClick: () => saveTags(newTags), type: 'save', disabled: articleTags === newTags },
+    { label: "Opslaan", type: 'save', onClick: () => saveTags(newTags) },
     { label: "Annuleer", type: 'cancel', onClick: closeModal }
   ]
   const actionButtons = actions.map(action => (
-    <Button key={action.label} icon={action.type as 'save' | 'cancel'} disabled={action.disabled} onClick={() => { action.onClick && action.onClick() }}>
+    <Button key={action.label} icon={action.type as 'save' | 'cancel'} onClick={() => { action.onClick && action.onClick() }}>
       {action.label}
     </Button>
   ))
@@ -40,7 +40,7 @@ export default function EditTags({ articleTags, onTagAdd, onTagRemove, saveTags,
   const onAddTagClick = () => {
     let tag: UpsertTag | undefined = allTags.find(t => t.name === newTag)
     if (!tag) {
-      tag = { name: newTag, articleIds: [] }
+      tag = { name: newTag, articles: [] }
     }
 
     if (newTags.map(t => t.name).includes(newTag)) {
@@ -61,17 +61,17 @@ export default function EditTags({ articleTags, onTagAdd, onTagRemove, saveTags,
   }
 
   return <>
-    <div className='d-flex align-items-center m-1'>
+    <div className='d-flex align-items-center justify-content-center gap-3 m-1'>
       {
         newTags.map(tag => {
           return <span key={tag.name} className={`badge rounded-pill text-bg-light ${styles.remove_tag}`} onClick={() => onTagRemoveClick(tag)}>{tag.name} <TiDelete /></span>
         })
       }
     </div>
-    <div className="grid">
-      <div className="input-group g-col-6 g-start-3">
+    <div className="grid mt-5 mb-5">
+      <div className="input-group g-col-6 g-start-4">
         <span className="input-group-text">Tag toevoegen:</span>
-        <input className="form-control" list="allTags" id="tagList" placeholder="Voeg tag toe..." onChange={(e) => setNewTag(e.currentTarget.value)} />
+        <input className="form-control" list="allTags" id="tagList" placeholder="Naam van tag..." onChange={(e) => setNewTag(e.currentTarget.value)} />
         <Button className="btn btn-primary" type="button" icon="add" onClick={onAddTagClick}>Voeg toe</Button>
       </div>
     </div>

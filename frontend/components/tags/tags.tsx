@@ -1,12 +1,15 @@
+import Link from 'next/link'
+
 import { useMutationTags } from "../../lib/hooks/tags"
 import useTagsModal from "../../lib/hooks/tags/useTagsModal"
 import { Article, Tag, UpsertTag } from "../../schema/article"
 import { Button } from "../button"
+import { useUser } from '../../lib/auth/use-user'
+import styles from './tags.module.scss'
 
 interface EditableTagsProps {
   article: Article
   tags: Tag[]
-  //onSave: (newTags: UpsertTag[]) => void
 }
 
 export default function EditableTags({ article, tags }: EditableTagsProps) {
@@ -24,20 +27,29 @@ export default function EditableTags({ article, tags }: EditableTagsProps) {
     if (tagsToRemove.length > 0) {
       removeTagFromArticleMutation.mutate(tagsToRemove)
     }
-    //onSave && onSave(tags)
   }
   const tagsConnected = tags.filter(tag => article.tagIds && article.tagIds.includes(tag.id))
   const { showTagsModal } = useTagsModal(tagsConnected, onSaveTags)
+  const { user } = useUser()
 
-  return <>
-    <div className='d-flex align-items-center m-1'>
-      {
-        tagsConnected.map(tag => {
-          return <span key={tag.id} className="badge rounded-pill text-bg-light">{tag.name}</span>
-        })
-      }
+  const hasEditRights = user?.hasContributeRights?.() ?? false
+
+  return (
+    <div className={styles.tagContainer}>
+      <div className='d-flex align-items-center m-1 fs-5 p-3 justify-content-center'>
+        {
+          tagsConnected.map(tag => {
+            return <Link href={`/tags/${tag.id}`} key={tag.id} className={styles.tag}>
+              <span key={tag.id} className="badge rounded-pill text-bg-light">{tag.name}</span>
+            </Link>
+          })
+        }
+      </div>
+      {hasEditRights && (
+        <div className={styles.buttonContainer}>
+          <Button onClick={showTagsModal} icon='edit' className='m-3 btn btn-info'>edit tags</Button>
+        </div>
+      )}
     </div>
-    {/* Only show button when user has contribute rights */}
-    <Button onClick={showTagsModal} icon='edit' className='m-3 btn btn-info'>edit tags</Button>
-  </>
+  )
 }

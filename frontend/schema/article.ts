@@ -22,7 +22,10 @@ export type Note = {
 export type Tag = {
   id: string
   name: string
-  articleIds: string[]
+  articles: {
+    id: string
+    name: string
+  }[]
 }
 
 export type UpsertTag = Omit<Tag, 'id'> & {
