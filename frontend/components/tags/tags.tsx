@@ -13,7 +13,7 @@ interface EditableTagsProps {
 }
 
 export default function EditableTags({ article, tags }: EditableTagsProps) {
-  const { addTagToArticleMutation, removeTagFromArticleMutation } = useMutationTags(article)
+  const { addTagsToArticleMutation, removeTagsFromArticleMutation } = useMutationTags(article)
   const onSaveTags = (newTags: UpsertTag[]) => {
     const currentTags = article.tagIds ?? []
     const tagsToAdd = newTags.filter(tag => !tag.id || !currentTags.includes(tag.id))
@@ -21,11 +21,11 @@ export default function EditableTags({ article, tags }: EditableTagsProps) {
     const tagsToRemove = tags.filter(tag => tagIdsToRemove.includes(tag.id ?? ''))
 
     if (tagsToAdd.length > 0) {
-      addTagToArticleMutation.mutate(tagsToAdd)
+      addTagsToArticleMutation.mutate(tagsToAdd)
     }
 
     if (tagsToRemove.length > 0) {
-      removeTagFromArticleMutation.mutate(tagsToRemove)
+      removeTagsFromArticleMutation.mutate(tagsToRemove)
     }
   }
   const tagsConnected = tags.filter(tag => article.tagIds && article.tagIds.includes(tag.id))

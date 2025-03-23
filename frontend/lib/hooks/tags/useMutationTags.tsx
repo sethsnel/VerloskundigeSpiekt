@@ -8,9 +8,9 @@ import { getTagQueryKey, getTagsQueryKey } from "../../react-query"
 const useMutationTags = (article: Article) => {
   const queryClient = useQueryClient()
 
-  const addTagToArticleMutation = useMutation(
+  const addTagsToArticleMutation = useMutation(
     async (tags: UpsertTag[]) => {
-      return await mutateTags.addTagToArticle(tags, article)
+      return await mutateTags.addTagsToArticle(tags, article)
     },
     {
       onSuccess: (result) => {
@@ -22,9 +22,9 @@ const useMutationTags = (article: Article) => {
     }
   )
 
-  const removeTagFromArticleMutation = useMutation(
+  const removeTagsFromArticleMutation = useMutation(
     async (tags: Tag[]) => {
-      return await mutateTags.removeTagFromArticle(tags, article)
+      return await mutateTags.removeTagsFromArticle(tags, article)
     },
     {
       onSuccess: (result) => {
@@ -37,8 +37,8 @@ const useMutationTags = (article: Article) => {
   )
 
   return {
-    addTagToArticleMutation,
-    removeTagFromArticleMutation
+    addTagsToArticleMutation,
+    removeTagsFromArticleMutation
   }
 }
 

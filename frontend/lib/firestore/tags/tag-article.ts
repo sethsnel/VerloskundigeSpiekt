@@ -2,7 +2,7 @@ import { Article, Tag, UpsertTag } from '../../../schema/article'
 import upsertArticle from '../articles/upsert-article'
 import upsertTag from './upsert-tag'
 
-const addTagsToArticle = async (tags: UpsertTag[], article: Article) => {
+export const addTagsToArticle = async (tags: UpsertTag[], article: Article) => {
   const upsertTagsPromise = tags.map(async (tag) => {
     // Ensure articles array exists
     if (!tag.articles) {
@@ -36,7 +36,7 @@ const addTagsToArticle = async (tags: UpsertTag[], article: Article) => {
   return { tags: upsertTags, article: upsertedArticle }
 }
 
-const removeTagsFromArticle = async (tags: Tag[], article: Article) => {
+export const removeTagsFromArticle = async (tags: Tag[], article: Article) => {
   const upsertTagsPromise = tags.map(async (tag) => {
     // Remove article from tag's articles array
     tag.articles = tag.articles.filter(a => a.id !== article.id)
@@ -55,9 +55,4 @@ const removeTagsFromArticle = async (tags: Tag[], article: Article) => {
   const upsertedArticle = await upsertArticle(article)
 
   return { tags: upsertTags, article: upsertedArticle }
-}
-
-export default {
-  addTagsToArticle: addTagsToArticle,
-  removeTagsFromArticle: removeTagsFromArticle
 }
