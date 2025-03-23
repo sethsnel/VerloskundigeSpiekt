@@ -1,0 +1,11 @@
+.banner {
+  position: relative;
+
+  .buttonContainer {
+    display: none;
+  }
+
+  &:hover .buttonContainer {
+    display: inherit;
+  }
+}

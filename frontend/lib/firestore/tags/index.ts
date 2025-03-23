@@ -1,3 +1,13 @@
-export { default as mutateTags } from './tag-article'
-export { default as getTags } from './get-tags'
-export { default as upsertTag } from './upsert-tag'
+import tagArticle from './tag-article'
+import getTags from './get-tags'
+import upsertTag from './upsert-tag'
+
+export const mutateTags = {
+  addTagToArticle: tagArticle.addTagsToArticle,
+  removeTagFromArticle: tagArticle.removeTagsFromArticle
+}
+
+export {
+  getTags,
+  upsertTag
+}

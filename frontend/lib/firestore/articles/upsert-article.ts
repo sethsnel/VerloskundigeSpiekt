@@ -10,6 +10,10 @@ const upsertArticle = async (article: UpsertArticle) => {
   if (id) {
     const articleToUpdateRef = doc(firestoreDb, 'articles', id)
 
+    if (!updatedArticle.tagIds) {
+      updatedArticle.tagIds = []
+    }
+
     await updateDoc(
       articleToUpdateRef,
       { ...updatedArticle }
