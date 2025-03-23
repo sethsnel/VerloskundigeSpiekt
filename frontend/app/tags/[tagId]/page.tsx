@@ -40,7 +40,7 @@ export default async function TagPage({ params }: Props) {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>Tag: {tag.name}</h1>
         <Link href="/tags">
-          <Button icon="back">Alle tags</Button>
+          <Button className='btn btn-link' icon="back">Alle tags</Button>
         </Link>
       </div>
 

@@ -1,7 +1,10 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+
 import { getTags } from '../../lib/firestore/tags'
+import { getArticlesWithoutTags } from '../../lib/firestore/articles'
 import styles from './tags.module.scss'
+import { Button } from '../../components/button'
 
 export const metadata: Metadata = {
   title: 'Alle Tags',
@@ -10,10 +13,21 @@ export const metadata: Metadata = {
 
 export default async function TagsPage() {
   const tags = await getTags()
+  const untaggedArticles = await getArticlesWithoutTags()
+  console.info(untaggedArticles.length)
 
   return (
     <div className="container mt-4">
-      <h1 className="mb-4">Alle Tags</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Alle Tags</h1>
+        {untaggedArticles.length > 0 && (
+          <Link href="/tags/untagged">
+            <Button className='btn btn-link'>
+              Artikelen zonder tags ({untaggedArticles.length})
+            </Button>
+          </Link>
+        )}
+      </div>
 
       <div className={styles.tagGrid}>
         {tags.map(tag => (
@@ -33,10 +47,6 @@ export default async function TagsPage() {
           </Link>
         ))}
       </div>
-
-      {tags.length === 0 && (
-        <p>Geen tags gevonden.</p>
-      )}
     </div>
   )
 }

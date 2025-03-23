@@ -41,6 +41,9 @@ const Menu = ({ articles }: MenuProps) => {
         <Link href={`/`}>
           Home
         </Link>
+        <Link href={`/tags`}>
+          Tags
+        </Link>
       </div>
     </div>
     <UserLinks articleLinks={articleLinks} />
