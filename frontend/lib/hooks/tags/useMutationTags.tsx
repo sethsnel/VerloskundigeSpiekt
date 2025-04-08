@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "react-query"
 import { mutateTags } from "../../firestore/tags"
 import { Article, Tag, UpsertTag } from "../../../schema/article"
 import { getTagQueryKey, getTagsQueryKey } from "../../react-query"
+import { indexAllNotes } from "../../search/manage-index"
 
 const useMutationTags = (article: Article) => {
   const queryClient = useQueryClient()
@@ -13,11 +14,14 @@ const useMutationTags = (article: Article) => {
       return await mutateTags.addTagsToArticle(tags, article)
     },
     {
-      onSuccess: (result) => {
+      onSuccess: async (result) => {
         result.tags.forEach(tag => {
           queryClient.invalidateQueries(getTagQueryKey(tag.id))
         })
         queryClient.invalidateQueries(getTagsQueryKey([...result.tags.map((tag) => tag.id)]))
+
+        // Reindex all notes since tags changed
+        await indexAllNotes(result.article)
       },
     }
   )
@@ -27,11 +31,14 @@ const useMutationTags = (article: Article) => {
       return await mutateTags.removeTagsFromArticle(tags, article)
     },
     {
-      onSuccess: (result) => {
+      onSuccess: async (result) => {
         result.tags.forEach(tag => {
           queryClient.invalidateQueries(getTagQueryKey(tag.id))
         })
         queryClient.invalidateQueries(getTagsQueryKey([...result.tags.map((tag) => tag.id)]))
+
+        // Reindex all notes since tags changed
+        await indexAllNotes(result.article)
       },
     }
   )

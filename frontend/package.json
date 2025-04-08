@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/search-documents": "^12.1.0",
     "@react-hook/size": "^2.1.2",
     "bootstrap": "^5.3.3",
     "cookies-next": "^5.1.0",
