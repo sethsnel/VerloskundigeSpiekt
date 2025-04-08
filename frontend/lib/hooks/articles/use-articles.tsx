@@ -8,29 +8,24 @@ import { UpsertArticle } from "../../../schema/article"
 import { deleteArticle, upsertArticle } from "../../firestore/articles"
 import { getArticleQueryKey } from "../../react-query"
 import fetchLayoutProps from "../../shared/fetchLayoutProps"
+import { indexAllNotes, deleteArticleNotesFromIndex } from '../../search/manage-index'
 
 const useArticles = () => {
   const queryClient = useQueryClient()
   const { push } = useRouter()
 
-  // let { data } = useQuery('layoutPropsQueryKey', fetchLayoutProps)
-  // data = data ?? { articles: [] }
-  // const { articles } = data as DefaultLayoutProps
-
   const addArticleMutation = useMutation(
     (article: UpsertArticle) => upsertArticle(article),
     {
-      onSuccess: upsertedArticle => {
+      onSuccess: async upsertedArticle => {
         if (upsertedArticle) {
           const keyToUpdate = getArticleQueryKey(upsertedArticle.id || '')
           queryClient.setQueryData(keyToUpdate, { ...upsertedArticle })
 
-          // const articleIndex = articles.findIndex(a => a.id == upsertedArticle.id)
-
-          // if (articleIndex !== -1) {
-          //   articles[articleIndex] = { ...upsertedArticle }
-          //   queryClient.setQueryData('layoutPropsQueryKey', { ...data, articles })
-          // }
+          // Reindex all notes since article metadata changed
+          if (upsertedArticle.notes) {
+            await indexAllNotes(upsertedArticle)
+          }
 
           if (!upsertedArticle.notes) {
             push(`/artikel/${upsertedArticle.id}`)
@@ -43,9 +38,12 @@ const useArticles = () => {
   const deleteArticleMutation = useMutation(
     (articleId: string) => deleteArticle(articleId),
     {
-      onSuccess: deletedArticleId => {
+      onSuccess: async deletedArticleId => {
         push('/')
         queryClient.removeQueries(getArticleQueryKey(deletedArticleId))
+
+        // Remove all notes from search index
+        await deleteArticleNotesFromIndex(deletedArticleId)
       }
     }
   )

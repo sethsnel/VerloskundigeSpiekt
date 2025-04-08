@@ -1,5 +1,6 @@
 'use client'
-import { useEffect } from 'react'
+
+import { useEffect, useRef } from 'react'
 import { Offcanvas } from 'bootstrap'
 
 import styles from './menu.module.scss'
@@ -9,18 +10,31 @@ interface OffcanvasMenuProps {
 }
 
 const OffcanvasMenu = ({ children }: OffcanvasMenuProps) => {
+  const menuRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
-    var menuOffcanvasElement = document.getElementById('offcanvasMenu')
-    if (menuOffcanvasElement !== null) {
-      const menuOffcanvas = new Offcanvas(menuOffcanvasElement)
-      menuOffcanvasElement.onclick = (e) => {
+    if (menuRef !== null && menuRef.current !== null) {
+      const menuOffcanvas = new Offcanvas(menuRef.current)
+      const hideMenuOnClick = (e: Event) => {
+        const excludeElements = ['INPUT', 'NAV', 'DIV']
+        if (excludeElements.includes((e.target as any).nodeName)) {
+          return
+        }
+
         menuOffcanvas.hide()
+      }
+      menuRef.current.addEventListener('click', hideMenuOnClick)
+
+      return () => {
+        menuRef.current?.removeEventListener('click', hideMenuOnClick)
       }
     }
   }, [])
 
+  console.info('RERENDER OFF CANVAS')
+
   return (
-    <div className="offcanvas offcanvas-start bg-white" tabIndex={-1} id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+    <div className="offcanvas offcanvas-start bg-white" tabIndex={-1} id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel" ref={menuRef}>
       <div className="offcanvas-header">
         <h5 className="offcanvas-title" id="offcanvasMenuLabel">Menu</h5>
         <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>

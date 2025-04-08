@@ -1,4 +1,3 @@
-
 'use client'
 import { nanoid } from 'nanoid'
 import { createContext, useState } from 'react'
@@ -11,6 +10,7 @@ import { upsertNote, deleteNote, getArticle } from '../../lib/firestore/articles
 import { getArticleQueryKey } from '../../lib/react-query'
 import { Article, Note } from '../../schema/article'
 import { useArticles } from '../../lib/hooks/articles'
+import { indexNote, deleteNoteFromIndex, deleteArticleNotesFromIndex } from '../../lib/search/manage-index'
 
 import styles from './notes.module.scss'
 
@@ -28,6 +28,8 @@ const Notes = ({ article }: NotesProps) => {
 
   const onDeletePage = () => {
     if (window.confirm("Weet je zeker dat je deze pagina wilt verwijderen?")) {
+      // Delete all notes from search index before deleting article
+      deleteArticleNotesFromIndex(article.id)
       deleteArticleMutation.mutate(article.id)
     }
   }
@@ -46,7 +48,7 @@ const Notes = ({ article }: NotesProps) => {
   const upsertNoteMutation = useMutation(
     (newNote: Note) => upsertNote(newNote, article.id),
     {
-      onSuccess: upsertedNote => {
+      onSuccess: async upsertedNote => {
         if (upsertedNote) {
           queryClient.setQueryData(articleQueryKey, {
             ...article,
@@ -55,6 +57,8 @@ const Notes = ({ article }: NotesProps) => {
               [upsertedNote.id]: upsertedNote
             }
           })
+          // Update search index
+          await indexNote(upsertedNote, article)
         }
       }
     }
@@ -63,10 +67,12 @@ const Notes = ({ article }: NotesProps) => {
   const deleteNoteMutation = useMutation(
     (noteId: string) => deleteNote(noteId, article.id),
     {
-      onSuccess: deletedNoteId => {
+      onSuccess: async deletedNoteId => {
         if (deletedNoteId && article?.notes) {
           delete article.notes[deletedNoteId]
           queryClient.setQueryData(articleQueryKey, { ...article })
+          // Remove from search index
+          await deleteNoteFromIndex(deletedNoteId)
         }
       }
     }
@@ -77,6 +83,7 @@ const Notes = ({ article }: NotesProps) => {
     .map((note) => (
       <Accordion
         key={note.id}
+        id={note.id}
         name={note.name}
         text={note.text}
         json={note.json ?? []}

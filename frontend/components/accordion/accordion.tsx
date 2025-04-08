@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button } from '../button'
 import { EditableText } from './editable-text'
@@ -10,6 +10,7 @@ import styles from './accordion.module.scss'
 import { Descendant } from 'slate'
 
 interface AccordionProps {
+  id?: string
   name: string
   text: string
   json: Descendant[]
@@ -26,8 +27,20 @@ type AccordionUpdate = {
   json: Descendant[]
 }
 
+const useHashRoute = () => {
+  'use client'
+  const [hash, setHash] = useState(typeof window !== 'undefined' ? window.location.hash.slice(1) : null)
+
+  useEffect(() => {
+    setHash(typeof window !== 'undefined' ? window.location.hash.slice(1) : null)
+  }, [])
+
+  return hash
+}
+
 const Accordion = (props: AccordionProps) => {
-  const [collapsed, setCollapsed] = useState<boolean>(!props.editMode)
+  const hashRoute = useHashRoute()
+  const [collapsed, setCollapsed] = useState<boolean>(!props.editMode && hashRoute != props.id)
   const [editMode, setEditMode] = useState<boolean>(props.editMode ?? false)
 
   const [name, setName] = useState<string>(props.name)
