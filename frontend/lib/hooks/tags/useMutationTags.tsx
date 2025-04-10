@@ -1,10 +1,10 @@
 'use client'
-import { useMutation, useQueryClient } from "react-query"
+import { useMutation, useQueryClient } from 'react-query'
 
-import { mutateTags } from "../../firestore/tags"
-import { Article, Tag, UpsertTag } from "../../../schema/article"
-import { getTagQueryKey, getTagsQueryKey } from "../../react-query"
-import { indexAllNotes } from "../../search/manage-index"
+import { mutateTags } from '../../firestore/tags'
+import { Article, Tag, UpsertTag } from '../../../schema/article'
+import { getTagQueryKey, getTagsQueryKey } from '../../react-query'
+import { indexArticleNotesApi } from '../../services/search-api-client'
 
 const useMutationTags = (article: Article) => {
   const queryClient = useQueryClient()
@@ -15,15 +15,15 @@ const useMutationTags = (article: Article) => {
     },
     {
       onSuccess: async (result) => {
-        result.tags.forEach(tag => {
+        result.tags.forEach((tag) => {
           queryClient.invalidateQueries(getTagQueryKey(tag.id))
         })
         queryClient.invalidateQueries(getTagsQueryKey([...result.tags.map((tag) => tag.id)]))
 
         // Reindex all notes since tags changed
-        await indexAllNotes(result.article)
+        await indexArticleNotesApi(result.article.id)
       },
-    }
+    },
   )
 
   const removeTagsFromArticleMutation = useMutation(
@@ -32,20 +32,20 @@ const useMutationTags = (article: Article) => {
     },
     {
       onSuccess: async (result) => {
-        result.tags.forEach(tag => {
+        result.tags.forEach((tag) => {
           queryClient.invalidateQueries(getTagQueryKey(tag.id))
         })
         queryClient.invalidateQueries(getTagsQueryKey([...result.tags.map((tag) => tag.id)]))
 
         // Reindex all notes since tags changed
-        await indexAllNotes(result.article)
+        await indexArticleNotesApi(result.article.id)
       },
-    }
+    },
   )
 
   return {
     addTagsToArticleMutation,
-    removeTagsFromArticleMutation
+    removeTagsFromArticleMutation,
   }
 }
 

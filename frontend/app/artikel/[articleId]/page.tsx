@@ -20,7 +20,6 @@ export async function generateMetadata(
   }
 }
 
-
 export default async function Article({ params }: { params: Promise<{ articleId: string }> }) {
   return <Suspense fallback={
     <div className="d-flex justify-content-center">

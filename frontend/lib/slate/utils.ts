@@ -146,6 +146,7 @@ export const imageHasPosition = (editor: BaseEditor, position?: ImagePosition) =
       // @ts-ignore
       !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image',
   })
+  // @ts-ignore
   return !!image && image && image[0]?.position === position
 }
 

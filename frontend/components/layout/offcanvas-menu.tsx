@@ -31,8 +31,6 @@ const OffcanvasMenu = ({ children }: OffcanvasMenuProps) => {
     }
   }, [])
 
-  console.info('RERENDER OFF CANVAS')
-
   return (
     <div className="offcanvas offcanvas-start bg-white" tabIndex={-1} id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel" ref={menuRef}>
       <div className="offcanvas-header">

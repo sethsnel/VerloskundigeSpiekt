@@ -2,7 +2,7 @@
 import { HTMLProps, ReactNode } from 'react'
 import { IconContext } from 'react-icons'
 import { FiEdit3 } from 'react-icons/fi'
-import { IoSaveOutline, IoArrowBack } from 'react-icons/io5'
+import { IoSaveOutline, IoArrowBack, IoArrowForward } from 'react-icons/io5'
 import { GrAddCircle } from 'react-icons/gr'
 import { ImCancelCircle } from 'react-icons/im'
 import { MdDelete } from 'react-icons/md'
@@ -12,7 +12,7 @@ import styles from './button.module.scss'
 
 interface ButtonProps extends HTMLProps<HTMLButtonElement> {
   children: ReactNode
-  icon?: 'edit' | 'save' | 'add' | 'delete' | 'cancel' | 'logout' | 'login' | 'back'
+  icon?: 'edit' | 'save' | 'add' | 'delete' | 'cancel' | 'logout' | 'login' | 'back' | 'forward'
   iconElement?: JSX.Element
 }
 
@@ -47,6 +47,9 @@ const Button = ({ children, icon, iconElement, type, className, ...rest }: Butto
     }
     if (icon === 'back') {
       iconType = (<IoArrowBack />)
+    }
+    if (icon === 'forward') {
+      iconType = (<IoArrowForward />)
     }
   }
 
