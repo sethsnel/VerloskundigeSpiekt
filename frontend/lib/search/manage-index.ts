@@ -1,6 +1,6 @@
-import { adminClient, searchClient, searchIndexSchema, noteToSearchable, SearchableNote } from './search-client'
-import { Article, Note } from '../../schema/article'
-import { getArticles } from '../firestore/articles'
+import { adminClient, searchClient, searchIndexSchema } from './search-client'
+import { getArticle, getArticles } from '../firestore/articles'
+import { noteToSearchable, SearchableNote } from './search-schema'
 
 export async function ensureSearchIndex() {
   // Check if index exists
@@ -25,12 +25,15 @@ export async function ensureSearchIndex() {
   }
 }
 
-export async function indexAllNotes(article: Article) {
+export async function indexArticleNotes(articleId: string) {
   // First ensure index exists
   await ensureSearchIndex()
+  const article = await getArticle(articleId)
 
   // Convert notes to searchable documents
-  const documents = Object.values(article.notes || {}).map(note => noteToSearchable(note, article))
+  const documents = Object.values(article.notes || {}).map((note) =>
+    noteToSearchable(note, article),
+  )
 
   // Upload documents in batches of 50
   const batchSize = 50
@@ -42,12 +45,6 @@ export async function indexAllNotes(article: Article) {
   console.log(`Indexed ${documents.length} notes from article ${article.name}`)
 }
 
-export async function indexNote(note: Note, article: Article) {
-  await ensureSearchIndex()
-  const document = noteToSearchable(note, article)
-  await searchClient.uploadDocuments([document])
-}
-
 export async function deleteNoteFromIndex(noteId: string) {
   // We only need to specify the key field (id) when deleting
   await searchClient.deleteDocuments([{ id: noteId } as SearchableNote])
@@ -55,41 +52,44 @@ export async function deleteNoteFromIndex(noteId: string) {
 
 export async function deleteArticleNotesFromIndex(articleId: string) {
   // Delete all notes belonging to this article
-  await searchClient.search("", {
-    filter: `articleId eq '${articleId}'`,
-    select: ["id"]
-  }).then(async results => {
-    const noteIds: string[] = []
-    for await (const result of results.results) {
-      if (result.document?.id) {
-        noteIds.push(result.document.id)
+  await searchClient
+    .search('', {
+      filter: `articleId eq '${articleId}'`,
+      select: ['id'],
+    })
+    .then(async (results) => {
+      const noteIds: string[] = []
+      for await (const result of results.results) {
+        if (result.document?.id) {
+          noteIds.push(result.document.id)
+        }
       }
-    }
-    if (noteIds.length > 0) {
-      // We only need to specify the key field (id) when deleting
-      await searchClient.deleteDocuments(noteIds.map(id => ({ id } as SearchableNote)))
-    }
-  })
+      if (noteIds.length > 0) {
+        // We only need to specify the key field (id) when deleting
+        await searchClient.deleteDocuments(noteIds.map((id) => ({ id }) as SearchableNote))
+      }
+    })
 }
 
-export async function reindexAllNotes(options: {
-  deleteExisting?: boolean,
-  onProgress?: (indexed: number, total: number) => void
-} = {}) {
+export async function reindexAllNotes(
+  options: {
+    deleteExisting?: boolean
+    onProgress?: (indexed: number, total: number) => void
+  } = {},
+) {
   const { deleteExisting = true, onProgress } = options
-
-  // First ensure index exists
-  await ensureSearchIndex()
 
   // If requested, delete existing index
   if (deleteExisting) {
     try {
       await adminClient.deleteIndex(searchIndexSchema.name)
-      await ensureSearchIndex()
     } catch (error) {
       console.error('Error deleting index:', error)
     }
   }
+
+  // First ensure index exists
+  await ensureSearchIndex()
 
   // Get all articles
   const articles = await getArticles()
@@ -97,14 +97,14 @@ export async function reindexAllNotes(options: {
   let indexedNotes = 0
 
   // Count total notes first for progress tracking
-  articles.forEach(article => {
+  articles.forEach((article) => {
     totalNotes += Object.keys(article.notes || {}).length
   })
 
   // Process each article's notes
   for (const article of articles) {
     const notes = Object.values(article.notes || {})
-    const documents = notes.map(note => noteToSearchable(note, article))
+    const documents = notes.map((note) => noteToSearchable(note, article))
 
     // Upload documents in batches of 50
     const batchSize = 50
@@ -119,6 +119,8 @@ export async function reindexAllNotes(options: {
     }
   }
 
-  console.log(`Reindexing complete. Indexed ${indexedNotes} notes from ${articles.length} articles.`)
+  console.log(
+    `Reindexing complete. Indexed ${indexedNotes} notes from ${articles.length} articles.`,
+  )
   return { totalNotes: indexedNotes, totalArticles: articles.length }
 }

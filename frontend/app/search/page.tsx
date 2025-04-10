@@ -1,135 +1,27 @@
-'use client'
+import { Metadata } from "next"
+import { Suspense } from "react"
 
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import styles from './search.module.scss'
-import { Content } from '../../components/layout'
-import { searchNotes } from '../../lib/search/search'
-import { SearchableNote } from '../../lib/search/search-client'
+import SearchPage from "./search"
 
-export default function SearchPage() {
-  const searchParams = useSearchParams()
-  const query = searchParams.get('q') || ''
-  const [results, setResults] = useState<SearchableNote[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [total, setTotal] = useState<number>(0)
-  const [page, setPage] = useState<number>(1)
-  const [error, setError] = useState<string | null>(null)
-  const pageSize = 10
+type SearchParamsType = {
+  searchParams: Promise<{ q: string, pageSize?: number, skip?: number, top?: number, includeFacets?: boolean }>
+}
 
-  useEffect(() => {
-    async function fetchSearchResults() {
-      if (!query.trim()) {
-        setResults([])
-        setLoading(false)
-        setTotal(0)
-        setError(null)
-        return
-      }
+export const dynamic = 'force-dynamic'
 
-      try {
-        setLoading(true)
-        setError(null)
+export async function generateMetadata({ searchParams }: SearchParamsType): Promise<Metadata> {
+  const { q } = await searchParams
 
-        const skip = (page - 1) * pageSize
-
-        // Use the actual search function
-        const searchResults = await searchNotes(query, {
-          skip,
-          top: pageSize,
-          includeFacets: true
-        })
-
-        setResults(searchResults.notes)
-        setTotal(searchResults.total)
-      } catch (error) {
-        console.error('Error searching:', error)
-        setError('De zoekservice is momenteel niet beschikbaar. Probeer het later opnieuw.')
-        setResults([])
-        setTotal(0)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchSearchResults()
-  }, [query, page])
-
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage)
-    // Scroll to top when changing pages
-    window.scrollTo(0, 0)
+  return {
+    title: q
   }
+}
 
-  const totalPages = Math.ceil(total / pageSize)
-
-  return (
-    <Content>
-      <div className={styles.searchResultsContainer}>
-        <h1>Zoekresultaten voor: &quot;{query}&quot;</h1>
-
-        {loading ? (
-          <div className={styles.loading}>Zoeken...</div>
-        ) : error ? (
-          <div className={styles.errorMessage}>
-            <p>{error}</p>
-            <p>Je kunt proberen om <Link href="/">terug te gaan naar de homepagina</Link> of handmatig te zoeken via de artikelen.</p>
-          </div>
-        ) : results.length > 0 ? (
-          <>
-            <div className={styles.resultsList}>
-              {results.map((result) => (
-                <div key={result.id} className={styles.resultItem}>
-                  <h2>
-                    <Link href={`/artikel/${result.articleId}#${result.id}`}>
-                      {result.articleName}
-                      <span className={styles.articleName}>
-                        &nbsp;- {result.name}
-                      </span>
-                    </Link>
-                  </h2>
-                  <p className={styles.noteContent}>
-                    {result.content.length > 200
-                      ? `${result.content.substring(0, 200)}...`
-                      : result.content}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {totalPages > 1 && (
-              <div className={styles.pagination}>
-                <button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                  className={styles.pageButton}
-                >
-                  Vorige
-                </button>
-                <span className={styles.pageInfo}>
-                  Pagina {page} van {totalPages}
-                </span>
-                <button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page >= totalPages}
-                  className={styles.pageButton}
-                >
-                  Volgende
-                </button>
-              </div>
-            )}
-
-            <div className={styles.resultsCount}>
-              Totaal aantal resultaten: {total}
-            </div>
-          </>
-        ) : (
-          <div className={styles.noResults}>
-            Geen resultaten gevonden voor &quot;{query}&quot;
-          </div>
-        )}
-      </div>
-    </Content>
-  )
+export default async function Page({ searchParams }: SearchParamsType) {
+  return <Suspense fallback={
+    <div className="d-flex justify-content-center">
+      <div className="spinner-grow" role="status" />
+    </div>}>
+    <SearchPage />
+  </Suspense>
 }

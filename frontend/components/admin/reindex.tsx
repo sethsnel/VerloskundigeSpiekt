@@ -55,11 +55,7 @@ export default function ReindexButton() {
         </div>
       )}
 
-      {error && (
-        <div className="alert alert-danger">
-          {error}
-        </div>
-      )}
+      {error && <div className="alert alert-danger">{error}</div>}
     </div>
   )
 }

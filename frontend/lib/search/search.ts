@@ -1,4 +1,5 @@
-import { searchClient, SearchableNote } from './search-client'
+import { searchClient } from './search-client'
+import { SearchableNote } from './search-schema'
 
 export interface SearchResults {
   notes: SearchableNote[]
