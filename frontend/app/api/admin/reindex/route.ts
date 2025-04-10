@@ -2,6 +2,8 @@ import { validateAdminRequest } from '../../../../lib/server'
 import { reindexAllNotes } from '../../../../lib/search/manage-index'
 import { NextRequest, NextResponse } from 'next/server'
 
+export const maxDuration = 60
+
 export async function POST(req: NextRequest) {
   const requestResponseCode = await validateAdminRequest()
   if (requestResponseCode !== 200) {
