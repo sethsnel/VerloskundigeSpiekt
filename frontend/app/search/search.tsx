@@ -83,7 +83,7 @@ export default function SearchPage() {
               {results.map((result) => (
                 <div key={result.id} className={styles.resultItem}>
                   <h2>
-                    <Link href={`/artikel/${result.articleId}#${result.id}`}>
+                    <Link href={`/artikel/${result.articleId}#${result.noteId}`}>
                       {result.articleName}
                       <span className={styles.articleName}>&nbsp;- {result.name}</span>
                     </Link>
