@@ -15,15 +15,9 @@ export async function searchNotes(
     skip?: number
     top?: number
     includeFacets?: boolean
-  } = {}
+  } = {},
 ): Promise<SearchResults> {
-  const {
-    articleId,
-    tagFilters,
-    skip = 0,
-    top = 10,
-    includeFacets = false
-  } = options
+  const { articleId, tagFilters, skip = 0, top = 10, includeFacets = false } = options
 
   // Build filter string for tags and articleId if specified
   let filterExpressions: string[] = []
@@ -33,9 +27,7 @@ export async function searchNotes(
   }
 
   if (tagFilters && tagFilters.length > 0) {
-    filterExpressions.push(tagFilters
-      .map(tag => `tagIds/any(t: t eq '${tag}')`)
-      .join(' and '))
+    filterExpressions.push(tagFilters.map((tag) => `tagIds/any(t: t eq '${tag}')`).join(' and '))
   }
 
   // Perform the search
@@ -45,7 +37,10 @@ export async function searchNotes(
     skip,
     top,
     includeTotalCount: true,
-    orderBy: ['search.score() desc']
+    queryType: 'simple',
+    speller: 'lexicon',
+    queryLanguage: 'nl-nl',
+    orderBy: ['search.score() desc'],
   })
 
   // Convert results to a more usable format
@@ -72,6 +67,6 @@ export async function searchNotes(
   return {
     notes,
     total: searchResults.count || 0,
-    facets: Object.keys(facets).length > 0 ? facets : undefined
+    facets: Object.keys(facets).length > 0 ? facets : undefined,
   }
 }
