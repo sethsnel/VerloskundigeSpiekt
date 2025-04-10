@@ -35,10 +35,17 @@ export const searchIndexSchema: SearchIndex = {
       filterable: true,
     },
     {
+      name: 'noteId',
+      type: 'Edm.String',
+      searchable: false,
+      filterable: true,
+      sortable: true,
+    },
+    {
       name: 'name',
       type: 'Edm.String',
       searchable: true,
-      filterable: true,
+      filterable: false,
       sortable: true,
     },
     {
@@ -58,7 +65,7 @@ export const searchIndexSchema: SearchIndex = {
       name: 'articleName',
       type: 'Edm.String',
       searchable: true,
-      filterable: true,
+      filterable: false,
       sortable: true,
     },
     {
