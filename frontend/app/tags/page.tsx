@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 export default async function TagsPage() {
   const tags = await getTags()
   const untaggedArticles = await getArticlesWithoutTags()
-  console.info(untaggedArticles.length)
 
   return (
     <div className="container mt-4">
@@ -30,22 +29,24 @@ export default async function TagsPage() {
       </div>
 
       <div className={styles.tagGrid}>
-        {tags.map(tag => (
-          <Link
-            href={`/tags/${tag.id}`}
-            key={tag.id}
-            className={styles.tagCard}
-          >
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">{tag.name}</h5>
-                <p className="card-text">
-                  {tag.articles?.length || 0} artikelen
-                </p>
+        {tags
+          .filter(t => t.articles?.length ?? 0 > 0)
+          .map(tag => (
+            <Link
+              href={`/tags/${tag.id}`}
+              key={tag.id}
+              className={styles.tagCard}
+            >
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">{tag.name}</h5>
+                  <p className="card-text">
+                    {tag.articles.length || 0} artikelen
+                  </p>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
       </div>
     </div>
   )
