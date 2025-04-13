@@ -1,13 +1,15 @@
 'use client'
+import { useEffect } from 'react'
 import { signInWithFirebase } from '../../lib/auth/firebase-auth'
 
 import styles from '../../styles/Login.module.scss'
 import 'firebaseui/dist/firebaseui.css'
 
 const LoginForm = () => {
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
+    console.info('Login form')
     signInWithFirebase()
-  }
+  }, [])
 
   return (
     <div className={styles.main}>

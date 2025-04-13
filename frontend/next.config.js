@@ -8,9 +8,6 @@ const nextConfig = {
       { hostname: 'googleusercontent.com' },
     ]
   },
-  devIndicators: {
-    appIsrStatus: false,
-  },
 }
 
 module.exports = nextConfig

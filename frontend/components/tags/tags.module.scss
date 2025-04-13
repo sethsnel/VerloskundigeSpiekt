@@ -1,0 +1,17 @@
+.tagContainer {
+  position: relative;
+
+  .buttonContainer {
+    display: none;
+  }
+
+  &:hover .buttonContainer {
+    display: flex;
+  }
+}
+
+.buttonContainer {
+  position: absolute;
+  top: 0;
+  right: 1em;
+}
