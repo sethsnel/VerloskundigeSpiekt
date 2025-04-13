@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 
 import { DefaultLayoutProps } from "../../../components/layout"
-import { UpdateArticle } from "../../../schema/article"
+import { UpsertArticle } from "../../../schema/article"
 import { deleteArticle, upsertArticle } from "../../firestore/articles"
 import { getArticleQueryKey } from "../../react-query"
 import fetchLayoutProps from "../../shared/fetchLayoutProps"
@@ -18,7 +18,7 @@ const useArticles = () => {
   // const { articles } = data as DefaultLayoutProps
 
   const addArticleMutation = useMutation(
-    (article: UpdateArticle) => upsertArticle(article),
+    (article: UpsertArticle) => upsertArticle(article),
     {
       onSuccess: upsertedArticle => {
         if (upsertedArticle) {
