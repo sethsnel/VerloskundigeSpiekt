@@ -1,5 +1,4 @@
 'use client'
-import Head from 'next/head'
 import { useRef } from 'react'
 
 import { useUser } from '../../lib/auth/use-user'
@@ -26,15 +25,6 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title className={styles.title}>Verloskundige Spiekt</title>
-        <meta
-          name='description'
-          content='Eeerste hulp bij verloskudige kennis'
-        />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-
       <h1>Je bent ingelogd!</h1>
       <button onClick={showFileCenterModal}>kies afbeelding</button>
       <div>

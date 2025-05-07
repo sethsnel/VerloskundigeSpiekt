@@ -1,9 +1,12 @@
 'use client'
 import { useEffect } from 'react'
 import { signInWithFirebase } from '../../lib/auth/firebase-auth'
+import { getChannelLabels } from '../../content/labels'
 
 import styles from '../../styles/Login.module.scss'
 import 'firebaseui/dist/firebaseui.css'
+
+const labels = getChannelLabels()
 
 const LoginForm = () => {
   useEffect(() => {
@@ -13,7 +16,7 @@ const LoginForm = () => {
 
   return (
     <div className={styles.main}>
-      <h1>Spiekbriefjes</h1>
+      <h1>{labels.articlesTitle}</h1>
       <div id="firebaseui-auth-container"></div>
     </div>
   )

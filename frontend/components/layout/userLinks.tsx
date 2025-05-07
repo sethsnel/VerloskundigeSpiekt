@@ -3,7 +3,10 @@ import Link from 'next/link'
 
 import { useUser } from '../../lib/auth/use-user'
 import { useArticles } from '../../lib/hooks/articles'
+import { getChannelLabels } from '../../content/labels'
 import { Button } from '../button'
+
+const labels = getChannelLabels()
 
 const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
   const { user } = useUser()
@@ -18,12 +21,12 @@ const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
           </Button>
         </Link>) : undefined}
       {!user?.hasContributeRights() ? undefined : (
-        <Button icon="add" onClick={() => addArticleMutation.mutate({ name: 'A - Nieuw spiekbriefje', tagIds: [] })}>
-          maak spiekbriefje
+        <Button icon="add" onClick={() => addArticleMutation.mutate({ name: labels.initialArticleTitle, tagIds: [] })}>
+          {labels.createNote}
         </Button>
       )}
 
-      <h2>Spiekbriefjes</h2>
+      <h2>{labels.articlesTitle}</h2>
       {articleLinks}
     </>
   )

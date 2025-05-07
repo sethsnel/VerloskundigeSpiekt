@@ -4,16 +4,18 @@ import { Metadata } from 'next/types'
 
 import { Providers } from '../components/Providers'
 import { DefaultLayout } from '../components/layout'
+import { getChannelLabels } from '../content/labels'
 import fetchLayoutProps from '../lib/shared/fetchLayoutProps'
 
 import '../styles/_bootstrap.scss'
 import '../styles/_colors.scss'
 import '../styles/globals.scss'
 
+const labels = getChannelLabels()
 export const dynamic = 'force-static'
 export const metadata: Metadata = {
-  title: 'Verloskundige Spiekt',
-  description: 'Eerste hulp bij verloskudige kennis',
+  title: labels.websiteTitle,
+  description: labels.websiteDescription,
   icons: ['/favicon.ico'],
 }
 
