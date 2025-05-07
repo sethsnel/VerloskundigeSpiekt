@@ -4,6 +4,7 @@ import { Modal } from "bootstrap"
 
 import { ModalContext } from "../../containers/modalProvider"
 
+import styles from './modal.module.scss'
 import { Button } from "../button"
 
 const ModalComponent = () => {
@@ -38,7 +39,7 @@ const ModalComponent = () => {
 
   return <div className="modal" tabIndex={-1} ref={modalRef} id="bootstrap-modal">
     <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-      <div className="modal-content">
+      <div className={`modal-content ${styles.modalContent}`}>
         <div className="modal-header">
           <h5 className="modal-title">{title}</h5>
           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

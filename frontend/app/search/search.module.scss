@@ -1,0 +1,140 @@
+.searchResultsContainer {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h1 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.resultsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.resultItem {
+  padding: 1rem;
+  border: 1px solid var(--border-color, #eee);
+  border-radius: 4px;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+
+    a {
+      color: var(--primary-color, #007bff);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .articleName {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+  }
+
+  .noteContent {
+    margin: 0;
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.5;
+  }
+}
+
+.noResults {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  background-color: var(--alternate-background-color, #f8f9fa);
+  border-radius: 4px;
+}
+
+.errorMessage {
+  padding: 2rem;
+  text-align: center;
+  background-color: #fff3f3;
+  border: 1px solid #ffcaca;
+  border-radius: 4px;
+  margin: 2rem 0;
+
+  p {
+    margin: 0.5rem 0;
+
+    &:first-child {
+      color: #e33e3e;
+      font-weight: 600;
+    }
+  }
+
+  a {
+    color: var(--primary-color, #007bff);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.pageButton {
+  background-color: var(--primary-color, #007bff);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-color-dark, #0069d9);
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.pageInfo {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.resultsCount {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
