@@ -17,7 +17,7 @@ const Profile = (props: ProfileProps) => {
   if (!user) {
     return (
       <div className={styles.profile}>
-        <Button icon='login'>
+        <Button variant="outline" icon='login'>
           <Link href={`/login`}>
             Aanmelden
           </Link>
@@ -30,7 +30,7 @@ const Profile = (props: ProfileProps) => {
     <div className={styles.profile}>
       <ProfilePicture profilePic={user.profilePic ?? undefined} />
       <h3>{user?.name}</h3>
-      <Button icon='logout' onClick={() => logout()}>uitloggen</Button>
+      <Button variant="outline" icon='logout' onClick={() => logout()}>uitloggen</Button>
     </div>
   )
 }

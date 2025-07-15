@@ -3,6 +3,7 @@ import { GiHamburgerMenu } from "react-icons/gi"
 
 import { Article } from '../../../schema/article'
 import { Content, Menu } from '..'
+import { SidebarTrigger } from '@/components/ui/sidebar'
 
 import styles from './default-layout.module.scss'
 
@@ -22,14 +23,16 @@ const DefaultLayout = ({ children, articles }: DefaultLayoutProps & { children: 
   return (
     <>
       <div className={styles.container}>
+        <SidebarTrigger className='fixed flex md:hidden' style={{ left: '1em', bottom: '1em' }} />
         <Menu articles={articles} />
         <Content>
           {children}
         </Content>
       </div>
-      <button type="button" className="rounded-circle btn btn-light position-fixed d-flex d-md-none" style={{ left: '1em', bottom: '1em' }} data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+      {/* <button type="button" className="rounded-circle btn btn-light position-fixed d-flex d-md-none" style={{ left: '1em', bottom: '1em' }} data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
         <GiHamburgerMenu className='text-secondary' />
-      </button >
+      </button > */}
+      {/* <SidebarTrigger className="d-flex d-md-none" /> */}
     </>
   )
 

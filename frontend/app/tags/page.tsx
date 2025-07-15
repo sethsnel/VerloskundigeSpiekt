@@ -21,7 +21,7 @@ export default async function TagsPage() {
         <h1>Alle Tags</h1>
         {untaggedArticles.length > 0 && (
           <Link href="/tags/untagged">
-            <Button className='btn btn-link'>
+            <Button variant="link">
               Artikelen zonder tags ({untaggedArticles.length})
             </Button>
           </Link>

@@ -78,7 +78,7 @@ const EditUser = ({ uid }: { uid: string }) => {
           <div className="row">
             <div className="col-sm-4"></div>
             <div className="col-sm-8">
-              <Button onClick={updateUserRole} icon='save'>Update rol</Button>
+              <Button variant="default" onClick={updateUserRole} icon='save'>Update rol</Button>
             </div>
           </div>
         </div> :

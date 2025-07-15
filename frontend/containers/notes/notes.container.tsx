@@ -122,10 +122,10 @@ const Notes = ({ article }: NotesProps) => {
         <div className={styles.buttons}>
           {newNote || !user?.hasContributeRights() ? undefined : (
             <>
-              <Button icon="add" onClick={() => setNewNote(initialNewNote)}>
+              <Button variant="outline" icon="add" onClick={() => setNewNote(initialNewNote)}>
                 onderwerp toevoegen
               </Button>
-              <Button icon="delete" onClick={onDeletePage}>
+              <Button variant="ghost" icon="delete" onClick={onDeletePage}>
                 verwijder pagina
               </Button>
             </>

@@ -86,13 +86,13 @@ const Accordion = (props: AccordionProps) => {
           <div className={`${styles.buttons} ${editMode && styles.edit}`}>
             {editMode ?
               (<>
-                <Button icon="save" onClick={() => onSave()}>opslaan</Button>
-                <Button icon="cancel" onClick={() => onCancel()}>annuleren</Button>
                 {
-                  props.onDelete ? <Button icon="delete" onClick={() => props.onDelete && props.onDelete()}>verwijderen</Button> : undefined
+                  props.onDelete ? <Button variant="ghost" icon="delete" onClick={() => props.onDelete && props.onDelete()}>verwijderen</Button> : undefined
                 }
+                <Button icon="save" onClick={() => onSave()}>opslaan</Button>
+                <Button variant="outline" icon="cancel" onClick={() => onCancel()}>annuleren</Button>
               </>) :
-              (<Button icon="edit" onClick={() => setEditMode(true)}>bewerken</Button>)
+              (<Button variant="outline" icon="edit" onClick={() => setEditMode(true)}>bewerken</Button>)
             }
           </div>
         ) : undefined

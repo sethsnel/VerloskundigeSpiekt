@@ -4,7 +4,9 @@ import dynamic from 'next/dynamic'
 const channel = process.env.NEXT_PUBLIC_CHANNEL || 'VerloskundigeSpiekt'
 
 const mdxMap: Record<string, any> = {
+  // @ts-ignore
   VerloskundigeSpiekt: dynamic(() => import('../content/verloskundigespiekt.mdx')),
+  // @ts-ignore
   Recepten: dynamic(() => import('../content/recepten.mdx')),
 }
 

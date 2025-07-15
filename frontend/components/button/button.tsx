@@ -7,16 +7,20 @@ import { GrAddCircle } from 'react-icons/gr'
 import { ImCancelCircle } from 'react-icons/im'
 import { MdDelete } from 'react-icons/md'
 import { AiOutlineLogout, AiOutlineLogin } from 'react-icons/ai'
+import { Button, buttonVariants } from "@/components/ui/button"
+import { VariantProps } from 'class-variance-authority'
 
-import styles from './button.module.scss'
+// import styles from './button.module.scss'
+
 
 interface ButtonProps extends HTMLProps<HTMLButtonElement> {
   children: ReactNode
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
   icon?: 'edit' | 'save' | 'add' | 'delete' | 'cancel' | 'logout' | 'login' | 'back' | 'forward'
   iconElement?: JSX.Element
 }
 
-const Button = ({ children, icon, iconElement, type, className, ...rest }: ButtonProps) => {
+const VsButton = ({ children, variant, icon, iconElement, type, className, size, ...rest }: ButtonProps) => {
   let iconType = undefined
   let warning = false
 
@@ -53,19 +57,22 @@ const Button = ({ children, icon, iconElement, type, className, ...rest }: Butto
     }
   }
 
-  let iconClassName = warning ? styles.iconWarningColor : styles.iconColor
-  if (className?.includes('btn-primary')) {
-    iconClassName += ` ${styles.iconPrimaryColor}`
-  }
+  // let iconClassName = warning ? styles.iconWarningColor : styles.iconColor
+  // if (className?.includes('btn-primary')) {
+  //   iconClassName += ` ${styles.iconPrimaryColor}`
+  // }
 
   return (
-    <button type="button" className={`${className?.includes('btn') ? '' : styles.button} ${warning && styles.warning} ${className}`} {...rest}>
-      <IconContext.Provider value={{ className: iconClassName }}>
+    <Button type="button" variant={variant} {...rest}>
+      {/* <IconContext.Provider value={{ className: iconClassName }}>
+        {iconType}
+      </IconContext.Provider> */}
+      <IconContext.Provider value={{ className: 'iconColor' }}>
         {iconType}
       </IconContext.Provider>
       {children}
-    </button>
+    </Button>
   )
 }
 
-export default Button
+export default VsButton

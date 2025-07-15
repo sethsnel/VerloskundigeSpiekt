@@ -100,6 +100,7 @@ export default function SearchPage() {
             {totalPages > 1 && (
               <div className={styles.pagination}>
                 <Button
+                  variant="outline"
                   onClick={() => handlePageChange(page - 1)}
                   disabled={page === 1}
                   icon='back'
@@ -110,6 +111,7 @@ export default function SearchPage() {
                   Pagina {page} van {totalPages}
                 </span>
                 <Button
+                  variant="outline"
                   onClick={() => handlePageChange(page + 1)}
                   disabled={page >= totalPages}
                   icon='forward'

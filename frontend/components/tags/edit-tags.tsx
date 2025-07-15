@@ -32,7 +32,7 @@ export default function EditTags({ articleTags, onTagAdd, onTagRemove, saveTags,
     { label: "Annuleer", type: 'cancel', onClick: closeModal }
   ]
   const actionButtons = actions.map(action => (
-    <Button key={action.label} icon={action.type as 'save' | 'cancel'} onClick={() => { action.onClick && action.onClick() }}>
+    <Button variant="outline" key={action.label} icon={action.type as 'save' | 'cancel'} onClick={() => { action.onClick && action.onClick() }}>
       {action.label}
     </Button>
   ))
@@ -72,7 +72,7 @@ export default function EditTags({ articleTags, onTagAdd, onTagRemove, saveTags,
       <div className="input-group g-col-6 g-start-4">
         <span className="input-group-text">Tag toevoegen:</span>
         <input className="form-control" list="allTags" id="tagList" placeholder="Naam van tag..." onChange={(e) => setNewTag(e.currentTarget.value)} />
-        <Button className="btn btn-primary" type="button" icon="add" onClick={onAddTagClick}>Voeg toe</Button>
+        <Button variant="default" className="btn btn-primary" type="button" icon="add" onClick={onAddTagClick}>Voeg toe</Button>
       </div>
     </div>
     <datalist id="allTags">

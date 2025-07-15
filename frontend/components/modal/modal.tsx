@@ -31,7 +31,7 @@ const ModalComponent = () => {
   let actionButtons: JSX.Element[] = []
   if (actions) {
     actionButtons = actions.map(action => (
-      <Button key={action.label} icon={action.type} disabled={action.disabled} onClick={() => { action.onClick && action.onClick() }}>
+      <Button variant="outline" key={action.label} icon={action.type} disabled={action.disabled} onClick={() => { action.onClick && action.onClick() }}>
         {action.label}
       </Button>
     ))

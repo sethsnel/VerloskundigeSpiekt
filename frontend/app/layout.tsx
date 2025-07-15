@@ -10,6 +10,7 @@ import fetchLayoutProps from '../lib/shared/fetchLayoutProps'
 import '../styles/_bootstrap.scss'
 import '../styles/_colors.scss'
 import '../styles/globals.scss'
+import './globals.css'
 
 const labels = getChannelLabels()
 export const dynamic = 'force-static'

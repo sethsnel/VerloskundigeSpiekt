@@ -42,6 +42,7 @@ export default function ReindexButton() {
   return (
     <div className="d-flex flex-column gap-3">
       <Button
+        variant="outline"
         onClick={handleReindex}
         disabled={isReindexing}
         icon={isReindexing ? undefined : 'edit'}

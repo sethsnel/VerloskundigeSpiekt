@@ -1,6 +1,4 @@
-'use client'
 import Link from 'next/link'
-import dynamic from "next/dynamic"
 
 import { Article } from '../../schema/article'
 import { Profile } from '../profile'
@@ -8,10 +6,7 @@ import { Profile } from '../profile'
 import styles from './menu.module.scss'
 import UserLinks from './userLinks'
 import SearchBar from './search-bar'
-
-const OffcanvasMenu = dynamic(() => import('./offcanvas-menu').then((mod) => mod.default), {
-  ssr: false,
-})
+import { AppSidebar } from '../sidebar/app-sidebar'
 
 interface MenuProps {
   articles: Article[]
@@ -53,12 +48,12 @@ const Menu = ({ articles }: MenuProps) => {
 
   return (
     <>
-      <nav className={`d-none d-md-block ${styles.nav}`}>
+      <nav className={`hidden md:flex ${styles.nav}`}>
         {menuBody}
       </nav>
-      <OffcanvasMenu>
+      <AppSidebar>
         {menuBody}
-      </OffcanvasMenu>
+      </AppSidebar>
     </>
   )
 }

@@ -16,12 +16,12 @@ const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
     <>
       {user?.hasAdminRights() ? (
         <Link href={`/admin/users`}>
-          <Button icon="edit">
+          <Button variant="outline" icon="edit">
             Gebruikersbeheer
           </Button>
         </Link>) : undefined}
       {!user?.hasContributeRights() ? undefined : (
-        <Button icon="add" onClick={() => addArticleMutation.mutate({ name: labels.initialArticleTitle, tagIds: [] })}>
+        <Button variant="outline" icon="add" onClick={() => addArticleMutation.mutate({ name: labels.initialArticleTitle, tagIds: [] })}>
           {labels.createNote}
         </Button>
       )}

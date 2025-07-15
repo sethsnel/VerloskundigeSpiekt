@@ -17,7 +17,7 @@ export default async function UntaggedArticlesPage() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>Artikelen zonder tags</h1>
         <Link href="/tags">
-          <Button className='btn btn-link' icon="back">Alle tags</Button>
+          <Button variant="link" icon="back">Alle tags</Button>
         </Link>
       </div>
 

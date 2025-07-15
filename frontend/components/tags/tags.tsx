@@ -6,6 +6,7 @@ import { Article, Tag, UpsertTag } from "../../schema/article"
 import { Button } from "../button"
 import { useUser } from '../../lib/auth/use-user'
 import styles from './tags.module.scss'
+import { Badge } from '@/components/ui/badge'
 
 interface EditableTagsProps {
   article: Article
@@ -35,13 +36,11 @@ export default function EditableTags({ article, tags }: EditableTagsProps) {
   const hasEditRights = user?.hasContributeRights?.() ?? false
 
   return (
-    <div className={styles.tagContainer}>
-      <div className='d-flex align-items-center m-1 fs-5 p-3 justify-content-center'>
+    <div className={`group ${styles.tagContainer}`}>
+      <div className='flex items-center justify-center gap-2 m-1 p-3'>
         {
           tagsConnected.map(tag => {
-            return <Link href={`/tags/${tag.id}`} key={tag.id} className={styles.tag}>
-              <span key={tag.id} className="badge rounded-pill text-bg-light">{tag.name}</span>
-            </Link>
+            return <Badge asChild key={tag.id} className='text-sm'><Link href={`/tags/${tag.id}`} key={tag.id}>{tag.name}</Link></Badge>
           })
         }
         {
@@ -51,10 +50,10 @@ export default function EditableTags({ article, tags }: EditableTagsProps) {
         }
       </div>
       {hasEditRights && (
-        <div className={styles.buttonContainer}>
-          <Button onClick={showTagsModal} icon='edit' className='m-3 btn btn-info'>edit tags</Button>
+        <div className="hidden group-hover:block absolute right-0 top-0 translate-y-1/4">
+          <Button variant="ghost" onClick={showTagsModal} icon='edit' className='m-3'>edit tags</Button>
         </div>
       )}
-    </div>
+    </ div>
   )
 }
