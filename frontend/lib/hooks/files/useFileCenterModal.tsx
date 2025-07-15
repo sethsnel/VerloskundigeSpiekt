@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { FileCenter, FileDto } from "../../../containers/fileCenter"
 import { ModalState } from "../../../containers/modalProvider"
@@ -8,10 +8,9 @@ import useFiles from "./useFiles"
 
 const useFileCenterModal = (folderPath: string, onFileSelect: (url: string) => void) => {
   const { showModal, updateModal, closeModal, isVisible: modalIsOpen } = useModal()
-  const { listFilesQuery, deleteFileMutation, uploadFileMutation } = useFiles(folderPath)
+  const { listFilesQuery, deleteFileMutation } = useFiles(folderPath)
   const [selectedFile, setSelectedFile] = useState<undefined | FileDto>(undefined)
   const isDeletingFileName = deleteFileMutation.isLoading ? deleteFileMutation.variables : undefined
-  const [previousState, setPreviousState] = useState({ files: listFilesQuery.data, folderPath, selectedFile, isDeletingFileName })
 
   //Reset selectedFile when modal is closed
   if (!modalIsOpen && selectedFile?.name) {
@@ -49,17 +48,11 @@ const useFileCenterModal = (folderPath: string, onFileSelect: (url: string) => v
   }
 
   //Update modal when props change
-  if (
-    folderPath !== previousState.folderPath ||
-    listFilesQuery.data?.length !== previousState.files?.length ||
-    selectedFile?.name !== previousState.selectedFile?.name ||
-    isDeletingFileName !== previousState.isDeletingFileName
-  ) {
-    setPreviousState({ files: listFilesQuery.data, folderPath, selectedFile, isDeletingFileName })
+  useEffect(() => {
     if (modalIsOpen) {
       updateModal(modalProps)
     }
-  }
+  }, [folderPath, listFilesQuery.data?.length, selectedFile?.name, isDeletingFileName, modalIsOpen])
 
   return { showFileCenterModal }
 }

@@ -132,14 +132,20 @@ export const updateImage = (editor: BaseEditor, url: string, width: number, heig
 export const isImageActive = (editor: BaseEditor) => {
   // @ts-ignore
   const [image] = Editor.nodes(editor, {
-    match: n =>
+    match: n => {
       // @ts-ignore
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image',
+      return !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image'
+    },
   })
   return !!image
 }
 
 export const imageHasPosition = (editor: BaseEditor, position?: ImagePosition) => {
+  // @ts-ignore
+  return imageGetPosition(editor) === position
+}
+
+export const imageGetPosition = (editor: BaseEditor) => {
   // @ts-ignore
   const [image] = Editor.nodes(editor, {
     match: n =>
@@ -147,7 +153,7 @@ export const imageHasPosition = (editor: BaseEditor, position?: ImagePosition) =
       !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'image',
   })
   // @ts-ignore
-  return !!image && image && image[0]?.position === position
+  return (!!image && image) ? image[0]?.position : undefined
 }
 
 export function isLinkNodeAtSelection(editor: BaseEditor, selection: BaseRange | null) {

@@ -3,7 +3,7 @@ import { useSlate } from 'slate-react'
 import { ArticleContext } from '../../containers/notes/notes.container'
 import { useFileCenterModal } from '../../lib/hooks/files'
 
-import { deleteImage, imageHasPosition, insertImage, isImageActive, updateImage } from '../../lib/slate/utils'
+import { imageGetPosition, imageHasPosition, insertImage, isImageActive, updateImage } from '../../lib/slate/utils'
 
 import { BaseButton } from './base-button'
 import { SlateIcon } from './icon.slate'
@@ -18,9 +18,10 @@ export const ImageButton = () => {
   const onSelectImage = async (url: string) => {
     const { width, height } = await getImageSize(url)
     if (active) {
-      deleteImage(editor)
+      updateImage(editor, url, width, height, imageGetPosition(editor))
+    } else {
+      insertImage(editor, url, width, height)
     }
-    insertImage(editor, url, width, height)
   }
   const { showFileCenterModal } = useFileCenterModal(`/articles/${articleId}`, onSelectImage)
 
