@@ -5,5 +5,5 @@
   "singleQuote": true,
   "bracketSameLine": true,
   "htmlWhitespaceSensitivity": "ignore",
-  "printWidth": 140
+  "printWidth": 130
 }

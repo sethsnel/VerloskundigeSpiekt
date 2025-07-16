@@ -3,7 +3,9 @@ import { nanoid } from 'nanoid'
 import { createContext, useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 
-import { Accordion } from '../../components/accordion'
+import { Accordion } from '@/components/ui/accordion'
+
+import { ArticleAccordion } from '@/components/accordion'
 import { Button } from '../../components/button'
 import { useUser } from '../../lib/auth/use-user'
 import { upsertNote, deleteNote, getArticle } from '../../lib/firestore/articles'
@@ -74,10 +76,10 @@ const Notes = ({ article }: NotesProps) => {
     },
   })
 
-  const accordions = Object.values(article?.notes ?? [])
+  const accordionItems = Object.values(article?.notes ?? [])
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((note) => (
-      <Accordion
+      <ArticleAccordion
         key={note.id}
         id={note.id}
         name={note.name}
@@ -95,8 +97,8 @@ const Notes = ({ article }: NotesProps) => {
     ))
 
   if (newNote) {
-    accordions.unshift(
-      <Accordion
+    accordionItems.unshift(
+      <ArticleAccordion
         key="new"
         name={newNote.name}
         text={newNote.text}
@@ -131,7 +133,9 @@ const Notes = ({ article }: NotesProps) => {
             </>
           )}
         </div>
-        <div className={styles.grid}>{accordions}</div>
+        <Accordion type="multiple" className="w-full">
+          {accordionItems}
+        </Accordion>
       </div>
     </ArticleContext.Provider>
   )
