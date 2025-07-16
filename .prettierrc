@@ -3,5 +3,7 @@
   "useTabs": false,
   "semi": false,
   "singleQuote": true,
-  "printWidth": 100
+  "bracketSameLine": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "printWidth": 140
 }

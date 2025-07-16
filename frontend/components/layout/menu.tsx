@@ -1,23 +1,27 @@
+'use client'
 import Link from 'next/link'
 
 import { Article } from '../../schema/article'
 import { Profile } from '../profile'
+import { AppSidebar } from '@/components/sidebar/app-sidebar'
+import { useSidebar } from '@/components/ui/sidebar'
 
 import styles from './menu.module.scss'
 import UserLinks from './userLinks'
 import SearchBar from './search-bar'
-import { AppSidebar } from '../sidebar/app-sidebar'
 
 interface MenuProps {
   articles: Article[]
 }
 
 const Menu = ({ articles }: MenuProps) => {
+  const { setOpenMobile } = useSidebar()
+
   const articleLinks = articles
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((article) => (
       <div key={article.id} className={styles.item}>
-        <Link href={`/artikel/${article.id}`} prefetch={false}>
+        <Link href={`/artikel/${article.id}`} prefetch={false} onClick={() => setOpenMobile(false)}>
           {article.name}
         </Link>
       </div>
@@ -29,31 +33,29 @@ const Menu = ({ articles }: MenuProps) => {
     devNotice = <h1>DEV</h1>
   }
 
-  const menuBody = <>
-    {devNotice}
-    <Profile />
-    <SearchBar />
-    <div className={styles.top}>
-      <div className={styles.main}>
-        <Link href={`/`}>
-          Home
-        </Link>
-        <Link href={`/tags`}>
-          Tags
-        </Link>
+  const menuBody = (
+    <>
+      {devNotice}
+      <Profile />
+      <SearchBar />
+      <div className={styles.top}>
+        <div className={styles.main}>
+          <Link href={`/`} onClick={() => setOpenMobile(false)}>
+            Home
+          </Link>
+          <Link href={`/tags`} onClick={() => setOpenMobile(false)}>
+            Tags
+          </Link>
+        </div>
       </div>
-    </div>
-    <UserLinks articleLinks={articleLinks} />
-  </>
+      <UserLinks articleLinks={articleLinks} />
+    </>
+  )
 
   return (
     <>
-      <nav className={`hidden md:flex ${styles.nav}`}>
-        {menuBody}
-      </nav>
-      <AppSidebar>
-        {menuBody}
-      </AppSidebar>
+      <nav className={`hidden md:flex ${styles.nav}`}>{menuBody}</nav>
+      <AppSidebar>{menuBody}</AppSidebar>
     </>
   )
 }
