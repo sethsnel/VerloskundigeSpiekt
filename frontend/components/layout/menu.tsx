@@ -46,6 +46,9 @@ const Menu = ({ articles }: MenuProps) => {
           <Link href={`/tags`} onClick={() => setOpenMobile(false)}>
             Tags
           </Link>
+          <Link href={`/gewicht`} onClick={() => setOpenMobile(false)}>
+            Gewicht
+          </Link>
         </div>
       </div>
       <UserLinks articleLinks={articleLinks} />
