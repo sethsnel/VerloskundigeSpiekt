@@ -19,11 +19,11 @@ export default function WeightFormPage() {
   return <div className="flex flex-col gap-3 justify-center items-center min-h-200">
     <div className="flex w-full max-w-lg justify-between items-center gap-2">
       <span>Geboorte gewicht (g)</span>
-      <Input className="max-w-xs text-right rounded-3xl" name="birth-weight" onChange={e => setBirthWeight(e.currentTarget.value)} />
+      <Input className="max-w-xs text-right rounded-3xl" type="number" name="birth-weight" onChange={e => setBirthWeight(e.currentTarget.value)} />
     </div>
     <div className="flex w-full max-w-lg justify-between items-center gap-2">
       <span>Huidig gewicht (g)</span>
-      <Input className="max-w-xs text-right rounded-3xl" name="current-weight" onChange={e => setCurrentWeight(e.currentTarget.value)} />
+      <Input className="max-w-xs text-right rounded-3xl" type="number" name="current-weight" onChange={e => setCurrentWeight(e.currentTarget.value)} />
     </div>
     <div className="flex w-full max-w-lg justify-between items-center gap-2">
       {weightChange && <div>Gewicht</div>}
