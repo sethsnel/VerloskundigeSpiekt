@@ -13,7 +13,7 @@ interface OffcanvasMenuProps {
 
 export function AppSidebar({ children }: OffcanvasMenuProps) {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader />
       <SidebarContent>
         <SidebarMenu>

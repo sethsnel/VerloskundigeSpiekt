@@ -4,6 +4,7 @@ type actionType = 'edit' | 'save' | 'add' | 'delete' | 'cancel'
 
 export type ModalState = {
   title?: string
+  description?: string
   modalBody?: ReactNode
   modalFooter?: ReactNode
   display?: boolean

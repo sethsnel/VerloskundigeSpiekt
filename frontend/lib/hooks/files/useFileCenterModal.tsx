@@ -7,7 +7,8 @@ import { useModal } from "../utilities"
 import useFiles from "./useFiles"
 
 const useFileCenterModal = (folderPath: string, onFileSelect: (url: string) => void) => {
-  const { showModal, updateModal, closeModal, isVisible: modalIsOpen } = useModal()
+  const modalKey = `file-center-modal-${folderPath}`
+  const { showModal, updateModal, closeModal, isVisible: modalIsOpen, activeModal } = useModal(modalKey)
   const { listFilesQuery, deleteFileMutation } = useFiles(folderPath)
   const [selectedFile, setSelectedFile] = useState<undefined | FileDto>(undefined)
   const isDeletingFileName = deleteFileMutation.isLoading ? deleteFileMutation.variables : undefined
@@ -37,22 +38,22 @@ const useFileCenterModal = (folderPath: string, onFileSelect: (url: string) => v
     title: "Kies bestand",
     modalBody: <FileCenter folderPath={folderPath} files={listFilesQuery.data} onFileSelect={setSelectedFile} onFileUploaded={onFileUploaded} isDeletingFileName={isDeletingFileName} />,
     actions: [
-      { label: "Kies", onClick: confirmFileSelection, type: 'save', disabled: !selectedFile },
+      { label: "Annuleer", type: 'cancel', onClick: closeModal },
       { label: "Verwijder", onClick: deleteSelectedFile, type: 'delete', disabled: !selectedFile },
-      { label: "Annuleer", type: 'cancel', onClick: closeModal }
+      { label: "Kies", onClick: confirmFileSelection, type: 'save', disabled: !selectedFile }
     ]
-  }
-
-  const showFileCenterModal = async () => {
-    showModal(modalProps)
   }
 
   //Update modal when props change
   useEffect(() => {
-    if (modalIsOpen) {
+    if (activeModal === modalKey) {
       updateModal(modalProps)
     }
   }, [folderPath, listFilesQuery.data?.length, selectedFile?.name, isDeletingFileName, modalIsOpen])
+
+  const showFileCenterModal = async () => {
+    showModal(modalProps)
+  }
 
   return { showFileCenterModal }
 }

@@ -23,8 +23,8 @@ const DefaultLayout = ({ children, articles }: DefaultLayoutProps & { children: 
   return (
     <>
       <div className={styles.container}>
-        <SidebarTrigger className='fixed flex md:hidden' style={{ left: '1em', bottom: '1em' }} />
         <Menu articles={articles} />
+        <SidebarTrigger />
         <Content>
           {children}
         </Content>

@@ -1,12 +1,17 @@
 import { useState } from "react"
 import { TiDelete } from "react-icons/ti"
 
+import { DialogFooter } from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+
 import { useUser } from '../../lib/auth/use-user'
 import { UpsertTag } from "../../schema/article"
 import useQueryTags from '../../lib/hooks/tags/useQueryTags'
 import { Button } from '../button'
 
 import styles from './edit-tags.module.scss'
+import { Input } from "../ui/input"
+
 
 interface EditTagsProps {
   articleTags: UpsertTag[]
@@ -24,15 +29,15 @@ export default function EditTags({ articleTags, onTagAdd, onTagRemove, saveTags,
   const [newTags, setNewTags] = useState(articleTags)
 
   if (!user?.hasContributeRights()) {
-    return <>Je hebt onvodloende rechten om tags te wijzigen.</>
+    return <>Je hebt onvoldoende rechten om tags te wijzigen.</>
   }
 
   const actions = [
-    { label: "Opslaan", type: 'save', onClick: () => saveTags(newTags) },
-    { label: "Annuleer", type: 'cancel', onClick: closeModal }
+    { label: "Annuleer", type: 'cancel', variant: 'outline' as 'outline' | 'default', onClick: closeModal },
+    { label: "Opslaan", type: 'save', variant: 'default' as 'outline' | 'default', onClick: () => saveTags(newTags) }
   ]
   const actionButtons = actions.map(action => (
-    <Button variant="outline" key={action.label} icon={action.type as 'save' | 'cancel'} onClick={() => { action.onClick && action.onClick() }}>
+    <Button variant={action.variant} key={action.label} icon={action.type as 'save' | 'cancel'} onClick={() => { action.onClick && action.onClick() }}>
       {action.label}
     </Button>
   ))
@@ -61,18 +66,22 @@ export default function EditTags({ articleTags, onTagAdd, onTagRemove, saveTags,
   }
 
   return <>
-    <div className='d-flex align-items-center justify-content-center gap-3 m-1'>
+    <div className='flex justify-center gap-3 m-1'>
       {
         newTags.map(tag => {
-          return <span key={tag.name} className={`badge rounded-pill text-bg-light ${styles.remove_tag}`} onClick={() => onTagRemoveClick(tag)}>{tag.name} <TiDelete /></span>
+          return <Badge key={tag.name} className="text-sm" onClick={() => onTagRemoveClick(tag)}>
+            {tag.name} <TiDelete />
+          </Badge>
         })
       }
     </div>
-    <div className="grid mt-5 mb-5">
-      <div className="input-group g-col-6 g-start-4">
-        <span className="input-group-text">Tag toevoegen:</span>
-        <input className="form-control" list="allTags" id="tagList" placeholder="Naam van tag..." onChange={(e) => setNewTag(e.currentTarget.value)} />
-        <Button variant="default" className="btn btn-primary" type="button" icon="add" onClick={onAddTagClick}>Voeg toe</Button>
+    <div className="mt-5 mb-5 items-center flex flex-col">
+      <div className="sm:w-md items-start">
+        <label htmlFor="tagList">Tag toevoegen:</label>
+      </div>
+      <div className="flex sm:w-md gap-1">
+        <Input list="allTags" id="tagList" placeholder="Naam van tag..." onChange={(e) => setNewTag(e.currentTarget.value)} />
+        <Button variant="default" type="button" icon="add" onClick={onAddTagClick}>Voeg toe</Button>
       </div>
     </div>
     <datalist id="allTags">
@@ -83,8 +92,8 @@ export default function EditTags({ articleTags, onTagAdd, onTagRemove, saveTags,
       }
       {newTag && newTag.length > 2 && !allTags.map(t => t.name.toLowerCase()).some(t => t.includes(newTag.toLowerCase())) && <option value={newTag} />}
     </datalist>
-    <div className="modal-footer">
+    <DialogFooter>
       {actionButtons}
-    </div>
+    </DialogFooter>
   </>
 }

@@ -1,10 +1,11 @@
 'use client'
 import Link from 'next/link'
+import { FaHome, FaTags, FaWeight } from 'react-icons/fa'
 
 import { Article } from '../../schema/article'
 import { Profile } from '../profile'
 import { AppSidebar } from '@/components/sidebar/app-sidebar'
-import { useSidebar } from '@/components/ui/sidebar'
+import { SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 
 import styles from './menu.module.scss'
 import UserLinks from './userLinks'
@@ -13,6 +14,24 @@ import SearchBar from './search-bar'
 interface MenuProps {
   articles: Article[]
 }
+
+const items = [
+  {
+    title: "Home",
+    url: "/",
+    icon: FaHome,
+  },
+  {
+    title: "Tags",
+    url: "/tags",
+    icon: FaTags,
+  },
+  {
+    title: "Gewicht",
+    url: "/gewicht",
+    icon: FaWeight,
+  }
+]
 
 const Menu = ({ articles }: MenuProps) => {
   const { setOpenMobile } = useSidebar()
@@ -38,26 +57,23 @@ const Menu = ({ articles }: MenuProps) => {
       {devNotice}
       <Profile />
       <SearchBar />
-      <div className={styles.top}>
-        <div className={styles.main}>
-          <Link href={`/`} onClick={() => setOpenMobile(false)}>
-            Home
-          </Link>
-          <Link href={`/tags`} onClick={() => setOpenMobile(false)}>
-            Tags
-          </Link>
-          <Link href={`/gewicht`} onClick={() => setOpenMobile(false)}>
-            Gewicht
-          </Link>
-        </div>
-      </div>
+      {items.map((item) => (
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton asChild>
+            <a href={item.url}>
+              <item.icon />
+              <span>{item.title}</span>
+            </a>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ))}
       <UserLinks articleLinks={articleLinks} />
     </>
   )
 
   return (
     <>
-      <nav className={`hidden md:flex ${styles.nav}`}>{menuBody}</nav>
+      {/* <nav className={`hidden md:flex ${styles.nav}`}>{menuBody}</nav> */}
       <AppSidebar>{menuBody}</AppSidebar>
     </>
   )

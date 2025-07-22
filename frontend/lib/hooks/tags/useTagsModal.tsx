@@ -7,7 +7,8 @@ import { useModal } from "../utilities"
 import { Tag, UpsertTag } from "../../../schema/article"
 
 const useTagsModal = (tags: Tag[], onSave: (newTags: UpsertTag[]) => void) => {
-  const { showModal, closeModal, isVisible: modalIsOpen } = useModal()
+  const modalKey = `tags-modal`
+  const { showModal, closeModal, isVisible: modalIsOpen } = useModal(modalKey)
   const [newTags, setNewTags] = useState<UpsertTag[]>(tags)
   const onTagAdd = (tag: UpsertTag) => {
     if (!newTags.map(nt => nt.name).includes(tag.name)) {
