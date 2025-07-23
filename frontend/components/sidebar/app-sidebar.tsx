@@ -16,9 +16,7 @@ export function AppSidebar({ children }: OffcanvasMenuProps) {
     <Sidebar collapsible="icon">
       <SidebarHeader />
       <SidebarContent>
-        <SidebarMenu>
-          {children}
-        </SidebarMenu>
+        {children}
       </SidebarContent>
       <SidebarFooter />
     </Sidebar>

@@ -1,37 +1,49 @@
 'use client'
 
 import Link from 'next/link'
+import { AiOutlineLogout } from 'react-icons/ai'
 
 import { useUser } from '../../lib/auth/use-user'
 import { Button } from '../button'
 
-import styles from './profile.module.scss'
 import ProfilePicture from './profile.picure'
+import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 
-interface ProfileProps {
-}
-
-const Profile = (props: ProfileProps) => {
+const Profile = () => {
   const { user, logout } = useUser()
+  const { state } = useSidebar()
+
+  const containerClassName = 'flex flex-col items-center mt-2'
 
   if (!user) {
     return (
-      <div className={styles.profile}>
+      <SidebarGroup className={containerClassName}>
         <Button variant="outline" icon='login'>
           <Link href={`/login`}>
             Aanmelden
           </Link>
         </Button>
-      </div >
+      </SidebarGroup>
     )
   }
 
   return (
-    <div className={styles.profile}>
-      <ProfilePicture profilePic={user.profilePic ?? undefined} />
-      <h3>{user?.name}</h3>
-      <Button variant="outline" icon='logout' onClick={() => logout()}>uitloggen</Button>
-    </div>
+    <>
+      <SidebarGroup className={containerClassName}>
+        <ProfilePicture profilePic={user.profilePic ?? undefined} />
+        {
+          (state !== 'collapsed') && <h3>{user?.name}</h3>
+        }
+      </SidebarGroup>
+      <SidebarMenu>
+        <SidebarMenuItem title='Uitloggen'>
+          <SidebarMenuButton onClick={() => logout()}>
+            <AiOutlineLogout />
+            <span>Uitloggen</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </>
   )
 }
 

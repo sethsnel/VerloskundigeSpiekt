@@ -3,9 +3,12 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { FiSearch } from 'react-icons/fi'
+import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar'
 import styles from './search-bar.module.scss'
 
+
 const SearchBar = () => {
+  const { state } = useSidebar()
   const [searchTerm, setSearchTerm] = useState('')
   const router = useRouter()
 
@@ -15,6 +18,15 @@ const SearchBar = () => {
 
     // Redirect to search results page with the search term as a query parameter
     router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`)
+  }
+
+  if (state === 'collapsed') {
+    return <SidebarMenuButton asChild>
+      <a href={'/zoeken'}>
+        <FiSearch />
+        <span>Zoeken</span>
+      </a>
+    </SidebarMenuButton>
   }
 
   return (

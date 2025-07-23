@@ -262,19 +262,20 @@ function SidebarTrigger({
 
   return (
     <Button
+      title="Toon/verberg menu"
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"
       size="icon"
-      className={cn("size-7", className)}
+      className={cn("size-8", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      <PanelLeftIcon />
-      <span className="sr-only">Toggle Sidebar</span>
+      <PanelLeftIcon className="size-6" />
+      <span className="sr-only">Toon/verberg menu</span>
     </Button>
   )
 }

@@ -1,5 +1,5 @@
-@use '_breakpoints.scss';
-@use '_mixins.scss';
+@use "_breakpoints.scss";
+@use "_mixins.scss";
 
 .main {
   width: 100%;
@@ -10,7 +10,8 @@
   background-color: var(--alternate-background-color);
 }
 
-.main p {
+.main p,
+.main h1 {
   max-width: 50rem;
   margin-left: auto;
   margin-right: auto;

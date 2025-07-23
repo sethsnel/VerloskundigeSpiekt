@@ -5,8 +5,6 @@ import { Article } from '../../../schema/article'
 import { Content, Menu } from '..'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
-import styles from './default-layout.module.scss'
-
 interface DefaultLayout {
   children: ReactNode
 }
@@ -22,9 +20,9 @@ const DefaultLayout = ({ children, articles }: DefaultLayoutProps & { children: 
 
   return (
     <>
-      <div className={styles.container}>
-        <Menu articles={articles} />
-        <SidebarTrigger />
+      <Menu articles={articles} />
+      <div className="sm:flex w-full bg-(--background-color)">
+        <SidebarTrigger className="fixed bottom-0 sm:static" />
         <Content>
           {children}
         </Content>
