@@ -16,7 +16,7 @@ import './globals.css'
 const labels = getChannelLabels()
 export const dynamic = 'force-static'
 
-let devNotice = undefined
+let devNotice = ''
 if (process.env.NODE_ENV === 'development') {
   devNotice = 'DEV - '
 }
