@@ -37,7 +37,7 @@ const Profile = () => {
       </SidebarGroup>
       <SidebarMenu>
         <SidebarMenuItem title='Uitloggen'>
-          <SidebarMenuButton onClick={() => logout()}>
+          <SidebarMenuButton onClick={() => logout()} className='max-w-9/10 m-auto' tooltip={'Uitloggen'}>
             <AiOutlineLogout />
             <span>Uitloggen</span>
           </SidebarMenuButton>

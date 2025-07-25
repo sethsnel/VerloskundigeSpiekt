@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation'
 import { FiSearch } from 'react-icons/fi'
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar'
 import styles from './search-bar.module.scss'
+import { Input } from '../ui/input'
 
-
-const SearchBar = () => {
+const SearchBar = ({ inSidebar = false, className, initialValue }: { inSidebar?: boolean, className?: string, initialValue?: string }) => {
   const { state } = useSidebar()
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState(initialValue || '')
   const router = useRouter()
 
   const handleSubmit = (e: FormEvent) => {
@@ -20,9 +20,9 @@ const SearchBar = () => {
     router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`)
   }
 
-  if (state === 'collapsed') {
-    return <SidebarMenuButton asChild>
-      <a href={'/zoeken'}>
+  if (state === 'collapsed' && inSidebar) {
+    return <SidebarMenuButton asChild className='max-w-9/10 m-auto' tooltip={'Zoeken'}>
+      <a href={'/search'}>
         <FiSearch />
         <span>Zoeken</span>
       </a>
@@ -30,14 +30,14 @@ const SearchBar = () => {
   }
 
   return (
-    <div className={styles.searchContainer}>
+    <div className={`${styles.searchContainer} ${className}`}>
       <form onSubmit={handleSubmit} className={styles.searchForm}>
-        <input
+        <Input
           type="text"
           placeholder="Zoeken..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className={styles.searchInput}
+          className={`rounded-3xl`}
           aria-label="Zoeken"
         />
         <button type="submit" className={styles.searchButton} aria-label="Zoeken">

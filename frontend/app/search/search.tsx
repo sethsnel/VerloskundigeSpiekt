@@ -9,6 +9,7 @@ import { Content } from '../../components/layout'
 import { SearchableNote } from '../../lib/search/search-schema'
 import { queryIndexApi } from '../../lib/services/search-api-client'
 import { Button } from '../../components/button'
+import SearchBar from '@/components/layout/search-bar'
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
@@ -64,8 +65,8 @@ export default function SearchPage() {
 
   return (
     <Content>
-      <div className={styles.searchResultsContainer}>
-        <h1>Zoekresultaten voor: &quot;{query}&quot;</h1>
+      <div className={`${styles.searchResultsContainer} w-full`}>
+        <SearchBar initialValue={query.trim()} />
 
         {loading ? (
           <div className={styles.loading}>Zoeken...</div>

@@ -1,6 +1,7 @@
 // import { cache } from 'next/cache'
 //import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { Metadata } from 'next/types'
+import { cookies } from 'next/headers'
 
 import { Providers } from '../components/Providers'
 import { DefaultLayout } from '../components/layout'
@@ -35,11 +36,13 @@ export const metadata: Metadata = {
 
 export default async function VerloskundigeSpiektApp({ children }: { children: React.ReactNode }) {
   const layoutProps = await fetchLayoutProps()
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
   return (
     <html lang="nl">
       <body>
-        <Providers>
+        <Providers sidebarOpen={defaultOpen}  >
           <DefaultLayout {...layoutProps}>{children}</DefaultLayout>
         </Providers>
       </body>

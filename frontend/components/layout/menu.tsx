@@ -12,13 +12,15 @@ import SearchBar from './search-bar'
 import { useUser } from '@/lib/auth/use-user'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronDown } from 'lucide-react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '../ui/dropdown-menu'
+import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 
 interface MenuProps {
   articles: Article[]
 }
 
 const Menu = ({ articles }: MenuProps) => {
-  const { setOpenMobile, state } = useSidebar()
+  const { setOpenMobile, state, isMobile } = useSidebar()
   const { user } = useUser()
 
   const items = [
@@ -64,27 +66,41 @@ const Menu = ({ articles }: MenuProps) => {
       ))
 
   const articleLinks = groupedArticle.entries().map(([letter, articles]) => {
-    return <Collapsible className="group/collapsible" key={letter}>
-      <SidebarGroup>
-        {
-          state == 'collapsed' ? (<CollapsibleTrigger>
+    if (state === 'collapsed' && !isMobile) {
+      return <DropdownMenu key={letter}>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuButton className='cursor-pointer text-md max-w-9/10 m-auto'>
             {letter}
-          </CollapsibleTrigger>) :
-            (<SidebarGroupLabel asChild>
-              <CollapsibleTrigger>
-                {letter}
-                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-              </CollapsibleTrigger>
-            </SidebarGroupLabel>)
-        }
-
-        <CollapsibleContent>
-          <SidebarMenuSub>
+          </SidebarMenuButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="right" align="start">
+          <DropdownMenuLabel>
+            {letter}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
             {getArticleMenuItems(articles)}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </SidebarGroup >
-    </Collapsible >
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    }
+    else {
+      return <Collapsible className="group/collapsible" key={letter}>
+        <SidebarGroup className='px-2'>
+          <SidebarGroupLabel asChild className='text-md'>
+            <CollapsibleTrigger>
+              {letter}
+              <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+            </CollapsibleTrigger>
+          </SidebarGroupLabel>
+          <CollapsibleContent>
+            <SidebarMenuSub>
+              {getArticleMenuItems(articles)}
+            </SidebarMenuSub>
+          </CollapsibleContent>
+        </SidebarGroup >
+      </Collapsible>
+    }
   })
 
 
@@ -109,11 +125,11 @@ const Menu = ({ articles }: MenuProps) => {
   const menuBody = (
     <>
       <Profile />
-      <SearchBar />
+      <SearchBar inSidebar={true} />
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild tooltip={item.title} className='max-w-9/10 m-auto'>
               <a href={item.url}>
                 <item.icon />
                 <span>{item.title}</span>

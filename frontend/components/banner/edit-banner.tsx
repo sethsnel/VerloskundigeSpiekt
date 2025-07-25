@@ -15,7 +15,7 @@ export default function EditBanner({ articleId, onSave, className }: EditBannerP
 
   return <>
     {!user?.hasContributeRights() ? undefined : (
-      <Button variant="outline" onClick={showFileCenterModal} icon='edit' className={`position-absolute bottom-0 end-0 m-3 ${className}`}>update banner</Button>
+      <Button variant="outline" onClick={showFileCenterModal} icon='edit' className={`absolute bottom-0 end-0 m-3 ${className}`}>update banner</Button>
     )}
   </>
 }

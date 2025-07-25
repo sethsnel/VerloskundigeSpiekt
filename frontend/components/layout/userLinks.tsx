@@ -35,8 +35,8 @@ const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
 
       {
         (state === 'collapsed') ? (
-          <SidebarSeparator />
-        ) : <h2>{labels.articlesTitle}</h2>
+          <SidebarSeparator className='m-0' />
+        ) : <h2 className='px-4'>{labels.articlesTitle}</h2>
       }
       {articleLinks}
     </>
