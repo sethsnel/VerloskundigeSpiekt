@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 
 import { Users } from '../../../containers/admin'
 import ReindexButton from '../../../components/admin/reindex'
+import IndexMenu from '../../../components/admin/index-menu'
 
 import styles from '../../../styles/Article.module.scss'
 
@@ -15,6 +16,10 @@ const UsersPage: NextPage = () => {
           <div className="card p-3">
             <h3>Zoekfunctie beheer</h3>
             <ReindexButton />
+          </div>
+          <div className="card p-3">
+            <h3>Menu beheer</h3>
+            <IndexMenu />
           </div>
 
           <div className="card p-3">

@@ -18,6 +18,10 @@ const upsertArticle = async (article: UpsertArticle) => {
       articleToUpdateRef,
       { ...updatedArticle }
     )
+    const menuItemRef = doc(firestoreDb, 'menu', 'articles')
+    await updateDoc(menuItemRef, {
+      [articleToUpdateRef.id]: updatedArticle.name
+    })
   }
   else {
     const newArticleRef = doc(collection(firestoreDb, 'articles'))

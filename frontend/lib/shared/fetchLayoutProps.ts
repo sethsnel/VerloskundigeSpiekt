@@ -1,14 +1,14 @@
 //import { unstable_cacheTag as cacheTag } from 'next/cache'
 
 import { DefaultLayoutProps } from "../../components/layout"
-import getArticles from "../firestore/articles/get-articles"
+import getMenuItems from "../firestore/articles/get-menu-items"
 
 export default async function fetchLayoutProps(): Promise<DefaultLayoutProps> {
   // 'use cache'
-  const articles = await getArticles()
+  const menuItems = await getMenuItems()
   // cacheTag('layout-props')
 
   return {
-    articles
+    menuItems
   }
 }

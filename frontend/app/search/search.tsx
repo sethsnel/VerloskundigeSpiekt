@@ -125,7 +125,7 @@ export default function SearchPage() {
             <div className={styles.resultsCount}>Totaal aantal resultaten: {total}</div>
           </>
         ) : (
-          <div className={styles.noResults}>Geen resultaten gevonden voor &quot;{query}&quot;</div>
+          <div className={styles.loading}>Geen resultaten gevonden {query && query !== '' && (`voor "${query}"`)}</div>
         )}
       </div>
     </Content>
