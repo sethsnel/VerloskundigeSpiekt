@@ -2,6 +2,7 @@
 //import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { Metadata } from 'next/types'
 import { cookies } from 'next/headers'
+import { Analytics } from "@vercel/analytics/next"
 
 import { Providers } from '../components/Providers'
 import { DefaultLayout } from '../components/layout'
@@ -45,6 +46,7 @@ export default async function VerloskundigeSpiektApp({ children }: { children: R
         <Providers sidebarOpen={defaultOpen}  >
           <DefaultLayout {...layoutProps}>{children}</DefaultLayout>
         </Providers>
+        <Analytics />
       </body>
     </html>
   )
