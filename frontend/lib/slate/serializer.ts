@@ -36,7 +36,7 @@ const serializeNode = (node: Descendant): string => {
       return `<li>${children}</li>`
     case 'link':
       // @ts-ignore
-      return `<a href="${escapeHtml(node.url)}" target="_blank" rel="external">${children}</a>`
+      return `<a class="underline text-link hover:text-link-hover visited:text-link-visited" href="${escapeHtml(node.url)}" target="_blank" rel="external">${children}</a>`
     case 'image':
       // @ts-ignore
       return `<img src="${escapeHtml(node.url)}" />`

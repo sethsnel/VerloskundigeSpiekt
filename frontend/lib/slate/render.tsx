@@ -48,11 +48,11 @@ const renderNode = (node: Descendant, index: number): JSX.Element | string => {
       // @ts-ignore
       if (node.subType === 'document') {
         // @ts-ignore
-        return <a key={index} href={node.url} target="_blank" rel="noreferrer">{children}</a>
+        return <a className='underline text-link hover:text-link-hover visited:text-link-visited' key={index} href={node.url} target="_blank" rel="noreferrer">{children}</a>
       }
       else {
         // @ts-ignore
-        return <a key={index} href={node.url} target="_blank" rel="noreferrer external">{children}</a>
+        return <a className='underline text-link hover:text-link-hover visited:text-link-visited' key={index} href={node.url} target="_blank" rel="noreferrer external">{children}</a>
       }
     case 'image':
       // @ts-ignore

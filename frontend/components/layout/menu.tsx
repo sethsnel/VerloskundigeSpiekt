@@ -69,7 +69,7 @@ const Menu = ({ articles }: MenuProps) => {
     if (state === 'collapsed' && !isMobile) {
       return <DropdownMenu key={letter}>
         <DropdownMenuTrigger asChild>
-          <SidebarMenuButton className='cursor-pointer text-md max-w-9/10 m-auto'>
+          <SidebarMenuButton className='cursor-pointer text-md max-w-9/10 m-auto min-h-8'>
             {letter}
           </SidebarMenuButton>
         </DropdownMenuTrigger>
@@ -138,7 +138,7 @@ const Menu = ({ articles }: MenuProps) => {
           </SidebarMenuItem>
         ))}
       </SidebarMenu>
-      <SidebarMenu>
+      <SidebarMenu className='overflow-auto'>
         <UserLinks articleLinks={articleLinks.toArray()} />
       </SidebarMenu>
     </>

@@ -1,15 +1,15 @@
-@use '_breakpoints.scss';
-@use '_mixins.scss';
+@use "_breakpoints.scss";
+@use "_mixins.scss";
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('/fonts/Montserrat-ExtraLight.otf');
-  src: url('/fonts/Montserrat-SemiBold.otf');
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat-ExtraLight.otf");
+  src: url("/fonts/Montserrat-SemiBold.otf");
 }
 
 @font-face {
-  font-family: 'Kollektif';
-  src: url('/fonts/Kollektif.ttf');
+  font-family: "Kollektif";
+  src: url("/fonts/Kollektif.ttf");
 }
 
 $font-size-root: 18px;
@@ -44,7 +44,7 @@ body {
 p,
 div {
   color: var(--text-color);
-  font-family: 'Montserrat-ExtraLight';
+  font-family: "Montserrat-ExtraLight";
 }
 
 button {
@@ -71,10 +71,15 @@ h3 span,
 h4,
 h5 {
   color: var(--header-color);
-  font-family: 'Kollektif';
+  font-family: "Kollektif";
 }
 
 h1,
 h1 span {
   color: var(--title-color);
+}
+
+a {
+  color: var(--color-link-hover);
+  text-decoration: underline;
 }

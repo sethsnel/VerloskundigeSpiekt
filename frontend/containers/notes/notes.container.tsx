@@ -27,6 +27,7 @@ const Notes = ({ article }: NotesProps) => {
   const queryClient = useQueryClient()
   const articleQueryKey = getArticleQueryKey(article.id || '')
   const { deleteArticleMutation } = useArticles()
+  const [openAccordionItems, setOpenAccordionItems] = useState<string[]>([])
 
   const onDeletePage = async () => {
     if (window.confirm('Weet je zeker dat je deze pagina wilt verwijderen?')) {
@@ -100,6 +101,7 @@ const Notes = ({ article }: NotesProps) => {
     accordionItems.unshift(
       <ArticleAccordion
         key="new"
+        id={newNote.id}
         name={newNote.name}
         text={newNote.text}
         json={newNote.json ?? []}
@@ -124,7 +126,7 @@ const Notes = ({ article }: NotesProps) => {
         <div className={styles.buttons}>
           {newNote || !user?.hasContributeRights() ? undefined : (
             <>
-              <Button variant="outline" icon="add" onClick={() => setNewNote(initialNewNote)}>
+              <Button variant="outline" icon="add" onClick={() => { setNewNote(initialNewNote); setOpenAccordionItems([...openAccordionItems, initialNewNote.id]) }}>
                 onderwerp toevoegen
               </Button>
               <Button variant="ghost" icon="delete" onClick={onDeletePage}>
@@ -133,7 +135,7 @@ const Notes = ({ article }: NotesProps) => {
             </>
           )}
         </div>
-        <Accordion type="multiple" className="w-full">
+        <Accordion className="w-full" type="multiple" value={openAccordionItems} onValueChange={setOpenAccordionItems}>
           {accordionItems}
         </Accordion>
       </div>

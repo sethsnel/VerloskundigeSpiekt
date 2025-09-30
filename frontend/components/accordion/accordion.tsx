@@ -11,7 +11,7 @@ import styles from './accordion.module.scss'
 import { Descendant } from 'slate'
 
 interface AccordionProps {
-  id?: string
+  id: string
   name: string
   text: string
   json: Descendant[]
@@ -43,7 +43,6 @@ const ArticleAccordion = (props: AccordionProps) => {
   const hashRoute = useHashRoute()
   // const [collapsed, setCollapsed] = useState<boolean>(!props.editMode && hashRoute != props.id)
   const [editMode, setEditMode] = useState<boolean>(props.editMode ?? false)
-
   const [name, setName] = useState<string>(props.name)
   const [content, setContent] = useState<{ text: string; json: Descendant[] }>({ text: props.text, json: props.json })
 
@@ -67,7 +66,7 @@ const ArticleAccordion = (props: AccordionProps) => {
   }
 
   return (
-    <AccordionItem value={props.name}>
+    <AccordionItem value={props.id}>
       <AccordionTrigger disabled={editMode}>
         <EditableHeader name={name} editMode={editMode} onChange={(newName: string) => setName(newName)} />
       </AccordionTrigger>

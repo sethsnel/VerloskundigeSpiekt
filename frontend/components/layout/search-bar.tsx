@@ -21,7 +21,7 @@ const SearchBar = ({ inSidebar = false, className, initialValue }: { inSidebar?:
   }
 
   if (state === 'collapsed' && inSidebar) {
-    return <SidebarMenuButton asChild className='max-w-9/10 m-auto' tooltip={'Zoeken'}>
+    return <SidebarMenuButton asChild className='max-w-9/10 ml-auto mr-auto' tooltip={'Zoeken'}>
       <a href={'/search'}>
         <FiSearch />
         <span>Zoeken</span>
