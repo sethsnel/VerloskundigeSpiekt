@@ -16,13 +16,13 @@ interface EditableHeaderProps {
 // }
 export const EditableHeader = ({ name, editMode, onChange }: EditableHeaderProps) => {
   return (
-    <h2 className="w-full text-left capitalize text-xl">
+    <h2 className="w-full text-left first-letter:uppercase text-xl">
       {editMode ? (
         <input
           type="text"
           value={name}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full outline-hidden capitalize border-b-1 hover:border-primary"
+          className="w-full outline-hidden first-letter:uppercase border-b-1 hover:border-primary"
         />
       ) : (
         name

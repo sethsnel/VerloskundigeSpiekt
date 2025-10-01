@@ -39,9 +39,9 @@ const renderNode = (node: Descendant, index: number): JSX.Element | string => {
     case 'heading-two':
       return <h2 key={index}>{children}</h2>
     case 'bulleted-list':
-      return <ul key={index}>{children}</ul>
+      return <ul key={index} className='list-inside list-disc'>{children}</ul>
     case 'numbered-list':
-      return <ol key={index}>{children}</ol>
+      return <ol key={index} className='list-inside list-decimal'>{children}</ol>
     case 'list-item':
       return <li key={index}>{children}</li>
     case 'link':

@@ -50,7 +50,14 @@ const Menu = ({ articles }: MenuProps) => {
   }
 
   const sortedArticle = articles.sort((a, b) => a.name.localeCompare(b.name))
-  const groupedArticle = Map.groupBy(sortedArticle, article => article.name[0].toUpperCase())
+  const groupedArticle = Map.groupBy(sortedArticle, article => {
+    if (isNaN(article.name[0] as unknown as number)) {
+      return article.name[0].toUpperCase()
+    }
+    else {
+      return '0'
+    }
+  })
 
   const getArticleMenuItems = (articles: Article[]) =>
     articles
@@ -69,13 +76,13 @@ const Menu = ({ articles }: MenuProps) => {
     if (state === 'collapsed' && !isMobile) {
       return <DropdownMenu key={letter}>
         <DropdownMenuTrigger asChild>
-          <SidebarMenuButton className='cursor-pointer text-md max-w-9/10 m-auto min-h-8'>
+          <SidebarMenuButton className='cursor-pointer justify-center text-md max-w-9/10 m-auto min-h-8'>
             {letter}
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start">
           <DropdownMenuLabel>
-            {letter}
+            {isNaN(letter as unknown as number) ? `${letter}` : '0-9'}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>

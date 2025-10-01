@@ -3,17 +3,17 @@ type Channel = keyof typeof channelLabels
 const channelLabels = {
   VerloskundigeSpiekt: {
     websiteTitle: 'Verloskundige Spiekt',
-    websiteDescription: 'Eerste hulp bij verloskudige kennis',
+    websiteDescription: 'Het ABC boekje voor verloskundigen',
     articlesTitle: 'Spiekbriefjes',
-    createNote: "maak spiekbriefje",
+    createNote: "Maak spiekbriefje",
     initialArticleTitle: "A - Nieuw spiekbriefje"
   },
   Recepten: {
     websiteTitle: 'Recepten Snel de Haas',
-    websiteDescription: 'Het online receptenboek',
+    websiteDescription: 'Het receptenboek',
     articlesTitle: 'Recepten',
-    createNote: "maak recept",
-    initialArticleTitle: "A - Nieuw Recept"
+    createNote: "Maak recept",
+    initialArticleTitle: "A - Nieuw recept"
   },
 }
 

@@ -31,11 +31,11 @@ export const Element = (props: any) => {
     case 'list-item':
       return <li {...attributes}>{children}</li>
     case 'bulleted-list':
-      return <ul {...attributes}>{children}</ul>
+      return <ul className='list-inside list-disc' {...attributes}>{children}</ul>
     case 'numbered-list':
-      return <ol {...attributes}>{children}</ol>
+      return <ol className='list-inside list-decimal' {...attributes}>{children}</ol>
     case 'link':
-      return <a href={element.url} {...attributes}>{children}</a>
+      return <a href={element.url} className='underline text-link hover:text-link-hover visited:text-link-visited' {...attributes}>{children}</a>
     case 'image':
       return <EditableImage {...props} />
   }

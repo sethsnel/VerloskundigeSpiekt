@@ -14,72 +14,74 @@
 
 $font-size-root: 18px;
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    Segoe UI,
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    Fira Sans,
-    Droid Sans,
-    Helvetica Neue,
-    sans-serif;
-  background: linear-gradient(0.25turn, var(--alternate-background-color) 50%, var(--background-color) 50%);
-}
+@layer base {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      Segoe UI,
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      Fira Sans,
+      Droid Sans,
+      Helvetica Neue,
+      sans-serif;
+    background: linear-gradient(0.25turn, var(--alternate-background-color) 50%, var(--background-color) 50%);
+  }
 
-// a {
-//   color: inherit;
-// }
+  // a {
+  //   color: inherit;
+  // }
 
-// * {
-//   box-sizing: border-box;
-// }
+  // * {
+  //   box-sizing: border-box;
+  // }
 
-p,
-div {
-  color: var(--text-color);
-  font-family: "Montserrat-ExtraLight";
-}
+  p,
+  div {
+    color: var(--text-color);
+    font-family: "Montserrat-ExtraLight";
+  }
 
-button {
-  // color: var(--text-color);
-  font-family: sans-serif;
-}
+  button {
+    // color: var(--text-color);
+    font-family: sans-serif;
+  }
 
-p {
-  font-size: $font-size-root;
-  line-height: 1.6;
-  margin-bottom: 1.4em;
-}
+  p {
+    font-size: $font-size-root;
+    line-height: 1.6;
+    margin-bottom: 1.4em;
+  }
 
-div {
-  font-size: $font-size-root;
-}
+  div {
+    font-size: $font-size-root;
+  }
 
-h1,
-h1 span,
-h2,
-h2 span,
-h3,
-h3 span,
-h4,
-h5 {
-  color: var(--header-color);
-  font-family: "Kollektif";
-}
+  h1,
+  h1 span,
+  h2,
+  h2 span,
+  h3,
+  h3 span,
+  h4,
+  h5 {
+    color: var(--header-color);
+    font-family: "Kollektif";
+  }
 
-h1,
-h1 span {
-  color: var(--title-color);
-}
+  h1,
+  h1 span {
+    color: var(--title-color);
+  }
 
-a {
-  color: var(--color-link-hover);
-  text-decoration: underline;
+  a {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
 }

@@ -29,9 +29,9 @@ const serializeNode = (node: Descendant): string => {
     case 'heading-two':
       return `<h2>${children}</h2>`
     case 'bulleted-list':
-      return `<ul>${children}</ul>`
+      return `<ul class="list-inside list-disc">${children}</ul>`
     case 'numbered-list':
-      return `<ol>${children}</ol>`
+      return `<ol class="list-inside list-decimal">${children}</ol>`
     case 'list-item':
       return `<li>${children}</li>`
     case 'link':
