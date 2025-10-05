@@ -21,13 +21,13 @@ const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
         <SidebarMenuItem>
           <SidebarMenuButton
             tooltip={labels.createNote}
-            className="bg-primary max-w-9/10 min-w-32 m-auto text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground duration-200 ease-linear"
+            className="bg-primary max-w-9/10 m-auto text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground duration-200 ease-linear"
             onClick={() => {
               addArticleMutation.mutate({ name: labels.initialArticleTitle, tagIds: [] })
               setOpenMobile(false)
             }}
           >
-            <GrAddCircle />
+            <GrAddCircle style={{ marginLeft: '-1px' }} />
             <span>{labels.createNote}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
