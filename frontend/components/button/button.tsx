@@ -63,7 +63,7 @@ const VsButton = ({ children, variant, icon, iconElement, type, className, size,
   // }
 
   return (
-    <Button type="button" variant={variant} {...rest}>
+    <Button type="button" variant={variant} className={className} {...rest}>
       {/* <IconContext.Provider value={{ className: iconClassName }}>
         {iconType}
       </IconContext.Provider> */}

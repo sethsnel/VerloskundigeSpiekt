@@ -1,5 +1,5 @@
-@use "../../styles/breakpoints.scss";
-@use "../../styles/mixins.scss";
+@use '../../styles/breakpoints.scss';
+@use '../../styles/mixins.scss';
 
 .menu {
   box-shadow:
@@ -62,9 +62,6 @@
   margin: 0 0 0 0.3em;
   font-size: 1.4em;
   cursor: default;
-
-  height: 100%;
-  line-height: 40px;
 
   border-left: 1px solid var(--title-color);
 }

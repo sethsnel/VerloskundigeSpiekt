@@ -14,12 +14,12 @@ export default function EditableBanner({ url, articleId, onSave }: EditableBanne
   if (url) {
     return <div className={`relative ${styles.banner}`} style={{ minHeight: '60vh' }}>
       <Image src={url} alt='Banner illustration of article' fill={true} style={{ objectFit: 'cover' }} loading="eager" priority={true} />
-      <EditBanner className={styles.buttonContainer} articleId={articleId} onSave={onSave} />
+      <EditBanner className={`${styles.buttonContainer} `} articleId={articleId} onSave={onSave} />
     </div>
   }
 
   // return <div className='position-relative w-100' style={{ minHeight: '3em' }}>
-  return <div className='relative'>
+  return <div className='relative min-w-full min-h-[3em]'>
     <EditBanner articleId={articleId} onSave={onSave} />
   </div>
 }

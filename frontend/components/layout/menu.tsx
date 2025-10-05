@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { FaHome, FaTags, FaWeight, FaUsers } from 'react-icons/fa'
+import { FaHome, FaTags, FaWeight, FaUsers, FaHospital, FaAddressBook, FaCopy } from 'react-icons/fa'
 
 import { Article } from '../../schema/article'
 import { Profile } from '../profile'
@@ -33,6 +33,21 @@ const Menu = ({ articles }: MenuProps) => {
       title: "Tags",
       url: "/tags",
       icon: FaTags,
+    },
+    {
+      title: "Contacten",
+      url: "/artikel/LesCnRcM5bwiNpM1oJdZ",
+      icon: FaAddressBook,
+    },
+    {
+      title: "Ziekenhuizen",
+      url: "/artikel/oQBToFdcvTSal8kV3tSv",
+      icon: FaHospital,
+    },
+    {
+      title: "Sjablonen",
+      url: "/artikel/k58Ds0rTFkFRnqLMwRvR",
+      icon: FaCopy,
     },
     {
       title: "Gewicht",

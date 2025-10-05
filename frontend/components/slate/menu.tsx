@@ -13,7 +13,7 @@ export const Menu = React.forwardRef(
       {...props}
       // @ts-ignore
       ref={ref}
-      className={styles.menu}
+      className={`${styles.menu} flex`}
     />
   )
 )

@@ -18,7 +18,7 @@ const EditablePageHeader = ({ title, onSave }: EditablePageHeaderProps) => {
   const [updatedTitle, setupdatedTitle] = useState<string>(title)
 
   if (editMode) {
-    return <h1 className={`${styles.title} ${styles.editable}`}>
+    return <h1 className={`${styles.title} ${styles.editable} leading-none`}>
       <input autoFocus type="text" value={updatedTitle} onChange={(e) => setupdatedTitle(e.target.value)} />
       <button onClick={() => { setEditMode(false); setupdatedTitle(title) }}>
         <Icon icon={ImCancelCircle} />
@@ -28,7 +28,7 @@ const EditablePageHeader = ({ title, onSave }: EditablePageHeaderProps) => {
       </button>
     </h1 >
   } else {
-    return <h1 className={`${styles.title} ${user?.hasContributeRights() && styles.editable}`} onClick={() => setEditMode(user?.hasContributeRights() ?? false)}>
+    return <h1 className={`${styles.title} leading-none ${user?.hasContributeRights() && styles.editable}`} onClick={() => setEditMode(user?.hasContributeRights() ?? false)}>
       <span>
         {title}
       </span>
