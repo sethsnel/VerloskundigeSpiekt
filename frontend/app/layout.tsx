@@ -1,7 +1,6 @@
 // import { cache } from 'next/cache'
 //import { unstable_cacheTag as cacheTag } from 'next/cache'
 import { Metadata } from 'next/types'
-import { cookies } from 'next/headers'
 import { Analytics } from "@vercel/analytics/next"
 
 import { Providers } from '../components/Providers'
@@ -24,7 +23,23 @@ if (process.env.NODE_ENV === 'development') {
 export const metadata: Metadata = {
   title: devNotice + labels.websiteTitle,
   description: labels.websiteDescription,
-  icons: ['/favicon.ico'],
+  manifest: '/site.webmanifest',
+  icons: {
+    icon: [{
+      sizes: '32x32',
+      url: '/favicon-32x32.png',
+      type: 'image/png',
+    }, {
+      sizes: '16x16',
+      url: '/favicon-16x16.png',
+      type: 'image/png',
+    }],
+    apple: {
+      url: '/apple-touch-icon.png',
+      sizes: '180x180',
+      type: 'image/png',
+    }
+  },
 }
 
 // const getLayoutData = cache(
@@ -37,13 +52,10 @@ export const metadata: Metadata = {
 
 export default async function VerloskundigeSpiektApp({ children }: { children: React.ReactNode }) {
   const layoutProps = await fetchLayoutProps()
-  const cookieStore = await cookies()
-  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
-
   return (
     <html lang="nl">
       <body>
-        <Providers sidebarOpen={defaultOpen}  >
+        <Providers>
           <DefaultLayout {...layoutProps}>{children}</DefaultLayout>
         </Providers>
         <Analytics />

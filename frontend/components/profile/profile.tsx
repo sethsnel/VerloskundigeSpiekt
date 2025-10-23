@@ -18,11 +18,11 @@ const Profile = () => {
   if (!user) {
     return (
       <SidebarGroup className={containerClassName}>
-        <Button variant="outline" icon='login'>
-          <Link href={`/login`}>
-            Aanmelden
-          </Link>
-        </Button>
+        <Link href={`/login`}>
+          <Button variant="outline" icon='login'>
+            {state !== 'collapsed' ? 'Aanmelden' : ''}
+          </Button>
+        </Link>
       </SidebarGroup>
     )
   }
