@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { FaHome, FaTags, FaWeight, FaUsers, FaHospital, FaAddressBook, FaCopy } from 'react-icons/fa'
 
 import { Article } from '../../schema/article'
@@ -160,6 +161,9 @@ const Menu = ({ articles }: MenuProps) => {
           </SidebarMenuItem>
         ))}
       </SidebarMenu>
+      <div className='flex flex-col items-center mt-2'>
+        <Image src={'/images/vs-logo.webp'} height={100} width={100} alt="logo verloskundige spiekt" className="rounded-full" loading="eager" priority={true} />
+      </div>
       <SidebarMenu className='overflow-auto'>
         <UserLinks articleLinks={articleLinks.toArray()} />
       </SidebarMenu>
