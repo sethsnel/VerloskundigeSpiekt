@@ -81,7 +81,7 @@ const Menu = ({ articles }: MenuProps) => {
       .map((article) => (
         <SidebarMenuItem key={article.id}>
           <SidebarMenuButton asChild>
-            <Link href={`/artikel/${article.id}`} prefetch={false} onClick={() => setOpenMobile(false)}>
+            <Link href={`/artikel/${article.id}`} onClick={() => setOpenMobile(false)}>
               <span>{article.name}</span>
             </Link>
           </SidebarMenuButton>
@@ -153,10 +153,10 @@ const Menu = ({ articles }: MenuProps) => {
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild tooltip={item.title} className='max-w-9/10 m-auto'>
-              <a href={item.url}>
+              <Link href={item.url} onClick={() => setOpenMobile(false)}>
                 <item.icon />
                 <span>{item.title}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}

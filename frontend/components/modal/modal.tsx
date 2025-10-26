@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useContext, useRef } from "react"
+import { useCallback, useContext, type JSX } from "react";
 
 import { ModalContext } from "../../containers/modalProvider"
 

@@ -1,5 +1,5 @@
 'use client'
-import { HTMLProps, ReactNode } from 'react'
+import { HTMLProps, ReactNode, type JSX } from 'react';
 import { IconContext } from 'react-icons'
 import { FiEdit3 } from 'react-icons/fi'
 import { IoSaveOutline, IoArrowBack, IoArrowForward } from 'react-icons/io5'

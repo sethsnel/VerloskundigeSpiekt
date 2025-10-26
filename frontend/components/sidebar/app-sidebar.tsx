@@ -7,6 +7,8 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar"
 
+import type { JSX } from "react";
+
 interface OffcanvasMenuProps {
   children: JSX.Element
 }

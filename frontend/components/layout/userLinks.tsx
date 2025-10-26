@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import Link from 'next/link'
 import { GrAddCircle } from 'react-icons/gr'
 
@@ -7,6 +7,8 @@ import { useArticles } from '../../lib/hooks/articles'
 import { getChannelLabels } from '../../content/labels'
 import { Button } from '../button'
 import { SidebarMenuButton, SidebarMenuItem, SidebarSeparator, useSidebar } from '@/components/ui/sidebar'
+
+import type { JSX } from "react";
 
 const labels = getChannelLabels()
 

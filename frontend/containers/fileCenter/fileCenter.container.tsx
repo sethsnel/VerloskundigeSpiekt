@@ -1,6 +1,6 @@
 import { FullMetadata } from 'firebase/storage'
 import Image from 'next/image'
-import { useRef, useState } from 'react'
+import { useRef, useState, type JSX } from 'react';
 import { BsCloudUpload, BsFileEarmarkPdf } from 'react-icons/bs'
 import { RiFileExcel2Line, RiFileWord2Line } from 'react-icons/ri'
 

@@ -3,6 +3,8 @@ import { Descendant, Text } from 'slate'
 
 import styles from '../../styles/Article.module.scss'
 
+import type { JSX } from "react";
+
 export const renderNodes = (nodes: Descendant[]): JSX.Element[] => {
   return nodes.map((n, i) => renderNode(n, i) as JSX.Element)
 }

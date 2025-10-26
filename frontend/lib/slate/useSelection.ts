@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from "react"
-import { BaseEditor, BaseRange } from "slate"
+import { useCallback, useRef, useState } from 'react'
+import { BaseEditor, BaseRange } from 'slate'
 
 export default function useSelection(editor: BaseEditor): [BaseRange | null, (newSelection: any) => void] {
   const [selection, setSelection] = useState(editor.selection)
@@ -12,7 +12,7 @@ export default function useSelection(editor: BaseEditor): [BaseRange | null, (ne
       previousSelection.current = selection
       setSelection(newSelection)
     },
-    [setSelection, selection]
+    [setSelection, selection],
   )
 
   //return [previousSelection.current, selection, setSelectionOptimized]
