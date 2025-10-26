@@ -5,9 +5,7 @@ import { firebaseAdmin } from '../../../../lib/server'
 import { validateAdminRequest } from '../../../../lib/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(
-  req: NextRequest
-) {
+export async function GET(req: NextRequest) {
   var requestResponseCode = await validateAdminRequest()
   if (requestResponseCode !== 200) {
     return NextResponse.json([], { status: requestResponseCode })
