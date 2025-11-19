@@ -5,9 +5,12 @@ import { getTags } from '../../lib/firestore/tags'
 import { getArticlesWithoutTags } from '../../lib/firestore/articles'
 import styles from './tags.module.scss'
 import { Button } from '../../components/button'
+import { getChannelLabels } from 'content/labels'
+
+const labels = getChannelLabels()
 
 export const metadata: Metadata = {
-  title: 'Alle Tags',
+  title: `${labels.websiteTitle} - tags`,
   description: 'Bladeren door alle tags en onderwerpen',
 }
 

@@ -3,9 +3,12 @@ import Link from 'next/link'
 
 import { getArticlesWithoutTags } from '../../../lib/firestore/articles'
 import { Button } from '../../../components/button'
+import { getChannelLabels } from 'content/labels'
+
+const labels = getChannelLabels()
 
 export const metadata: Metadata = {
-  title: 'Artikelen zonder tags',
+  title: `${labels.websiteTitle} - Artikelen`,
   description: 'Artikelen die nog niet gecategoriseerd zijn',
 }
 

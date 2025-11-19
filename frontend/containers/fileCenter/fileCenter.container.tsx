@@ -60,7 +60,7 @@ const FileCenter = ({ folderPath, files, isDeletingFileName, onFileSelect, onFil
             <BsCloudUpload size={100} color="white" className={styles.icon} />
             <span>Upload</span>
           </label>
-          <input type="file" id="profilePicture" accept="image/*,.pdf,.doc, .docx, .csv" ref={fileInput} onChange={uploadNewFile} />
+          <input type="file" id="profilePicture" accept="image/*,.pdf,.doc, .docx, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" ref={fileInput} onChange={uploadNewFile} />
         </div>
     )
   }

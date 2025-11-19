@@ -4,10 +4,13 @@ import { notFound } from 'next/navigation'
 import { getTags } from '../../../lib/firestore/tags'
 import { Button } from '../../../components/button'
 import styles from './tags.module.scss'
+import { getChannelLabels } from 'content/labels'
 
 type Props = {
   params: Promise<{ tagId: string }>
 }
+
+const labels = getChannelLabels()
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tagId } = await params
@@ -21,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `Tag: ${tag.name}`,
+    title: `${labels.websiteTitle} - ${tag.name}`,
     description: `Artikelen gelabeld met ${tag.name}`,
   }
 }

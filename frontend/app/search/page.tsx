@@ -2,10 +2,13 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 
 import SearchPage from "./search"
+import { getChannelLabels } from "content/labels"
 
 type SearchParamsType = {
   searchParams: Promise<{ q: string, pageSize?: number, skip?: number, top?: number, includeFacets?: boolean }>
 }
+
+const labels = getChannelLabels()
 
 export const dynamic = 'force-dynamic'
 
@@ -13,7 +16,7 @@ export async function generateMetadata({ searchParams }: SearchParamsType): Prom
   const { q } = await searchParams
 
   return {
-    title: q
+    title: `${labels.websiteTitle} - ${q}`
   }
 }
 
