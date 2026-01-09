@@ -1,3 +1,8 @@
 export const getArticleQueryKey = (articleId: string) => ['article', articleId]
 export const getTagQueryKey = (tagId?: string) => ['tag', tagId]
 export const getTagsQueryKey = (tagIds?: string[]) => ['tags', ...tagIds || []]
+export const getPraktijkenQueryKey = (userId?: string) => ['praktijken', userId]
+export const getActivePraktijkQueryKey = (userId?: string) => ['praktijk', 'active', userId]
+export const getPraktijkMembersQueryKey = (praktijkId?: string) => ['praktijk', praktijkId, 'members']
+export const getPraktijkInvitesQueryKey = (praktijkId?: string) => ['praktijk', praktijkId, 'invites']
+export const getPraktijkAddressesQueryKey = (praktijkId?: string) => ['praktijk', praktijkId, 'addresses']
