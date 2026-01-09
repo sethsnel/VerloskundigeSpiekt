@@ -32,3 +32,20 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Praktijken feature
+
+The Praktijk experience is built around a shared Firestore data model and React Query hooks.
+
+### Data model (Firestore)
+
+- `praktijken/{praktijkId}`: praktijk metadata and address.
+- `praktijken/{praktijkId}/members/{memberId}`: praktijk members with role (`admin` or `user`).
+- `praktijken/{praktijkId}/invites/{inviteId}`: pending invitations by email.
+- `praktijken/{praktijkId}/adressenboekje/{entryId}`: shared address book entries.
+- `userSettings/{userId}`: stores the active `praktijkId` for each user.
+
+### Pages
+
+- `/praktijk`: overzicht, praktijkdetails, ledenbeheer en uitnodigingen.
+- `/praktijk/adressenboekje`: gedeeld adressenboekje voor praktijkleden.
