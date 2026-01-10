@@ -85,7 +85,7 @@ export const getUserPraktijken = async (userId: string): Promise<PraktijkWithRol
   const memberSnapshot = await getDocs(memberQuery)
 
   const praktijken = await Promise.all(
-    memberSnapshot.docs.map(async (memberDoc) => {
+    memberSnapshot.docs.map(async (memberDoc): Promise<PraktijkWithRole | null> => {
       const praktijkRef = memberDoc.ref.parent.parent
       if (!praktijkRef) return null
 
@@ -106,7 +106,7 @@ export const getUserPraktijken = async (userId: string): Promise<PraktijkWithRol
     }),
   )
 
-  return praktijken.filter((praktijk): praktijk is PraktijkWithRole => Boolean(praktijk))
+  return praktijken.filter((praktijk): praktijk is PraktijkWithRole => praktijk !== null)
 }
 
 export const getPraktijk = async (praktijkId: string): Promise<Praktijk | null> => {
@@ -199,7 +199,7 @@ export const getPendingInvites = async (email: string): Promise<PendingInvite[]>
   const inviteSnapshot = await getDocs(inviteQuery)
 
   const invites = await Promise.all(
-    inviteSnapshot.docs.map(async (inviteDoc) => {
+    inviteSnapshot.docs.map(async (inviteDoc): Promise<PendingInvite | null> => {
       const praktijkRef = inviteDoc.ref.parent.parent
       if (!praktijkRef) return null
 
@@ -221,7 +221,7 @@ export const getPendingInvites = async (email: string): Promise<PendingInvite[]>
     }),
   )
 
-  return invites.filter((invite): invite is PendingInvite => Boolean(invite))
+  return invites.filter((invite): invite is PendingInvite => invite !== null)
 }
 
 export const acceptInvite = async ({
