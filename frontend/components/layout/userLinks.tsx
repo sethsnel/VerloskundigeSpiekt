@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import Link from 'next/link'
 import { GrAddCircle } from 'react-icons/gr'
 
@@ -8,7 +8,7 @@ import { getChannelLabels } from '../../content/labels'
 import { Button } from '../button'
 import { SidebarMenuButton, SidebarMenuItem, SidebarSeparator, useSidebar } from '@/components/ui/sidebar'
 
-import type { JSX } from "react";
+import type { JSX } from "react"
 
 const labels = getChannelLabels()
 
@@ -38,7 +38,7 @@ const UserLinks = ({ articleLinks }: { articleLinks: JSX.Element[] }) => {
       {
         (state === 'collapsed') ? (
           <SidebarSeparator className='m-0' />
-        ) : <h2 className='px-4'>{labels.articlesTitle}</h2>
+        ) : <h2 className='px-4 text-center'>{labels.articlesTitle}</h2>
       }
       {articleLinks}
     </>
