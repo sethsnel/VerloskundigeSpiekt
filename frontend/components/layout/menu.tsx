@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { FaHome, FaTags, FaWeight, FaUsers, FaHospital, FaAddressBook, FaCopy } from 'react-icons/fa'
+import { FaHome, FaTags, FaWeight, FaUsers, FaHospital, FaAddressBook, FaCopy, FaUserMd } from 'react-icons/fa'
 
 import { Article } from '../../schema/article'
 import { Profile } from '../profile'
@@ -29,6 +29,16 @@ const Menu = ({ articles }: MenuProps) => {
       title: "Home",
       url: "/",
       icon: FaHome,
+    },
+    {
+      title: "Praktijk",
+      url: "/praktijk",
+      icon: FaUserMd,
+    },
+    {
+      title: "Adressenboekje",
+      url: "/praktijk/adressenboekje",
+      icon: FaAddressBook,
     },
     {
       title: "Tags",
