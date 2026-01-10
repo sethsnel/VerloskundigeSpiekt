@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { FaHome, FaTags, FaWeight, FaUsers, FaHospital, FaAddressBook, FaCopy, FaBars, FaTimes } from "react-icons/fa"
+import { FaHome, FaTags, FaWeight, FaUsers, FaHospital, FaAddressBook, FaCopy, FaBars, FaTimes, FaFile, FaHandSparkles } from "react-icons/fa"
 
 import { useUser } from "@/lib/auth/use-user"
 import { cn } from "@/lib/ui/utils"
@@ -61,6 +61,16 @@ const HorizontalMenu = () => {
       icon: FaCopy,
     },
     {
+      title: "Assistente Spiekt",
+      url: "/artikel/nM8TUM2RTKcmbak9cZBr",
+      icon: FaHandSparkles,
+    },
+    {
+      title: "Documenten",
+      url: "/artikel/IwA2UVz80Qw49qfhepLm",
+      icon: FaFile,
+    },
+    {
       title: "Gewicht",
       url: "/gewicht",
       icon: FaWeight,
@@ -110,7 +120,7 @@ const HorizontalMenu = () => {
                         key={item.title}
                         asChild
                         className={cn(
-                        "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold text-[var(--header-color)] transition-colors hover:bg-accent hover:text-accent-foreground md:text-base"
+                          "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold text-[var(--header-color)] transition-colors hover:bg-accent hover:text-accent-foreground md:text-base"
                         )}
                       >
                         <Link href={item.url}>
@@ -133,7 +143,7 @@ const HorizontalMenu = () => {
                         key={item.title}
                         asChild
                         className={cn(
-                        "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold text-[var(--header-color)] transition-colors hover:bg-accent hover:text-accent-foreground md:text-base"
+                          "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold text-[var(--header-color)] transition-colors hover:bg-accent hover:text-accent-foreground md:text-base"
                         )}
                       >
                         <Link href={item.url}>

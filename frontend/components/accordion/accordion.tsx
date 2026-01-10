@@ -4,6 +4,8 @@ import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/
 import { Button } from '../button'
 import { EditableText } from './editable-text'
 import { renderNodes } from '../../lib/slate/render'
+import { FaRegClipboard } from 'react-icons/fa'
+import { useCopyToClipboard } from '@/lib/hooks/utilities/useCopyToClipboard'
 
 import { EditableHeader } from './editable-header'
 
@@ -45,6 +47,7 @@ const ArticleAccordion = (props: AccordionProps) => {
   const [editMode, setEditMode] = useState<boolean>(props.editMode ?? false)
   const [name, setName] = useState<string>(props.name)
   const [content, setContent] = useState<{ text: string; json: Descendant[] }>({ text: props.text, json: props.json })
+  const { copied, contentRef, handleCopy } = useCopyToClipboard()
 
   //let accordionClasses = styles.accordion
   // if (collapsed) {
@@ -71,7 +74,17 @@ const ArticleAccordion = (props: AccordionProps) => {
         <EditableHeader name={name} editMode={editMode} onChange={(newName: string) => setName(newName)} />
       </AccordionTrigger>
       <AccordionContent className="group relative">
-        <div className={`${styles.content} ${props.modificationEnabled && styles.edit}`}>
+        <div className="absolute right-3 top-3 flex">
+          <Button
+            variant="outline"
+            iconElement={<FaRegClipboard />}
+            onClick={() => handleCopy({ text: content.text })}
+            disabled={editMode || !content.text?.trim()}
+          >
+            {copied ? 'gekopieerd' : 'kopieer'}
+          </Button>
+        </div>
+        <div ref={contentRef} className={`${styles.content} ${props.modificationEnabled && styles.edit}`}>
           {editMode ? (
             <EditableText
               text={content.text}
