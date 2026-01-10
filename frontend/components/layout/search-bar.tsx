@@ -7,7 +7,17 @@ import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar'
 import styles from './search-bar.module.scss'
 import { Input } from '../ui/input'
 
-const SearchBar = ({ inSidebar = false, className, initialValue }: { inSidebar?: boolean, className?: string, initialValue?: string }) => {
+const SearchBar = ({
+  inSidebar = false,
+  compact = false,
+  className,
+  initialValue,
+}: {
+  inSidebar?: boolean
+  compact?: boolean
+  className?: string
+  initialValue?: string
+}) => {
   const { state } = useSidebar()
   const [searchTerm, setSearchTerm] = useState(initialValue || '')
   const router = useRouter()
@@ -30,7 +40,7 @@ const SearchBar = ({ inSidebar = false, className, initialValue }: { inSidebar?:
   }
 
   return (
-    <div className={`${styles.searchContainer} ${className}`}>
+    <div className={`${styles.searchContainer} ${compact ? styles.compact : ''} ${className ?? ''}`}>
       <form onSubmit={handleSubmit} className={styles.searchForm}>
         <Input
           type="text"

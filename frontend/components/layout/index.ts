@@ -1,4 +1,5 @@
 export { default as Menu } from './menu'
+export { default as HorizontalMenu } from './horizontal-menu'
 export { default as Footer } from './footer'
 export { default as Content } from './content'
 export { DefaultLayout } from './default'
