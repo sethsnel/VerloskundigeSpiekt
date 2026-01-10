@@ -66,8 +66,6 @@ export default function SearchPage() {
   return (
     <Content>
       <div className={`${styles.searchResultsContainer} w-full`}>
-        <SearchBar initialValue={query.trim()} />
-
         {loading ? (
           <div className={styles.loading}>Zoeken...</div>
         ) : error ? (

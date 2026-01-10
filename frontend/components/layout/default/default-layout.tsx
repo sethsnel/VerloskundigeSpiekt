@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Content, Menu } from '..'
+import { Content, HorizontalMenu, Menu } from '..'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
 interface DefaultLayout {
@@ -27,6 +27,7 @@ const DefaultLayout = ({ children, menuItems: articles }: DefaultLayoutProps & {
       <div className="sm:flex w-full bg-(--background-color)">
         <SidebarTrigger className="fixed bottom-0 sm:static" />
         <Content>
+          <HorizontalMenu />
           {children}
         </Content>
       </div>

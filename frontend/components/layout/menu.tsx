@@ -1,19 +1,15 @@
 'use client'
 import Link from 'next/link'
-import Image from 'next/image'
-import { FaHome, FaTags, FaWeight, FaUsers, FaHospital, FaAddressBook, FaCopy } from 'react-icons/fa'
 
 import { Article } from '../../schema/article'
 import { Profile } from '../profile'
 import { AppSidebar } from '@/components/sidebar/app-sidebar'
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, useSidebar } from '@/components/ui/sidebar'
 
 import UserLinks from './userLinks'
-import SearchBar from './search-bar'
-import { useUser } from '@/lib/auth/use-user'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronDown } from 'lucide-react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '../ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuSeparator } from '../ui/dropdown-menu'
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 
 interface MenuProps {
@@ -22,48 +18,6 @@ interface MenuProps {
 
 const Menu = ({ articles }: MenuProps) => {
   const { setOpenMobile, state, isMobile } = useSidebar()
-  const { user } = useUser()
-
-  const items = [
-    {
-      title: "Home",
-      url: "/",
-      icon: FaHome,
-    },
-    {
-      title: "Tags",
-      url: "/tags",
-      icon: FaTags,
-    },
-    {
-      title: "Contacten",
-      url: "/artikel/LesCnRcM5bwiNpM1oJdZ",
-      icon: FaAddressBook,
-    },
-    {
-      title: "Ziekenhuizen",
-      url: "/artikel/oQBToFdcvTSal8kV3tSv",
-      icon: FaHospital,
-    },
-    {
-      title: "Sjablonen",
-      url: "/artikel/k58Ds0rTFkFRnqLMwRvR",
-      icon: FaCopy,
-    },
-    {
-      title: "Gewicht",
-      url: "/gewicht",
-      icon: FaWeight,
-    }
-  ]
-
-  if (user?.hasAdminRights()) {
-    items.push({
-      title: "Gebruikersbeheer",
-      url: "/admin/users",
-      icon: FaUsers
-    })
-  }
 
   const sortedArticle = articles.sort((a, b) => a.name.localeCompare(b.name))
   const groupedArticle = Map.groupBy(sortedArticle, article => {
@@ -148,22 +102,6 @@ const Menu = ({ articles }: MenuProps) => {
   const menuBody = (
     <>
       <Profile />
-      <SearchBar inSidebar={true} />
-      <SidebarMenu>
-        {items.map((item) => (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild tooltip={item.title} className='max-w-9/10 m-auto'>
-              <Link href={item.url} onClick={() => setOpenMobile(false)}>
-                <item.icon />
-                <span>{item.title}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
-      </SidebarMenu>
-      <div className='flex flex-col items-center mt-2'>
-        <Image src={'/images/vs-logo.webp'} height={100} width={100} alt="logo verloskundige spiekt" className="rounded-full" loading="eager" priority={true} />
-      </div>
       <SidebarMenu className='overflow-auto'>
         <UserLinks articleLinks={articleLinks.toArray()} />
       </SidebarMenu>
