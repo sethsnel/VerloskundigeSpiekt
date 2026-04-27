@@ -1,5 +1,5 @@
 import { auth } from 'firebase-admin'
-import { ListUsersResult } from 'firebase-admin/lib/auth/base-auth'
+import type { ListUsersResult } from 'firebase-admin/auth'
 
 import { firebaseAdmin } from '../../../../lib/server'
 import { validateAdminRequest } from '../../../../lib/server'
