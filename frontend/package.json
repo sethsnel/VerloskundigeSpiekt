@@ -2,7 +2,7 @@
   "name": "frontend",
   "private": true,
   "engines": {
-    "node": "~22.24.x"
+    "node": "~24.x"
   },
   "scripts": {
     "dev": "next dev",
