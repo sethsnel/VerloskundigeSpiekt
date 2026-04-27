@@ -11,6 +11,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { ChevronDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuSeparator } from '../ui/dropdown-menu'
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import { PracticeSwitcher } from '../practices'
 
 interface MenuProps {
   articles: Article[]
@@ -102,6 +103,7 @@ const Menu = ({ articles }: MenuProps) => {
   const menuBody = (
     <>
       <Profile />
+      <PracticeSwitcher />
       <SidebarMenu className='overflow-auto'>
         <UserLinks articleLinks={articleLinks.toArray()} />
       </SidebarMenu>

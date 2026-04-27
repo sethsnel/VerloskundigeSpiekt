@@ -1,5 +1,8 @@
 # AGENTS.md
 
+## Envirnment and tools
+You are on a windows environment and can use these tools and/or runtimes: c#/.net, js/node, PowerShell.
+
 ## Architecture analysis (current frontend)
 
 The frontend lives in `frontend/` and is a **Next.js App Router** application. The top-level layout in `frontend/app/layout.tsx` wires global providers, shared layout, and Vercel analytics, and loads global styles (SCSS + Tailwind). The app is currently configured for **static rendering** (`dynamic = 'force-static'`) and pulls navigation data via a shared server-side helper (`frontend/lib/shared/fetchLayoutProps.ts`).
@@ -157,4 +160,3 @@ Search for existing patterns in these files first:
 - `frontend/components/ui/*`
 - `frontend/lib/shared/fetchLayoutProps.ts`
 - `frontend/app/api/*/route.ts`
-

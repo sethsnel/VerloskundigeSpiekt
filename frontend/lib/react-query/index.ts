@@ -1,3 +1,8 @@
 export const getArticleQueryKey = (articleId: string) => ['article', articleId]
 export const getTagQueryKey = (tagId?: string) => ['tag', tagId]
 export const getTagsQueryKey = (tagIds?: string[]) => ['tags', ...tagIds || []]
+export const getPracticesQueryKey = (userId?: string) => ['practices', userId]
+export const getActivePracticeQueryKey = (userId?: string) => ['active-practice', userId]
+export const getPracticeMembersQueryKey = (practiceId?: string) => ['practice-members', practiceId]
+export const getPracticeInvitesQueryKey = (email?: string | null) => ['practice-invites', email]
+export const getPracticeArticleQueryKey = (practiceId?: string, slug?: string) => ['practice-article', practiceId, slug]
