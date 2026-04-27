@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 import {
   createPracticeInvite,
+  getPracticeInvites,
   getPracticeMembers,
   removePracticeMember,
   transferPracticeOwnership,
@@ -15,18 +16,25 @@ import { TransferPracticeOwnershipInput } from '../../firestore/practices/transf
 import { UpdatePracticeMemberRoleInput } from '../../firestore/practices/update-practice-member-role'
 import {
   getActivePracticeQueryKey,
+  getPracticeInvitesForPracticeQueryKey,
   getPracticeInvitesQueryKey,
   getPracticeMembersQueryKey,
   getPracticesQueryKey,
 } from '../../react-query'
 
-const usePracticeMembers = (practiceId?: string, userId?: string) => {
+const usePracticeMembers = (practiceId?: string, userId?: string, canViewInvites = false) => {
   const queryClient = useQueryClient()
 
   const membersQuery = useQuery(
     getPracticeMembersQueryKey(practiceId),
     () => getPracticeMembers(practiceId as string),
     { enabled: Boolean(practiceId) }
+  )
+
+  const invitesQuery = useQuery(
+    getPracticeInvitesForPracticeQueryKey(practiceId),
+    () => getPracticeInvites(practiceId as string),
+    { enabled: Boolean(practiceId && canViewInvites) }
   )
 
   const createInviteMutation = useMutation(
@@ -38,6 +46,7 @@ const usePracticeMembers = (practiceId?: string, userId?: string) => {
     {
       onSuccess: (invite) => {
         queryClient.invalidateQueries(getPracticeInvitesQueryKey(invite.email))
+        queryClient.invalidateQueries(getPracticeInvitesForPracticeQueryKey(practiceId))
       },
     }
   )
@@ -84,6 +93,7 @@ const usePracticeMembers = (practiceId?: string, userId?: string) => {
 
   return {
     membersQuery,
+    invitesQuery,
     createInviteMutation,
     removeMemberMutation,
     transferOwnershipMutation,

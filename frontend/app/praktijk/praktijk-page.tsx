@@ -1,7 +1,8 @@
 'use client'
 
+import { Copy, X } from 'lucide-react'
 import Link from 'next/link'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 
 import { PracticeHeader, PracticeLinks } from '../../components/practices'
 import { Button } from '../../components/ui/button'
@@ -11,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useUser } from '../../lib/auth/use-user'
 import { usePracticeInvites, usePracticeMembers, usePractices } from '../../lib/hooks/practices'
 import { PracticeAddress, PracticeMemberRole } from '../../schema/practice'
+
+const practiceInviteUrl = 'https://verloskundigespiekt.nl/praktijk'
 
 const emptyAddress: PracticeAddress = {
   addressLine1: '',
@@ -25,7 +28,8 @@ const PraktijkPage = () => {
   const { user } = useUser()
   const { practicesQuery, activePracticeQuery, createPracticeMutation, updatePracticeMutation } = usePractices(user)
   const activePractice = activePracticeQuery.data
-  const { membersQuery, createInviteMutation, removeMemberMutation, transferOwnershipMutation, updateMemberRoleMutation } = usePracticeMembers(activePractice?.id, user?.id)
+  const isAdmin = activePractice?.role === 'admin'
+  const { membersQuery, invitesQuery, createInviteMutation, removeMemberMutation, transferOwnershipMutation, updateMemberRoleMutation } = usePracticeMembers(activePractice?.id, user?.id, isAdmin)
   const { pendingInvitesQuery, respondToInviteMutation } = usePracticeInvites(user)
   const [createName, setCreateName] = useState('')
   const [createAddress, setCreateAddress] = useState<PracticeAddress>(emptyAddress)
@@ -34,6 +38,7 @@ const PraktijkPage = () => {
   const [editAddress, setEditAddress] = useState<PracticeAddress>(emptyAddress)
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteRole, setInviteRole] = useState<PracticeMemberRole>('user')
+  const [showInviteToast, setShowInviteToast] = useState(false)
 
   useEffect(() => {
     if (activePractice) {
@@ -43,9 +48,12 @@ const PraktijkPage = () => {
     }
   }, [activePractice])
 
-  const isAdmin = activePractice?.role === 'admin'
   const isOwner = Boolean(user?.id && activePractice?.ownerId === user.id)
   const isLoading = practicesQuery.isLoading || activePracticeQuery.isLoading
+  const pendingPracticeInvites = useMemo(
+    () => (invitesQuery.data ?? []).filter((invite) => invite.status === 'pending'),
+    [invitesQuery.data]
+  )
 
   const onCreatePractice = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -93,8 +101,13 @@ const PraktijkPage = () => {
       onSuccess: () => {
         setInviteEmail('')
         setInviteRole('user')
+        setShowInviteToast(true)
       },
     })
+  }
+
+  const onCopyInviteUrl = async () => {
+    await navigator.clipboard.writeText(practiceInviteUrl)
   }
 
   if (!user) {
@@ -126,6 +139,11 @@ const PraktijkPage = () => {
             <li className="rounded-md border p-4">Sjablonen voor patient en zorgverlener e-mail.</li>
           </ul>
         </section>
+        <PendingInvites
+          invites={pendingInvitesQuery.data ?? []}
+          isSubmitting={respondToInviteMutation.isLoading}
+          onRespond={(practiceId, inviteId, response) => respondToInviteMutation.mutate({ practiceId, inviteId, response })}
+        />
         <PracticeCreateForm
           name={createName}
           address={createAddress}
@@ -134,17 +152,19 @@ const PraktijkPage = () => {
           onAddressChange={setCreateAddress}
           onSubmit={onCreatePractice}
         />
-        <PendingInvites
-          invites={pendingInvitesQuery.data ?? []}
-          isSubmitting={respondToInviteMutation.isLoading}
-          onRespond={(practiceId, inviteId, response) => respondToInviteMutation.mutate({ practiceId, inviteId, response })}
-        />
       </main>
     )
   }
 
   return (
     <main className="flex max-w-6xl flex-col gap-8 px-4 py-8">
+      {showInviteToast && (
+        <InviteToast
+          url={practiceInviteUrl}
+          onCopy={onCopyInviteUrl}
+          onClose={() => setShowInviteToast(false)}
+        />
+      )}
       <header className="flex flex-col gap-3">
         <PracticeHeader practiceName={activePractice.name} />
         <PracticeLinks />
@@ -166,6 +186,7 @@ const PraktijkPage = () => {
                   <th scope="col" className="px-3 py-2 font-medium">Naam</th>
                   <th scope="col" className="px-3 py-2 font-medium">E-mail</th>
                   <th scope="col" className="w-32 px-3 py-2 font-medium">Rol</th>
+                  {isAdmin && <th scope="col" className="w-32 px-3 py-2 font-medium">Status</th>}
                   {isAdmin && <th scope="col" className="w-48 px-3 py-2 font-medium">Acties</th>}
                 </tr>
               </thead>
@@ -196,6 +217,11 @@ const PraktijkPage = () => {
                         <span className="inline-flex rounded-md border px-2 py-1 text-sm">{member.role}</span>
                       )}
                     </td>
+                    {isAdmin && (
+                      <td className="px-3 py-2">
+                        <span className="text-muted-foreground text-sm">Actief</span>
+                      </td>
+                    )}
                     {isAdmin && (
                       <td className="px-3 py-2">
                         {member.userId !== activePractice.ownerId ? (
@@ -234,6 +260,29 @@ const PraktijkPage = () => {
                         ) : (
                           <span className="text-muted-foreground text-sm">Eigenaar</span>
                         )}
+                      </td>
+                    )}
+                  </tr>
+                ))}
+                {pendingPracticeInvites.map((invite) => (
+                  <tr key={invite.id}>
+                    <td className="max-w-48 truncate px-3 py-2 font-medium">
+                      {invite.email}
+                    </td>
+                    <td className="text-muted-foreground max-w-56 truncate px-3 py-2">
+                      {invite.email}
+                    </td>
+                    <td className="px-3 py-2">
+                      <span className="inline-flex rounded-md border px-2 py-1 text-sm">{invite.role}</span>
+                    </td>
+                    {isAdmin && (
+                      <td className="px-3 py-2">
+                        <span className="text-muted-foreground text-sm">Wachten op accepteren</span>
+                      </td>
+                    )}
+                    {isAdmin && (
+                      <td className="px-3 py-2">
+                        <span className="text-muted-foreground text-sm">-</span>
                       </td>
                     )}
                   </tr>
@@ -425,12 +474,44 @@ const PracticeDetails = ({ name, address }: { name: string, address: PracticeAdd
   </dl>
 )
 
+const InviteToast = ({
+  url,
+  onCopy,
+  onClose,
+}: {
+  url: string
+  onCopy: () => void | Promise<void>
+  onClose: () => void
+}) => (
+  <div className="fixed right-4 top-4 z-50 flex max-w-lg items-start gap-3 rounded-md border bg-background p-4 text-sm shadow-lg">
+    <p className="flex-1 leading-5">
+      Stuur{' '}
+      <a className="text-link underline underline-offset-2" href={url} target="_blank">
+        {url}
+      </a>
+      {' '}naar collega zodat deze de uitnodiging kan accepteren.
+    </p>
+    <Button type="button" size="sm" variant="outline" onClick={onCopy} aria-label="Kopieer praktijk url">
+      <Copy className="h-4 w-4" />
+      Kopieer
+    </Button>
+    <button
+      type="button"
+      className="text-muted-foreground hover:text-foreground"
+      onClick={onClose}
+      aria-label="Sluit melding"
+    >
+      <X className="h-4 w-4" />
+    </button>
+  </div>
+)
+
 const PendingInvites = ({
   invites,
   isSubmitting,
   onRespond,
 }: {
-  invites: { id: string, practiceId: string, email: string, role: PracticeMemberRole }[]
+  invites: { id: string, practiceId: string, email: string, role: PracticeMemberRole, practiceName?: string }[]
   isSubmitting: boolean
   onRespond: (practiceId: string, inviteId: string, response: 'accepted' | 'declined') => void
 }) => {
@@ -443,8 +524,8 @@ const PendingInvites = ({
       <h2 className="mb-4 text-xl font-semibold">Uitnodigingen</h2>
       <div className="grid gap-3">
         {invites.map((invite) => (
-          <div key={invite.id} className="flex flex-wrap items-center justify-between gap-3 rounded-md border p-3">
-            <p>Je bent uitgenodigd voor een praktijk als {invite.role}.</p>
+          <div key={invite.id} className="flex flex-wrap items-center justify-between gap-3">
+            <p>Je bent uitgenodigd voor {invite.practiceName || 'praktijk'}.</p>
             <div className="flex gap-2">
               <Button size="sm" disabled={isSubmitting} onClick={() => onRespond(invite.practiceId, invite.id, 'accepted')}>
                 Accepteren
