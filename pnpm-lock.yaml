@@ -20,6 +20,8 @@ overrides:
 
 importers:
 
+  .: {}
+
   frontend:
     dependencies:
       '@azure/search-documents':
