@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>VerloskundigeSpiekt.Api</AssemblyName>
+    <RootNamespace>VerloskundigeSpiekt.Api</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VerloskundigeSpiekt.Application\VerloskundigeSpiekt.Application.csproj" />
+    <ProjectReference Include="..\VerloskundigeSpiekt.Infrastructure\VerloskundigeSpiekt.Infrastructure.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+</Project>

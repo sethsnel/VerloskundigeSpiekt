@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="src/VerloskundigeSpiekt.Domain/VerloskundigeSpiekt.Domain.csproj" />
+  <Project Path="src/VerloskundigeSpiekt.Application/VerloskundigeSpiekt.Application.csproj" />
+  <Project Path="src/VerloskundigeSpiekt.Infrastructure/VerloskundigeSpiekt.Infrastructure.csproj" />
+  <Project Path="src/VerloskundigeSpiekt.Api/VerloskundigeSpiekt.Api.csproj" />
+  <Project Path="tests/VerloskundigeSpiekt.UnitTests/VerloskundigeSpiekt.UnitTests.csproj" />
+  <Project Path="tests/VerloskundigeSpiekt.IntegrationTests/VerloskundigeSpiekt.IntegrationTests.csproj" />
+</Solution>

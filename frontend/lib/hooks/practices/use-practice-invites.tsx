@@ -3,36 +3,26 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 import { UserProfile } from '../../auth/types'
-import { getPendingPracticeInvites, respondToPracticeInvite } from '../../firestore/practices'
-import { RespondToPracticeInviteInput } from '../../firestore/practices/respond-to-practice-invite'
-import {
-  getActivePracticeQueryKey,
-  getPracticeInvitesQueryKey,
-  getPracticesQueryKey,
-} from '../../react-query'
+import { generatedApi } from '../../api/generated'
+import { apiQueryKeys } from '../../api/query-keys'
+
+type InvitationResponse = { practiceId: string; inviteId: string; response: 'accepted' | 'declined' }
 
 const usePracticeInvites = (user?: UserProfile) => {
   const queryClient = useQueryClient()
-  const email = user?.email
-
   const pendingInvitesQuery = useQuery(
-    getPracticeInvitesQueryKey(email),
-    () => getPendingPracticeInvites(email as string),
-    { enabled: Boolean(email) }
+    apiQueryKeys.invitations(user?.id),
+    async () => (await generatedApi.listPendingInvitations()).map(invite => ({ id: invite.id, practiceId: invite.practiceId, email: invite.email, role: invite.role === 'Member' ? 'user' as const : 'admin' as const, invitedBy: '', status: invite.status.toLowerCase() as 'pending' | 'accepted' | 'declined' })),
+    { enabled: Boolean(user?.email) }
   )
 
   const respondToInviteMutation = useMutation(
-    (input: Pick<RespondToPracticeInviteInput, 'practiceId' | 'inviteId' | 'response'>) => respondToPracticeInvite({
-      ...input,
-      userId: user?.id as string,
-      email: user?.email,
-      displayName: user?.name,
-    }),
+    (input: InvitationResponse) => generatedApi.respondToInvitation(input.inviteId, input.response === 'accepted' ? 'Accept' : 'Decline'),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(getPracticeInvitesQueryKey(email))
-        queryClient.invalidateQueries(getPracticesQueryKey(user?.id))
-        queryClient.invalidateQueries(getActivePracticeQueryKey(user?.id))
+        queryClient.invalidateQueries(apiQueryKeys.invitations(user?.id))
+        queryClient.invalidateQueries(apiQueryKeys.practices(user?.id))
+        queryClient.invalidateQueries(apiQueryKeys.activePractice(user?.id))
       },
     }
   )

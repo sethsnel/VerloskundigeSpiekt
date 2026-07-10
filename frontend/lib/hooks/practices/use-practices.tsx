@@ -3,49 +3,50 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 import { UserProfile } from '../../auth/types'
-import {
-  createPractice,
-  getActivePractice,
-  getPracticesForUser,
-  setActivePractice,
-  updatePractice,
-} from '../../firestore/practices'
-import { CreatePracticeInput } from '../../firestore/practices/create-practice'
-import { UpdatePracticeInput } from '../../firestore/practices/update-practice'
-import {
-  getActivePracticeQueryKey,
-  getPracticeMembersQueryKey,
-  getPracticesQueryKey,
-} from '../../react-query'
+import type { PracticeWithRole } from '../../../schema/practice'
+import { generatedApi } from '../../api/generated'
+import { apiQueryKeys } from '../../api/query-keys'
+
+type CreatePracticeInput = { name: string; ownerId?: string; ownerEmail?: string | null; ownerName?: string | null; address?: Record<string, string> }
+type UpdatePracticeInput = { practiceId: string; name: string; address?: Record<string, string> }
+
+const mapPractice = (practice: { id: string; name: string; role: 'Member' | 'Administrator' | 'Owner' }): PracticeWithRole => ({
+  id: practice.id,
+  name: practice.name,
+  address: {},
+  role: practice.role === 'Member' ? 'user' : 'admin',
+  createdAt: null,
+})
 
 const usePractices = (user?: UserProfile) => {
   const queryClient = useQueryClient()
   const userId = user?.id
 
   const practicesQuery = useQuery(
-    getPracticesQueryKey(userId),
-    () => getPracticesForUser(userId as string),
+    apiQueryKeys.practices(userId),
+    async () => (await generatedApi.listPractices()).map(mapPractice),
     { enabled: Boolean(userId) }
   )
 
   const activePracticeQuery = useQuery(
-    getActivePracticeQueryKey(userId),
-    () => getActivePractice(userId as string),
+    apiQueryKeys.activePractice(userId),
+    async () => {
+      const me = await generatedApi.getMe()
+      if (!me.activePracticeId) return undefined
+      const practices = await generatedApi.listPractices()
+      const active = practices.find(practice => practice.id === me.activePracticeId)
+      return active ? mapPractice(active) : undefined
+    },
     { enabled: Boolean(userId) }
   )
 
   const invalidatePracticeQueries = () => {
-    queryClient.invalidateQueries(getPracticesQueryKey(userId))
-    queryClient.invalidateQueries(getActivePracticeQueryKey(userId))
+    queryClient.invalidateQueries(apiQueryKeys.practices(userId))
+    queryClient.invalidateQueries(apiQueryKeys.activePractice(userId))
   }
 
   const createPracticeMutation = useMutation(
-    (input: Omit<CreatePracticeInput, 'ownerId' | 'ownerEmail' | 'ownerName'>) => createPractice({
-      ...input,
-      ownerId: userId as string,
-      ownerEmail: user?.email,
-      ownerName: user?.name,
-    }),
+    async (input: Omit<CreatePracticeInput, 'ownerId' | 'ownerEmail' | 'ownerName'>) => mapPractice(await generatedApi.createPractice(input.name, input.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-'), crypto.randomUUID())),
     {
       onSuccess: () => {
         invalidatePracticeQueries()
@@ -54,20 +55,30 @@ const usePractices = (user?: UserProfile) => {
   )
 
   const setActivePracticeMutation = useMutation(
-    (practiceId: string | null) => setActivePractice(userId as string, practiceId),
+    async (practiceId: string | null) => {
+      const me = await generatedApi.setActivePractice(practiceId)
+      if (!me.activePracticeId) return undefined
+      const practices = await generatedApi.listPractices()
+      const active = practices.find(practice => practice.id === me.activePracticeId)
+      return active ? mapPractice(active) : undefined
+    },
     {
+      onMutate: async () => {
+        await queryClient.cancelQueries(['api', 'members'])
+        queryClient.removeQueries(['api', 'members'])
+      },
       onSuccess: () => {
-        queryClient.invalidateQueries(getActivePracticeQueryKey(userId))
+        queryClient.invalidateQueries(apiQueryKeys.activePractice(userId))
       },
     }
   )
 
   const updatePracticeMutation = useMutation(
-    (input: UpdatePracticeInput) => updatePractice(input),
+    async (input: UpdatePracticeInput) => mapPractice(await generatedApi.updatePractice(input.practiceId, input.name, input.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-'))),
     {
       onSuccess: (updatedPractice) => {
         invalidatePracticeQueries()
-        queryClient.invalidateQueries(getPracticeMembersQueryKey(updatedPractice.practiceId))
+        queryClient.invalidateQueries(apiQueryKeys.members(userId, updatedPractice.id))
       },
     }
   )

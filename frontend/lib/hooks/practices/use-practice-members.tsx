@@ -2,91 +2,66 @@
 
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
-import {
-  createPracticeInvite,
-  getPracticeInvites,
-  getPracticeMembers,
-  removePracticeMember,
-  transferPracticeOwnership,
-  updatePracticeMemberRole,
-} from '../../firestore/practices'
-import { CreatePracticeInviteInput } from '../../firestore/practices/create-practice-invite'
-import { RemovePracticeMemberInput } from '../../firestore/practices/remove-practice-member'
-import { TransferPracticeOwnershipInput } from '../../firestore/practices/transfer-practice-ownership'
-import { UpdatePracticeMemberRoleInput } from '../../firestore/practices/update-practice-member-role'
-import {
-  getActivePracticeQueryKey,
-  getPracticeInvitesForPracticeQueryKey,
-  getPracticeInvitesQueryKey,
-  getPracticeMembersQueryKey,
-  getPracticesQueryKey,
-} from '../../react-query'
+import { generatedApi } from '../../api/generated'
+import { apiQueryKeys } from '../../api/query-keys'
+type CreatePracticeInviteInput = { practiceId: string; email: string; role: 'admin' | 'user'; invitedBy: string }
+type RemovePracticeMemberInput = { practiceId: string; userId: string }
+type TransferPracticeOwnershipInput = { practiceId: string; newOwnerId: string }
+type UpdatePracticeMemberRoleInput = { practiceId: string; userId: string; role: 'admin' | 'user' }
+
+const apiRole = (role: 'admin' | 'user') => role === 'admin' ? 'Administrator' as const : 'Member' as const
 
 const usePracticeMembers = (practiceId?: string, userId?: string, canViewInvites = false) => {
   const queryClient = useQueryClient()
 
   const membersQuery = useQuery(
-    getPracticeMembersQueryKey(practiceId),
-    () => getPracticeMembers(practiceId as string),
+    apiQueryKeys.members(userId, practiceId),
+    async () => (await generatedApi.listMembers(practiceId as string)).map(member => ({ id: member.userId, practiceId: practiceId as string, userId: member.userId, role: member.role === 'Member' ? 'user' as const : 'admin' as const, email: member.email, displayName: member.displayName })),
     { enabled: Boolean(practiceId) }
   )
 
   const invitesQuery = useQuery(
-    getPracticeInvitesForPracticeQueryKey(practiceId),
-    () => getPracticeInvites(practiceId as string),
+    apiQueryKeys.invitations(userId, practiceId),
+    async () => (await generatedApi.listPracticeInvitations(practiceId as string)).map(invite => ({ id: invite.id, practiceId: invite.practiceId, email: invite.email, role: invite.role === 'Member' ? 'user' as const : 'admin' as const, invitedBy: '', status: invite.status.toLowerCase() as 'pending' | 'accepted' | 'declined' })),
     { enabled: Boolean(practiceId && canViewInvites) }
   )
 
   const createInviteMutation = useMutation(
-    (input: Omit<CreatePracticeInviteInput, 'practiceId' | 'invitedBy'>) => createPracticeInvite({
-      ...input,
-      practiceId: practiceId as string,
-      invitedBy: userId as string,
-    }),
+    (input: Omit<CreatePracticeInviteInput, 'practiceId' | 'invitedBy'>) => generatedApi.invite(practiceId as string, input.email, apiRole(input.role)),
     {
       onSuccess: (invite) => {
-        queryClient.invalidateQueries(getPracticeInvitesQueryKey(invite.email))
-        queryClient.invalidateQueries(getPracticeInvitesForPracticeQueryKey(practiceId))
+        queryClient.invalidateQueries(apiQueryKeys.invitations(userId, practiceId))
       },
     }
   )
 
   const updateMemberRoleMutation = useMutation(
-    (input: Omit<UpdatePracticeMemberRoleInput, 'practiceId'>) => updatePracticeMemberRole({
-      ...input,
-      practiceId: practiceId as string,
-    }),
+    (input: Omit<UpdatePracticeMemberRoleInput, 'practiceId'>) => generatedApi.updateMember(practiceId as string, input.userId, apiRole(input.role)),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(getPracticeMembersQueryKey(practiceId))
-        queryClient.invalidateQueries(getPracticesQueryKey(userId))
+        queryClient.invalidateQueries(apiQueryKeys.members(userId, practiceId))
+        queryClient.invalidateQueries(apiQueryKeys.practices(userId))
       },
     }
   )
 
   const removeMemberMutation = useMutation(
-    (input: Omit<RemovePracticeMemberInput, 'practiceId'>) => removePracticeMember({
-      ...input,
-      practiceId: practiceId as string,
-    }),
+    (input: Omit<RemovePracticeMemberInput, 'practiceId'>) => generatedApi.removeMember(practiceId as string, input.userId),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(getPracticeMembersQueryKey(practiceId))
-        queryClient.invalidateQueries(getPracticesQueryKey(userId))
+        queryClient.invalidateQueries(apiQueryKeys.members(userId, practiceId))
+        queryClient.invalidateQueries(apiQueryKeys.practices(userId))
       },
     }
   )
 
   const transferOwnershipMutation = useMutation(
-    (input: Omit<TransferPracticeOwnershipInput, 'practiceId'>) => transferPracticeOwnership({
-      ...input,
-      practiceId: practiceId as string,
-    }),
+    (input: Omit<TransferPracticeOwnershipInput, 'practiceId'>) => generatedApi.transferOwnership(practiceId as string, input.newOwnerId),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(getPracticeMembersQueryKey(practiceId))
-        queryClient.invalidateQueries(getPracticesQueryKey(userId))
-        queryClient.invalidateQueries(getActivePracticeQueryKey(userId))
+        queryClient.invalidateQueries(apiQueryKeys.members(userId, practiceId))
+        queryClient.invalidateQueries(apiQueryKeys.practices(userId))
+        queryClient.invalidateQueries(apiQueryKeys.activePractice(userId))
       },
     }
   )

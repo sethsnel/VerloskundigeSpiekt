@@ -1,0 +1,15 @@
+{
+  "name": "@verloskundigespiekt/firestore-postgres-migration",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "export": "tsx src/cli.ts export",
+    "transform": "tsx src/cli.ts transform",
+    "validate-source": "tsx src/cli.ts validate-source",
+    "import": "tsx src/cli.ts import",
+    "validate-target": "tsx src/cli.ts validate-target",
+    "report": "tsx src/cli.ts report"
+  },
+  "dependencies": { "pg": "^8.16.3", "firebase-admin": "^13.5.0" },
+  "devDependencies": { "@types/node": "^24.0.0", "@types/pg": "^8.15.6", "tsx": "^4.20.3", "typescript": "^6.0.3" }
+}

@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "VerloskundigeSpiekt templates",
+  "version": "0.1.0",
+  "description": "Uses authorized published practice templates; substitution data remains local.",
+  "permissions": ["clipboardWrite"],
+  "host_permissions": ["https://api.verloskundigespiekt.nl/*"],
+  "action": { "default_title": "VerloskundigeSpiekt" },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'self'" }
+}

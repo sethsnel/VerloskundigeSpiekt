@@ -1,0 +1,50 @@
+name: backend
+
+on:
+  push:
+    paths: ["backend/**", ".github/workflows/backend.yml"]
+  pull_request:
+    paths: ["backend/**", ".github/workflows/backend.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.5-bookworm
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: verloskundigespiekt_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres -d verloskundigespiekt_test"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      CI: true
+      Database__ConnectionString: Host=localhost;Port=5432;Database=verloskundigespiekt_test;Username=postgres;Password=postgres
+      Firebase__ProjectId: ci-test-project
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore VerloskundigeSpiekt.slnx
+      - run: dotnet format VerloskundigeSpiekt.slnx --verify-no-changes --no-restore
+      - run: dotnet build VerloskundigeSpiekt.slnx --configuration Release --no-restore
+      - run: dotnet test VerloskundigeSpiekt.slnx --configuration Release --no-build --logger trx
+      - run: dotnet publish src/VerloskundigeSpiekt.Api/VerloskundigeSpiekt.Api.csproj --configuration Release --no-restore --output artifacts/api
+      - name: Build production image
+        working-directory: .
+        run: docker build --tag verloskundigespiekt-api:${{ github.sha }} --file backend/Dockerfile .
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: verloskundigespiekt-api:${{ github.sha }}
+          artifact-name: sbom.spdx.json
+          output-file: backend/artifacts/sbom.spdx.json

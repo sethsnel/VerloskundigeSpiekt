@@ -1,86 +1,16 @@
-import {
-  SearchClient,
-  SearchIndexClient,
-  AzureKeyCredential,
-  SearchIndex,
-} from '@azure/search-documents'
-
 import { SearchableNote } from './search-schema'
 
-// These should come from environment variables
-const endpoint = process.env.AZURE_SEARCH_ENDPOINT
-const apiKey = process.env.AZURE_SEARCH_API_KEY
-const indexName = process.env.AZURE_SEARCH_INDEX_NAME || 'notes'
-
-if (!endpoint) {
-  throw new Error('NEXT_PUBLIC_AZURE_SEARCH_ENDPOINT environment variable is not set')
+// Search infrastructure is server-owned. These compatibility exports remain only for
+// the old admin index commands while feature migration removes those commands.
+export const searchIndexSchema = { name: 'postgres-content' }
+type SearchResultsPage = { results: AsyncIterable<{ document?: SearchableNote }> }
+export const searchClient = {
+  search: async (_query: string, _options?: unknown): Promise<SearchResultsPage> => { throw new Error('Direct search infrastructure access has been retired; use /api/v1/search.') },
+  uploadDocuments: async (_documents: SearchableNote[]) => { throw new Error('Use the API search rebuild job.') },
+  deleteDocuments: async (_documents: SearchableNote[]) => { throw new Error('Use the API search rebuild job.') },
 }
-
-if (!apiKey) {
-  throw new Error('NEXT_PUBLIC_AZURE_SEARCH_API_KEY environment variable is not set')
+export const adminClient = {
+  listIndexes: async (): Promise<{ next(): Promise<IteratorResult<{ name: string }>> }> => { throw new Error('Search index administration belongs to the backend migration job.') },
+  createIndex: async (_schema: unknown) => { throw new Error('Search index administration belongs to the backend migration job.') },
+  deleteIndex: async (_name: string) => { throw new Error('Search index administration belongs to the backend migration job.') },
 }
-
-// Search index schema definition
-export const searchIndexSchema: SearchIndex = {
-  name: indexName,
-  corsOptions: {
-    allowedOrigins: ['*'],
-  },
-  fields: [
-    {
-      name: 'id',
-      type: 'Edm.String',
-      key: true,
-      searchable: false,
-      filterable: true,
-    },
-    {
-      name: 'noteId',
-      type: 'Edm.String',
-      searchable: false,
-      filterable: true,
-      sortable: true,
-    },
-    {
-      name: 'name',
-      type: 'Edm.String',
-      searchable: true,
-      filterable: false,
-      sortable: true,
-    },
-    {
-      name: 'content',
-      type: 'Edm.String',
-      searchable: true,
-      filterable: false,
-    },
-    {
-      name: 'articleId',
-      type: 'Edm.String',
-      searchable: false,
-      filterable: true,
-      sortable: true,
-    },
-    {
-      name: 'articleName',
-      type: 'Edm.String',
-      searchable: true,
-      filterable: false,
-      sortable: true,
-    },
-    {
-      name: 'tagIds',
-      type: 'Collection(Edm.String)',
-      searchable: false,
-      filterable: true,
-      facetable: true,
-    },
-  ],
-}
-
-// Create search clients
-const credential = new AzureKeyCredential(apiKey)
-
-export const searchClient = new SearchClient<SearchableNote>(endpoint, indexName, credential)
-
-export const adminClient = new SearchIndexClient(endpoint, credential)
