@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { FileCenter, FileDto } from "../../../containers/fileCenter"
 import { ModalState } from "../../../containers/modalProvider"
@@ -12,44 +12,44 @@ const useFileCenterModal = (folderPath: string, onFileSelect: (url: string) => v
   const { listFilesQuery, deleteFileMutation } = useFiles(folderPath)
   const [selectedFile, setSelectedFile] = useState<undefined | FileDto>(undefined)
   const isDeletingFileName = deleteFileMutation.isLoading ? deleteFileMutation.variables : undefined
+  const files = listFilesQuery.data
+  const refetchFiles = listFilesQuery.refetch
+  const deleteFile = deleteFileMutation.mutate
 
-  //Reset selectedFile when modal is closed
-  if (!modalIsOpen && selectedFile?.name) {
-    setSelectedFile(undefined)
-  }
+  useEffect(() => { if (!modalIsOpen) setSelectedFile(undefined) }, [modalIsOpen])
 
-  const confirmFileSelection = () => {
+  const confirmFileSelection = useCallback(() => {
     selectedFile && onFileSelect && onFileSelect(selectedFile.url)
     closeModal()
-  }
+  }, [closeModal, onFileSelect, selectedFile])
 
-  const onFileUploaded = () => {
-    listFilesQuery.refetch()
-  }
+  const onFileUploaded = useCallback(() => {
+    refetchFiles()
+  }, [refetchFiles])
 
-  const deleteSelectedFile = () => {
+  const deleteSelectedFile = useCallback(() => {
     if (selectedFile) {
-      deleteFileMutation.mutate(selectedFile.name)
+      deleteFile(selectedFile.id)
       setSelectedFile(undefined)
     }
-  }
+  }, [deleteFile, selectedFile])
 
-  const modalProps: ModalState = {
+  const modalProps: ModalState = useMemo(() => ({
     title: "Kies bestand",
-    modalBody: <FileCenter folderPath={folderPath} files={listFilesQuery.data} onFileSelect={setSelectedFile} onFileUploaded={onFileUploaded} isDeletingFileName={isDeletingFileName} />,
+    modalBody: <FileCenter folderPath={folderPath} files={files} onFileSelect={setSelectedFile} onFileUploaded={onFileUploaded} isDeletingFileName={isDeletingFileName} />,
     actions: [
       { label: "Annuleer", type: 'cancel', onClick: closeModal },
       { label: "Verwijder", onClick: deleteSelectedFile, type: 'delete', disabled: !selectedFile },
       { label: "Kies", onClick: confirmFileSelection, type: 'save', disabled: !selectedFile }
     ]
-  }
+  }), [closeModal, confirmFileSelection, deleteSelectedFile, files, folderPath, isDeletingFileName, onFileUploaded, selectedFile])
 
   //Update modal when props change
   useEffect(() => {
     if (activeModal === modalKey) {
       updateModal(modalProps)
     }
-  }, [folderPath, listFilesQuery.data?.length, selectedFile?.name, isDeletingFileName, modalIsOpen])
+  }, [activeModal, modalKey, modalProps, updateModal])
 
   const showFileCenterModal = async () => {
     showModal(modalProps)

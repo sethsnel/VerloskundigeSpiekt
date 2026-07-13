@@ -1,4 +1,4 @@
-import { auth } from 'firebase-admin'
+import { getAuth } from 'firebase-admin/auth'
 
 import { firebaseAdmin } from '../../../../lib/server'
 import { validateAdminRequest } from '../../../../lib/server'
@@ -15,7 +15,7 @@ export async function POST(
   // Get the ID token passed.
   const { uid, role } = await req.json()
 
-  await auth(firebaseAdmin).setCustomUserClaims(uid, {
+  await getAuth(firebaseAdmin).setCustomUserClaims(uid, {
     [role]: true
   })
 

@@ -103,6 +103,144 @@ export interface paths {
                 };
             };
         };
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    practiceId: string;
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["PageRequest"];
+                    "text/json": components["schemas"]["PageRequest"];
+                    "application/*+json": components["schemas"]["PageRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["PracticePageDto"];
+                        "application/json": components["schemas"]["PracticePageDto"];
+                        "text/json": components["schemas"]["PracticePageDto"];
+                    };
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: string;
+                };
+                path: {
+                    practiceId: string;
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practices/{practiceId}/pages/{slug}/seed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    practiceId: string;
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["PageRequest"];
+                    "text/json": components["schemas"]["PageRequest"];
+                    "application/*+json": components["schemas"]["PageRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["PracticePageDto"];
+                        "application/json": components["schemas"]["PracticePageDto"];
+                        "text/json": components["schemas"]["PracticePageDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practices/{practiceId}/pages/{slug}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    practiceId: string;
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["PageVersionDto"][];
+                        "application/json": components["schemas"]["PageVersionDto"][];
+                        "text/json": components["schemas"]["PageVersionDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -406,7 +544,34 @@ export interface paths {
             };
         };
         put?: never;
-        post?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ArticleRequest"];
+                    "text/json": components["schemas"]["ArticleRequest"];
+                    "application/*+json": components["schemas"]["ArticleRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ArticleDto"];
+                        "application/json": components["schemas"]["ArticleDto"];
+                        "text/json": components["schemas"]["ArticleDto"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -452,6 +617,185 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/articles/{articleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: string;
+                };
+                path: {
+                    articleId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ArticleRequest"];
+                    "text/json": components["schemas"]["ArticleRequest"];
+                    "application/*+json": components["schemas"]["ArticleRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ArticleDto"];
+                        "application/json": components["schemas"]["ArticleDto"];
+                        "text/json": components["schemas"]["ArticleDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: string;
+                };
+                path: {
+                    articleId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["TagDto"][];
+                        "application/json": components["schemas"]["TagDto"][];
+                        "text/json": components["schemas"]["TagDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["TagRequest"];
+                    "text/json": components["schemas"]["TagRequest"];
+                    "application/*+json": components["schemas"]["TagRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["TagDto"];
+                        "application/json": components["schemas"]["TagDto"];
+                        "text/json": components["schemas"]["TagDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tags/{tagId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: string;
+                };
+                path: {
+                    tagId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["TagRequest"];
+                    "text/json": components["schemas"]["TagRequest"];
+                    "application/*+json": components["schemas"]["TagRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["TagDto"];
+                        "application/json": components["schemas"]["TagDto"];
+                        "text/json": components["schemas"]["TagDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/search": {
         parameters: {
             query?: never;
@@ -464,6 +808,9 @@ export interface paths {
                 query?: {
                     query?: string;
                     practiceId?: string;
+                    cursor?: string;
+                    pageSize?: number;
+                    kind?: string;
                 };
                 header?: never;
                 path?: never;
@@ -477,9 +824,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["SearchResultDto"][];
-                        "application/json": components["schemas"]["SearchResultDto"][];
-                        "text/json": components["schemas"]["SearchResultDto"][];
+                        "text/plain": components["schemas"]["SearchResponseDto"];
+                        "application/json": components["schemas"]["SearchResponseDto"];
+                        "text/json": components["schemas"]["SearchResponseDto"];
                     };
                 };
             };
@@ -524,6 +871,22 @@ export interface paths {
             };
         };
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practices/{practiceId}/files/upload-authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         post: {
             parameters: {
                 query?: never;
@@ -535,9 +898,9 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["FileRequest"];
-                    "text/json": components["schemas"]["FileRequest"];
-                    "application/*+json": components["schemas"]["FileRequest"];
+                    "application/json": components["schemas"]["FileUploadRequest"];
+                    "text/json": components["schemas"]["FileUploadRequest"];
+                    "application/*+json": components["schemas"]["FileUploadRequest"];
                 };
             };
             responses: {
@@ -547,14 +910,90 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["FileDto"];
-                        "application/json": components["schemas"]["FileDto"];
-                        "text/json": components["schemas"]["FileDto"];
+                        "text/plain": components["schemas"]["FileAccessDto"];
+                        "application/json": components["schemas"]["FileAccessDto"];
+                        "text/json": components["schemas"]["FileAccessDto"];
                     };
                 };
             };
         };
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practices/{practiceId}/files/{fileId}/download-authorization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    practiceId: string;
+                    fileId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["FileAccessDto"];
+                        "application/json": components["schemas"]["FileAccessDto"];
+                        "text/json": components["schemas"]["FileAccessDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/practices/{practiceId}/files/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    practiceId: string;
+                    fileId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -609,7 +1048,9 @@ export interface paths {
         post: {
             parameters: {
                 query?: never;
-                header?: never;
+                header?: {
+                    "Idempotency-Key"?: string;
+                };
                 path: {
                     invitationId: string;
                 };
@@ -1127,6 +1568,76 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/storage/upload/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    token: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/storage/download/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    token: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1142,7 +1653,22 @@ export interface components {
             title?: string | null;
             /** Format: int32 */
             position?: number;
+            headerUrl?: string | null;
+            isPublished?: boolean;
             documentJson?: string | null;
+            sections?: components["schemas"]["PageSectionDto"][] | null;
+            tagIds?: string[] | null;
+            version?: string | null;
+        };
+        ArticleRequest: {
+            slug?: string | null;
+            title?: string | null;
+            /** Format: int32 */
+            position?: number;
+            headerUrl?: string | null;
+            isPublished?: boolean;
+            sections?: components["schemas"]["PageSectionRequest"][] | null;
+            tagIds?: string[] | null;
         };
         ContactDto: {
             /** Format: uuid */
@@ -1186,6 +1712,12 @@ export interface components {
             status?: components["schemas"]["TemplateVersionStatus"];
             version?: string | null;
         };
+        FileAccessDto: {
+            file?: components["schemas"]["FileDto"];
+            url?: string | null;
+            /** Format: date-time */
+            expiresAt?: string;
+        };
         FileDto: {
             /** Format: uuid */
             id?: string;
@@ -1199,12 +1731,11 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
-        FileRequest: {
+        FileUploadRequest: {
             fileName?: string | null;
             contentType?: string | null;
             /** Format: int64 */
             sizeBytes?: number;
-            storageObjectName?: string | null;
         };
         InvitationDto: {
             /** Format: uuid */
@@ -1246,6 +1777,30 @@ export interface components {
         PageRequest: {
             title?: string | null;
             documentJson?: string | null;
+            sections?: components["schemas"]["PageSectionRequest"][] | null;
+        };
+        PageSectionDto: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int32 */
+            position?: number;
+            heading?: string | null;
+            documentJson?: string | null;
+        };
+        PageSectionRequest: {
+            heading?: string | null;
+            documentJson?: string | null;
+        };
+        PageVersionDto: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: int32 */
+            versionNumber?: number;
+            snapshotJson?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: uuid */
+            changedByUserId?: string;
         };
         PracticeDto: {
             /** Format: uuid */
@@ -1265,12 +1820,20 @@ export interface components {
             slug?: string | null;
             title?: string | null;
             documentJson?: string | null;
+            sections?: components["schemas"]["PageSectionDto"][] | null;
             /** Format: date-time */
             updatedAt?: string;
             version?: string | null;
         };
         /** @enum {string} */
         PracticeRole: "Member" | "Administrator" | "Owner";
+        SearchResponseDto: {
+            items?: components["schemas"]["SearchResultDto"][] | null;
+            nextCursor?: string | null;
+            facets?: {
+                [key: string]: number;
+            } | null;
+        };
         SearchResultDto: {
             kind?: string | null;
             /** Format: uuid */
@@ -1278,11 +1841,23 @@ export interface components {
             title?: string | null;
             practiceId?: string | null;
             snippet?: string | null;
+            /** Format: float */
+            rank?: number;
+        };
+        TagDto: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+            articleIds?: string[] | null;
+            version?: string | null;
+        };
+        TagRequest: {
+            name?: string | null;
         };
         TemplateRequest: {
             name?: string | null;
             definitionJson?: string | null;
-            publish?: boolean;
+            status?: components["schemas"]["TemplateVersionStatus"];
         };
         /** @enum {string} */
         TemplateVersionStatus: "Draft" | "Published" | "Archived";

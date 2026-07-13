@@ -1,5 +1,6 @@
 namespace VerloskundigeSpiekt.Domain;
 
+
 public enum PracticeRole { Member, Administrator, Owner }
 public enum InvitationStatus { Pending, Accepted, Declined, Revoked, Expired }
 public enum TemplateVersionStatus { Draft, Published, Archived }
@@ -159,7 +160,10 @@ public sealed class Article : AuditedEntity
     public string Title { get; set; } = string.Empty;
     public bool IsPublished { get; set; }
     public int Position { get; set; }
+    public string? HeaderUrl { get; set; }
+    public string? ExtractedText { get; set; }
     public ICollection<ArticleSection> Sections { get; set; } = [];
+    public ICollection<ArticleTag> ArticleTags { get; set; } = [];
 }
 
 public sealed class ArticleSection : AuditedEntity
@@ -195,4 +199,60 @@ public sealed class MigrationAlias
     public Guid MigrationRunId { get; set; }
     public string Checksum { get; set; } = string.Empty;
     public DateTimeOffset CreatedAt { get; set; }
+}
+
+public sealed class Tag : AuditedEntity
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public ICollection<ArticleTag> ArticleTags { get; set; } = [];
+}
+
+public sealed class ArticleTag
+{
+    public Guid ArticleId { get; set; }
+    public Guid TagId { get; set; }
+    public Article Article { get; set; } = null!;
+    public Tag Tag { get; set; } = null!;
+}
+
+public sealed class MigrationRun
+{
+    public Guid RunId { get; set; }
+    public string SourceChecksum { get; set; } = string.Empty;
+    public string ChecksumAlgorithm { get; set; } = string.Empty;
+    public string ToolVersion { get; set; } = string.Empty;
+    public int SchemaVersion { get; set; }
+    public string Status { get; set; } = "Pending";
+    public DateTimeOffset StartedAt { get; set; }
+    public DateTimeOffset? CompletedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
+    public ICollection<MigrationRecordState> Records { get; set; } = [];
+}
+
+public sealed class MigrationRecordState
+{
+    public Guid MigrationRunId { get; set; }
+    public string SourceDocumentId { get; set; } = string.Empty;
+    public string TargetType { get; set; } = string.Empty;
+    public string Checksum { get; set; } = string.Empty;
+    public string Status { get; set; } = "Pending";
+    public int RetryCount { get; set; }
+    public string? ErrorCode { get; set; }
+    public string? ErrorMetadataJson { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
+    public MigrationRun Run { get; set; } = null!;
+}
+
+public sealed class IdempotencyRecord
+{
+    public Guid UserId { get; set; }
+    public string Key { get; set; } = string.Empty;
+    public string Operation { get; set; } = string.Empty;
+    public string RequestFingerprint { get; set; } = string.Empty;
+    public int ResponseStatus { get; set; }
+    public string ResponseJson { get; set; } = "{}";
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset ExpiresAt { get; set; }
+    public User User { get; set; } = null!;
 }

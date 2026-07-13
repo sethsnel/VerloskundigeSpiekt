@@ -9,7 +9,7 @@ Status: implementation baseline recorded on 2026-07-10. Provider and production 
 | Application data API | ASP.NET Core 10 under `/api/v1`; browsers and the extension do not connect to PostgreSQL | Application |
 | Database | PostgreSQL 17, one logically shared database with explicit `practice_id` ownership | Platform |
 | Identity | Firebase Authentication ID tokens remain the identity provider initially | Security |
-| Files | Firebase Storage remains initially; metadata and authorization are API-owned | Application |
+| Files | Object storage is private; metadata, namespace selection, signed access, and authorization are API-owned. Local development uses the filesystem adapter. | Application |
 | Hosting | Azure Container Apps Consumption, EU region; Neon Launch PostgreSQL in an approved EU region | Platform |
 | IaC and delivery | Azure Bicep, Key Vault, ACR, GitHub OIDC, immutable image digests | Platform |
 | Rejected alternatives | Hasura, direct Supabase data API, direct browser/database access, and application dual writes | Architecture |
@@ -38,9 +38,9 @@ rtk rg -n "firebase|firestore" frontend/lib frontend/app frontend/components
 
 | Current area | Current operations | Target API | Phase | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| `lib/firestore/practices` | practices, members, invites, active practice, practice articles | `/api/v1/me`, `/api/v1/practices`, `/api/v1/practices/{practiceId}/...` | 4/6 | Application | API foundation in progress |
-| `lib/firestore/articles` | global articles, notes, menu, tags, search source | `/api/v1/articles`, `/api/v1/search` | 5/6 | Content | Pending content slice |
-| `lib/firebase/files` | list/upload/download/delete storage objects | `/api/v1/practices/{practiceId}/files` | 5/6 | Application | Metadata/API boundary pending |
+| Removed `lib/firestore/practices` | practices, members, invites, active practice, practice articles | `/api/v1/me`, `/api/v1/practices`, `/api/v1/practices/{practiceId}/...` | 4/6 | Application | Migrated; import guard enforced in CI |
+| Removed `lib/firestore/articles` | global articles, notes, menu, tags, search source | `/api/v1/articles`, `/api/v1/tags`, `/api/v1/search` | 5/6 | Content | Migrated; PostgreSQL FTS and API authoring are authoritative |
+| Removed `lib/firebase/files` | list/upload/download/delete storage objects | `/api/v1/practices/{practiceId}/files` and signed storage routes | 5/6 | Application | Migrated to the API authorization boundary |
 | `lib/auth` and server Firebase helpers | Firebase sign-in and token verification | Firebase remains identity; API validates bearer token | 3/6 | Security | Retained by design |
 | admin Firebase routes | Firebase user administration | `/api/v1/admin` or explicit identity-admin boundary | 6 | Security | Existing admin surface requires separate review |
 

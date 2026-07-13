@@ -29,5 +29,7 @@ public sealed class TestApiFactory : WebApplicationFactory<Program>
     {
         builder.UseSetting("Database:ConnectionString", "Host=localhost;Port=5432;Database=test;Username=test;Password=test");
         builder.UseSetting("Firebase:ProjectId", "ci-test-project");
+        builder.UseSetting("Storage:RootPath", Path.GetTempPath());
+        builder.UseSetting("Storage:SigningKey", "integration-test-signing-key-32-characters");
     }
 }

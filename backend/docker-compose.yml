@@ -19,9 +19,11 @@ services:
       context: ..
       dockerfile: backend/Dockerfile
     environment:
-      Database__ConnectionString: Host=postgres;Port=5432;Database=${POSTGRES_DB:-verloskundigespiekt};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres};SSL Mode=Disable;Maximum Pool Size=10;Timeout=5
+      Database__ConnectionString: Host=postgres;Port=5432;Database=${POSTGRES_DB:-verloskundigespiekt};Username=${API_DB_USER:-vs_api};Password=${API_DB_PASSWORD:-local-runtime};SSL Mode=Disable;Maximum Pool Size=10;Timeout=5
       Firebase__ProjectId: ${Firebase__ProjectId:-verloskundigespiekt-dev}
       Firebase__AllowedOrigins__0: http://localhost:3000
+      Storage__RootPath: /tmp/verloskundigespiekt-storage
+      Storage__SigningKey: ${STORAGE_SIGNING_KEY:-local-development-signing-key-change-me}
     ports:
       - "8080:8080"
     depends_on:

@@ -17,22 +17,27 @@ public sealed class PracticesController(IPracticeService practices) : Controller
     public Task<PracticeDto> Create([FromBody] CreatePracticeRequest request, [FromHeader(Name = "Idempotency-Key")] string? idempotencyKey, CancellationToken cancellationToken) => practices.CreateAsync(request, idempotencyKey, cancellationToken);
 
     [HttpGet("{practiceId:guid}")]
-    public Task<PracticeDto> Get(Guid practiceId, CancellationToken cancellationToken) => practices.GetAsync(practiceId, cancellationToken);
+    [Authorize(Policy = AuthorizationPolicies.PracticeMember)]
+    public async Task<ActionResult<PracticeDto>> Get(Guid practiceId, CancellationToken cancellationToken) { var result = await practices.GetAsync(practiceId, cancellationToken); ConcurrencyHeaders.SetETag(Response, result.Version); return result; }
 
     [HttpPut("{practiceId:guid}")]
-    public Task<PracticeDto> Update(Guid practiceId, [FromBody] UpdatePracticeRequest request, [FromHeader(Name = "If-Match")] string? version, CancellationToken cancellationToken) => practices.UpdateAsync(practiceId, request, DecodeVersion(version), cancellationToken);
+    [Authorize(Policy = AuthorizationPolicies.PracticeAdministrator)]
+    public async Task<ActionResult<PracticeDto>> Update(Guid practiceId, [FromBody] UpdatePracticeRequest request, [FromHeader(Name = "If-Match")] string? version, CancellationToken cancellationToken) { var result = await practices.UpdateAsync(practiceId, request, ConcurrencyHeaders.DecodeIfMatch(version), cancellationToken); ConcurrencyHeaders.SetETag(Response, result.Version); return result; }
 
     [HttpGet("{practiceId:guid}/members")]
+    [Authorize(Policy = AuthorizationPolicies.PracticeMember)]
     public Task<IReadOnlyList<MemberDto>> Members(Guid practiceId, CancellationToken cancellationToken) => practices.ListMembersAsync(practiceId, cancellationToken);
 
     [HttpPatch("{practiceId:guid}/members/{userId:guid}")]
+    [Authorize(Policy = AuthorizationPolicies.PracticeAdministrator)]
     public async Task<IActionResult> UpdateMember(Guid practiceId, Guid userId, [FromBody] UpdateMemberRequest request, [FromHeader(Name = "If-Match")] string? version, CancellationToken cancellationToken)
     {
-        await practices.UpdateMemberRoleAsync(practiceId, userId, request.Role, DecodeVersion(version), cancellationToken);
+        await practices.UpdateMemberRoleAsync(practiceId, userId, request.Role, ConcurrencyHeaders.DecodeIfMatch(version), cancellationToken);
         return NoContent();
     }
 
     [HttpDelete("{practiceId:guid}/members/{userId:guid}")]
+    [Authorize(Policy = AuthorizationPolicies.PracticeAdministrator)]
     public async Task<IActionResult> RemoveMember(Guid practiceId, Guid userId, CancellationToken cancellationToken)
     {
         await practices.RemoveMemberAsync(practiceId, userId, cancellationToken);
@@ -40,6 +45,7 @@ public sealed class PracticesController(IPracticeService practices) : Controller
     }
 
     [HttpPost("{practiceId:guid}/ownership-transfer")]
+    [Authorize(Policy = AuthorizationPolicies.PracticeOwner)]
     public async Task<IActionResult> TransferOwnership(Guid practiceId, [FromBody] TransferOwnershipRequest request, CancellationToken cancellationToken)
     {
         await practices.TransferOwnershipAsync(practiceId, request.NewOwnerId, cancellationToken);
@@ -47,24 +53,21 @@ public sealed class PracticesController(IPracticeService practices) : Controller
     }
 
     [HttpGet("{practiceId:guid}/invitations")]
+    [Authorize(Policy = AuthorizationPolicies.PracticeAdministrator)]
     public Task<IReadOnlyList<InvitationDto>> Invitations(Guid practiceId, CancellationToken cancellationToken) => practices.ListPracticeInvitationsAsync(practiceId, cancellationToken);
 
     [HttpPost("{practiceId:guid}/invitations")]
+    [Authorize(Policy = AuthorizationPolicies.PracticeAdministrator)]
     public Task<InvitationDto> Invite(Guid practiceId, [FromBody] CreateInvitationRequest request, CancellationToken cancellationToken) => practices.CreateInvitationAsync(practiceId, request, cancellationToken);
 
     [HttpDelete("{practiceId:guid}/invitations/{invitationId:guid}")]
+    [Authorize(Policy = AuthorizationPolicies.PracticeAdministrator)]
     public async Task<IActionResult> RevokeInvitation(Guid practiceId, Guid invitationId, CancellationToken cancellationToken)
     {
         await practices.RevokeInvitationAsync(practiceId, invitationId, cancellationToken);
         return NoContent();
     }
 
-    private static byte[]? DecodeVersion(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value)) return null;
-        var normalized = value.StartsWith('"') ? value.Trim('"') : value;
-        return Convert.FromBase64String(normalized);
-    }
 }
 
 public sealed record UpdateMemberRequest(PracticeRole Role);

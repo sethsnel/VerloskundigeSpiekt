@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 using VerloskundigeSpiekt.Infrastructure;
 
 #nullable disable
@@ -18,7 +19,7 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("public")
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -34,6 +35,15 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<string>("ExtractedText")
+                        .HasColumnType("text")
+                        .HasColumnName("extracted_text");
+
+                    b.Property<string>("HeaderUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("header_url");
+
                     b.Property<bool>("IsPublished")
                         .HasColumnType("boolean")
                         .HasColumnName("is_published");
@@ -47,6 +57,12 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("bytea")
                         .HasColumnName("row_version");
+
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("search_vector")
+                        .HasComputedColumnSql("to_tsvector('dutch', coalesce(title, '') || ' ' || coalesce(extracted_text, ''))", true);
 
                     b.Property<string>("Slug")
                         .IsRequired()
@@ -63,6 +79,10 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -87,7 +107,7 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
 
                     b.Property<string>("DocumentJson")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("document_json");
 
                     b.Property<string>("ExtractedText")
@@ -121,6 +141,23 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                     b.ToTable("article_sections", "public");
                 });
 
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.ArticleTag", b =>
+                {
+                    b.Property<Guid>("ArticleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("article_id");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tag_id");
+
+                    b.HasKey("ArticleId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("article_tags", "public");
+                });
+
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.Contact", b =>
                 {
                     b.Property<Guid>("Id")
@@ -143,7 +180,7 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
 
                     b.Property<string>("MetadataJson")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("metadata_json");
 
                     b.Property<string>("NormalizedEmail")
@@ -270,7 +307,7 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
 
                     b.Property<string>("DefinitionJson")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("definition_json");
 
                     b.Property<Guid>("EmailTemplateId")
@@ -292,8 +329,6 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .HasColumnName("version_number");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmailTemplateId");
 
                     b.HasIndex("PracticeId", "EmailTemplateId", "VersionNumber")
                         .IsUnique();
@@ -360,6 +395,53 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.IdempotencyRecord", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("Key")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("key");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("Operation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("operation");
+
+                    b.Property<string>("RequestFingerprint")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("request_fingerprint");
+
+                    b.Property<string>("ResponseJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("response_json");
+
+                    b.Property<int>("ResponseStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("response_status");
+
+                    b.HasKey("UserId", "Key");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.ToTable("idempotency_records", "public");
+                });
+
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.MigrationAlias", b =>
                 {
                     b.Property<Guid>("Id")
@@ -409,6 +491,114 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("migration_aliases", "public");
+                });
+
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.MigrationRecordState", b =>
+                {
+                    b.Property<Guid>("MigrationRunId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("migration_run_id");
+
+                    b.Property<string>("SourceDocumentId")
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)")
+                        .HasColumnName("source_document_id");
+
+                    b.Property<string>("Checksum")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("checksum");
+
+                    b.Property<string>("ErrorCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("error_code");
+
+                    b.Property<string>("ErrorMetadataJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("error_metadata_json");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("retry_count");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("target_type");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("MigrationRunId", "SourceDocumentId");
+
+                    b.HasIndex("MigrationRunId", "Status");
+
+                    b.ToTable("migration_record_states", "public");
+                });
+
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.MigrationRun", b =>
+                {
+                    b.Property<Guid>("RunId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("run_id");
+
+                    b.Property<string>("ChecksumAlgorithm")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("checksum_algorithm");
+
+                    b.Property<DateTimeOffset?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
+
+                    b.Property<int>("SchemaVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("schema_version");
+
+                    b.Property<string>("SourceChecksum")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("source_checksum");
+
+                    b.Property<DateTimeOffset>("StartedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("started_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("ToolVersion")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("tool_version");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("RunId");
+
+                    b.HasIndex("SourceChecksum", "ChecksumAlgorithm")
+                        .IsUnique();
+
+                    b.ToTable("migration_runs", "public");
                 });
 
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.Practice", b =>
@@ -599,6 +789,12 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .HasColumnType("bytea")
                         .HasColumnName("row_version");
 
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("search_vector")
+                        .HasComputedColumnSql("to_tsvector('dutch', coalesce(title, '') || ' ' || coalesce(extracted_text, ''))", true);
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasColumnType("text")
@@ -614,6 +810,10 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
                     b.HasIndex("PracticeId", "Slug")
                         .IsUnique();
@@ -634,7 +834,7 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
 
                     b.Property<string>("DocumentJson")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("document_json");
 
                     b.Property<string>("ExtractedText")
@@ -659,7 +859,6 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .HasColumnName("practice_page_id");
 
                     b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("bytea")
                         .HasColumnName("row_version");
@@ -669,8 +868,6 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PracticePageId");
 
                     b.HasIndex("PracticeId", "PracticePageId", "Position")
                         .IsUnique();
@@ -703,7 +900,7 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
 
                     b.Property<string>("SnapshotJson")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("snapshot_json");
 
                     b.Property<int>("VersionNumber")
@@ -712,12 +909,45 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PracticePageId");
-
                     b.HasIndex("PracticeId", "PracticePageId", "VersionNumber")
                         .IsUnique();
 
                     b.ToTable("practice_page_versions", "public");
+                });
+
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("row_version");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("tags", "public");
                 });
 
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.User", b =>
@@ -807,6 +1037,25 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                     b.Navigation("Article");
                 });
 
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.ArticleTag", b =>
+                {
+                    b.HasOne("VerloskundigeSpiekt.Domain.Article", "Article")
+                        .WithMany("ArticleTags")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VerloskundigeSpiekt.Domain.Tag", "Tag")
+                        .WithMany("ArticleTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.Contact", b =>
                 {
                     b.HasOne("VerloskundigeSpiekt.Domain.Practice", "Practice")
@@ -833,7 +1082,8 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                 {
                     b.HasOne("VerloskundigeSpiekt.Domain.EmailTemplate", "Template")
                         .WithMany("Versions")
-                        .HasForeignKey("EmailTemplateId")
+                        .HasForeignKey("PracticeId", "EmailTemplateId")
+                        .HasPrincipalKey("PracticeId", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -849,6 +1099,28 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Practice");
+                });
+
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.IdempotencyRecord", b =>
+                {
+                    b.HasOne("VerloskundigeSpiekt.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.MigrationRecordState", b =>
+                {
+                    b.HasOne("VerloskundigeSpiekt.Domain.MigrationRun", "Run")
+                        .WithMany("Records")
+                        .HasForeignKey("MigrationRunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Run");
                 });
 
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.PracticeInvitation", b =>
@@ -896,7 +1168,8 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                 {
                     b.HasOne("VerloskundigeSpiekt.Domain.PracticePage", "Page")
                         .WithMany("Sections")
-                        .HasForeignKey("PracticePageId")
+                        .HasForeignKey("PracticeId", "PracticePageId")
+                        .HasPrincipalKey("PracticeId", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -907,7 +1180,8 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                 {
                     b.HasOne("VerloskundigeSpiekt.Domain.PracticePage", "Page")
                         .WithMany("Versions")
-                        .HasForeignKey("PracticePageId")
+                        .HasForeignKey("PracticeId", "PracticePageId")
+                        .HasPrincipalKey("PracticeId", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -927,12 +1201,19 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
 
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.Article", b =>
                 {
+                    b.Navigation("ArticleTags");
+
                     b.Navigation("Sections");
                 });
 
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.EmailTemplate", b =>
                 {
                     b.Navigation("Versions");
+                });
+
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.MigrationRun", b =>
+                {
+                    b.Navigation("Records");
                 });
 
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.Practice", b =>
@@ -955,6 +1236,11 @@ namespace VerloskundigeSpiekt.Infrastructure.Migrations
                     b.Navigation("Sections");
 
                     b.Navigation("Versions");
+                });
+
+            modelBuilder.Entity("VerloskundigeSpiekt.Domain.Tag", b =>
+                {
+                    b.Navigation("ArticleTags");
                 });
 
             modelBuilder.Entity("VerloskundigeSpiekt.Domain.User", b =>

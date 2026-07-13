@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
-import { getArticle } from '../../../lib/firestore/articles'
-import ArticlePage from './artikel'
+import ArticleLoader from './article-loader'
 import { Metadata } from 'next'
 import { getChannelLabels } from 'content/labels'
 
@@ -8,18 +7,15 @@ const labels = getChannelLabels()
 
 async function LoadArticlePage({ params }: { params: Promise<{ articleId: string }> }) {
   const { articleId } = await params
-  const article = await getArticle(articleId)
-  return <ArticlePage article={article} />
+  return <ArticleLoader articleId={articleId} />
 }
 
 export async function generateMetadata(
   { params }: { params: Promise<{ articleId: string }> }
 ): Promise<Metadata> {
   const { articleId } = await params
-  const article = await getArticle(articleId)
-
   return {
-    title: `${labels.websiteTitle} - ${article.name}`
+    title: `${labels.websiteTitle} - ${articleId}`
   }
 }
 

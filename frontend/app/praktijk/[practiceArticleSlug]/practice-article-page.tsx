@@ -10,7 +10,7 @@ import { Accordion } from '../../../components/ui/accordion'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { useUser } from '../../../lib/auth/use-user'
-import { PRACTICE_ARTICLE_TITLES } from '../../../lib/firestore/practices/constants'
+const PRACTICE_ARTICLE_TITLES: Record<string, string> = { contacten: 'Contacten', ziekenhuizen: 'Ziekenhuizen', sjablonen: 'Sjablonen', assistenten: 'Assistente Spiekt', documenten: 'Documenten' }
 import { usePracticeArticle, usePractices } from '../../../lib/hooks/practices'
 import { Note } from '../../../schema/article'
 

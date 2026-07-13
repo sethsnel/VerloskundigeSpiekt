@@ -1,4 +1,4 @@
-import { auth } from 'firebase-admin'
+import { getAuth } from 'firebase-admin/auth'
 import type { ListUsersResult } from 'firebase-admin/auth'
 
 import { firebaseAdmin } from '../../../../lib/server'
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   const listAllUsers = async (depth: number = 0, nextPageToken?: string): Promise<ListUsersResult> => {
-    const listUsersResult = await auth(firebaseAdmin).listUsers(20, nextPageToken)
+    const listUsersResult = await getAuth(firebaseAdmin).listUsers(20, nextPageToken)
 
     if (listUsersResult.pageToken && depth > 0) {
       return listAllUsers(--depth, listUsersResult.pageToken)

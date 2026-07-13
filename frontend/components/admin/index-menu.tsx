@@ -2,10 +2,7 @@
 
 import { useState } from 'react'
 
-import { doc, setDoc } from 'firebase/firestore'
-import { firestoreDb } from 'config/firebaseConfig'
-import revalidatePath from '@/lib/firestore/articles/revalidate'
-import { getArticles } from '@/lib/firestore/articles'
+import { generatedApi } from '@/lib/api/generated'
 
 import { Button } from '../button'
 
@@ -16,21 +13,11 @@ export default function IndexMenu() {
   const indexMenu = async () => {
     setError(null)
     setIsReindexing(true)
-    const menuItems = await getArticles()
-
     try {
-      const menuArticlesRef = doc(firestoreDb, 'menu', 'articles')
-      await setDoc(
-        menuArticlesRef,
-        menuItems.reduce((acc, item) => {
-          acc[item.id] = item.name
-          return acc
-        }, {} as Record<string, string>)
-      )
-      revalidatePath('/', 'layout')
-    } catch (err) {
+      const articles = await generatedApi.listArticles()
+      await Promise.all(articles.map((article, position) => generatedApi.updateArticle(article.id, { slug: article.slug, title: article.title, position, headerUrl: article.headerUrl, isPublished: article.isPublished, sections: article.sections.map(section => ({ heading: section.heading, documentJson: section.documentJson })), tagIds: article.tagIds }, article.version)))
+    } catch {
       setError('Er is een fout opgetreden bij het indexeren')
-      console.error('Reindex error:', err)
     } finally {
       setIsReindexing(false)
     }

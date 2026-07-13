@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VerloskundigeSpiekt.Domain;
+using NpgsqlTypes;
 
 namespace VerloskundigeSpiekt.Infrastructure;
 
@@ -19,8 +20,13 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Contact> Contacts => Set<Contact>();
     public DbSet<Article> Articles => Set<Article>();
     public DbSet<ArticleSection> ArticleSections => Set<ArticleSection>();
+    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<ArticleTag> ArticleTags => Set<ArticleTag>();
     public DbSet<FileMetadata> FileMetadata => Set<FileMetadata>();
     public DbSet<MigrationAlias> MigrationAliases => Set<MigrationAlias>();
+    public DbSet<MigrationRun> MigrationRuns => Set<MigrationRun>();
+    public DbSet<MigrationRecordState> MigrationRecordStates => Set<MigrationRecordState>();
+    public DbSet<IdempotencyRecord> IdempotencyRecords => Set<IdempotencyRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,6 +40,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         ConfigureAudited<Contact>(modelBuilder);
         ConfigureAudited<Article>(modelBuilder);
         ConfigureAudited<ArticleSection>(modelBuilder);
+        ConfigureAudited<Tag>(modelBuilder);
         ConfigureAudited<FileMetadata>(modelBuilder);
 
         modelBuilder.Entity<MigrationAlias>(entity =>
@@ -44,6 +51,37 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.Property(x => x.TargetType).HasMaxLength(100).IsRequired();
             entity.Property(x => x.Checksum).HasMaxLength(128).IsRequired();
             entity.HasIndex(x => new { x.SourceSystem, x.SourceDocumentId }).IsUnique();
+        });
+        modelBuilder.Entity<MigrationRun>(entity =>
+        {
+            entity.HasKey(x => x.RunId);
+            entity.Property(x => x.SourceChecksum).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.ChecksumAlgorithm).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.ToolVersion).HasMaxLength(32).IsRequired();
+            entity.Property(x => x.Status).HasMaxLength(32).IsRequired();
+            entity.HasIndex(x => new { x.SourceChecksum, x.ChecksumAlgorithm }).IsUnique();
+        });
+        modelBuilder.Entity<MigrationRecordState>(entity =>
+        {
+            entity.HasKey(x => new { x.MigrationRunId, x.SourceDocumentId });
+            entity.Property(x => x.SourceDocumentId).HasMaxLength(600).IsRequired();
+            entity.Property(x => x.TargetType).HasMaxLength(100).IsRequired();
+            entity.Property(x => x.Checksum).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.Status).HasMaxLength(32).IsRequired();
+            entity.Property(x => x.ErrorCode).HasMaxLength(100);
+            entity.Property(x => x.ErrorMetadataJson).HasColumnType("jsonb");
+            entity.HasOne(x => x.Run).WithMany(x => x.Records).HasForeignKey(x => x.MigrationRunId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(x => new { x.MigrationRunId, x.Status });
+        });
+        modelBuilder.Entity<IdempotencyRecord>(entity =>
+        {
+            entity.HasKey(x => new { x.UserId, x.Key });
+            entity.Property(x => x.Key).HasMaxLength(128).IsRequired();
+            entity.Property(x => x.Operation).HasMaxLength(100).IsRequired();
+            entity.Property(x => x.RequestFingerprint).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.ResponseJson).HasColumnType("jsonb").IsRequired();
+            entity.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(x => x.ExpiresAt);
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -94,24 +132,33 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<PracticePage>(entity =>
         {
             entity.HasKey(x => x.Id);
+            entity.HasAlternateKey(x => new { x.PracticeId, x.Id });
             entity.HasIndex(x => new { x.PracticeId, x.Slug }).IsUnique();
+            entity.Property<NpgsqlTsVector>("SearchVector").HasColumnType("tsvector").HasComputedColumnSql("to_tsvector('dutch', coalesce(title, '') || ' ' || coalesce(extracted_text, ''))", stored: true);
+            entity.HasIndex("SearchVector").HasMethod("GIN");
             entity.HasOne(x => x.Practice).WithMany(x => x.Pages).HasForeignKey(x => x.PracticeId).OnDelete(DeleteBehavior.Cascade);
         });
         modelBuilder.Entity<PracticePageSection>(entity =>
         {
             entity.HasKey(x => x.Id);
+            // Sections are owned by the page aggregate; the page ETag and advisory
+            // lock serialize the complete ordered-section update.
+            entity.Property(x => x.RowVersion).IsConcurrencyToken(false);
             entity.HasIndex(x => new { x.PracticeId, x.PracticePageId, x.Position }).IsUnique();
-            entity.HasOne(x => x.Page).WithMany(x => x.Sections).HasForeignKey(x => x.PracticePageId).OnDelete(DeleteBehavior.Cascade);
+            entity.Property(x => x.DocumentJson).HasColumnType("jsonb");
+            entity.HasOne(x => x.Page).WithMany(x => x.Sections).HasForeignKey(x => new { x.PracticeId, x.PracticePageId }).HasPrincipalKey(x => new { x.PracticeId, x.Id }).OnDelete(DeleteBehavior.Cascade);
         });
         modelBuilder.Entity<PracticePageVersion>(entity =>
         {
             entity.HasKey(x => x.Id);
             entity.HasIndex(x => new { x.PracticeId, x.PracticePageId, x.VersionNumber }).IsUnique();
-            entity.HasOne(x => x.Page).WithMany(x => x.Versions).HasForeignKey(x => x.PracticePageId).OnDelete(DeleteBehavior.Cascade);
+            entity.Property(x => x.SnapshotJson).HasColumnType("jsonb");
+            entity.HasOne(x => x.Page).WithMany(x => x.Versions).HasForeignKey(x => new { x.PracticeId, x.PracticePageId }).HasPrincipalKey(x => new { x.PracticeId, x.Id }).OnDelete(DeleteBehavior.Cascade);
         });
         modelBuilder.Entity<EmailTemplate>(entity =>
         {
             entity.HasKey(x => x.Id);
+            entity.HasAlternateKey(x => new { x.PracticeId, x.Id });
             entity.HasIndex(x => new { x.PracticeId, x.Key }).IsUnique();
             entity.HasOne(x => x.Practice).WithMany(x => x.EmailTemplates).HasForeignKey(x => x.PracticeId).OnDelete(DeleteBehavior.Cascade);
         });
@@ -120,7 +167,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasKey(x => x.Id);
             entity.HasIndex(x => new { x.PracticeId, x.EmailTemplateId, x.VersionNumber }).IsUnique();
             entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32);
-            entity.HasOne(x => x.Template).WithMany(x => x.Versions).HasForeignKey(x => x.EmailTemplateId).OnDelete(DeleteBehavior.Cascade);
+            entity.Property(x => x.DefinitionJson).HasColumnType("jsonb");
+            entity.HasOne(x => x.Template).WithMany(x => x.Versions).HasForeignKey(x => new { x.PracticeId, x.EmailTemplateId }).HasPrincipalKey(x => new { x.PracticeId, x.Id }).OnDelete(DeleteBehavior.Cascade);
         });
         modelBuilder.Entity<EmailTemplateKey>(entity => { entity.HasKey(x => x.Id); entity.HasIndex(x => x.Key).IsUnique(); });
         modelBuilder.Entity<Contact>(entity =>
@@ -129,13 +177,22 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(x => new { x.PracticeId, x.NormalizedEmail });
             entity.HasIndex(x => new { x.PracticeId, x.DisplayName });
             entity.HasOne(x => x.Practice).WithMany(x => x.Contacts).HasForeignKey(x => x.PracticeId).OnDelete(DeleteBehavior.Cascade);
+            entity.Property(x => x.MetadataJson).HasColumnType("jsonb");
         });
-        modelBuilder.Entity<Article>(entity => { entity.HasKey(x => x.Id); entity.HasIndex(x => x.Slug).IsUnique(); });
+        modelBuilder.Entity<Article>(entity => { entity.HasKey(x => x.Id); entity.HasIndex(x => x.Slug).IsUnique(); entity.Property(x => x.HeaderUrl).HasMaxLength(2048); entity.Property<NpgsqlTsVector>("SearchVector").HasColumnType("tsvector").HasComputedColumnSql("to_tsvector('dutch', coalesce(title, '') || ' ' || coalesce(extracted_text, ''))", stored: true); entity.HasIndex("SearchVector").HasMethod("GIN"); });
         modelBuilder.Entity<ArticleSection>(entity =>
         {
             entity.HasKey(x => x.Id);
             entity.HasIndex(x => new { x.ArticleId, x.Position }).IsUnique();
             entity.HasOne(x => x.Article).WithMany(x => x.Sections).HasForeignKey(x => x.ArticleId).OnDelete(DeleteBehavior.Cascade);
+            entity.Property(x => x.DocumentJson).HasColumnType("jsonb");
+        });
+        modelBuilder.Entity<Tag>(entity => { entity.HasKey(x => x.Id); entity.Property(x => x.Name).HasMaxLength(100).IsRequired(); entity.HasIndex(x => x.Name).IsUnique(); });
+        modelBuilder.Entity<ArticleTag>(entity =>
+        {
+            entity.HasKey(x => new { x.ArticleId, x.TagId });
+            entity.HasOne(x => x.Article).WithMany(x => x.ArticleTags).HasForeignKey(x => x.ArticleId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.Tag).WithMany(x => x.ArticleTags).HasForeignKey(x => x.TagId).OnDelete(DeleteBehavior.Cascade);
         });
         modelBuilder.Entity<FileMetadata>(entity =>
         {

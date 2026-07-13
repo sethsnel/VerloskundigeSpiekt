@@ -17,27 +17,47 @@ jobs:
         image: postgres:17.5-bookworm
         env:
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: verloskundigespiekt_test
+          POSTGRES_DB: verloskundigespiekt
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U postgres -d verloskundigespiekt_test"
+          --health-cmd "pg_isready -U postgres -d verloskundigespiekt"
           --health-interval 5s --health-timeout 5s --health-retries 12
     defaults:
       run:
         working-directory: backend
     env:
       CI: true
-      Database__ConnectionString: Host=localhost;Port=5432;Database=verloskundigespiekt_test;Username=postgres;Password=postgres
+      Database__ConnectionString: Host=localhost;Port=5432;Database=verloskundigespiekt;Username=postgres;Password=postgres
       Firebase__ProjectId: ci-test-project
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+      - run: dotnet tool restore
       - run: dotnet restore VerloskundigeSpiekt.slnx
+      - run: dotnet list VerloskundigeSpiekt.slnx package --vulnerable --include-transitive
       - run: dotnet format VerloskundigeSpiekt.slnx --verify-no-changes --no-restore
       - run: dotnet build VerloskundigeSpiekt.slnx --configuration Release --no-restore
+      - run: dotnet ef migrations has-pending-model-changes --project src/VerloskundigeSpiekt.Infrastructure/VerloskundigeSpiekt.Infrastructure.csproj --startup-project src/VerloskundigeSpiekt.Api/VerloskundigeSpiekt.Api.csproj --configuration Release --no-build
       - run: dotnet test VerloskundigeSpiekt.slnx --configuration Release --no-build --logger trx
+      - name: Bootstrap protected database roles
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d verloskundigespiekt -f database/bootstrap-roles.sql
+          psql -h localhost -U postgres -d verloskundigespiekt -c "ALTER ROLE vs_migrator PASSWORD 'ci-migrator'; ALTER ROLE vs_api PASSWORD 'ci-runtime';"
+      - name: Build and apply migration bundle as migration owner
+        env:
+          PGPASSWORD: ci-migrator
+        run: |
+          ./scripts/create-migration-bundle.ps1 -Output artifacts/efbundle
+          chmod +x artifacts/efbundle
+          ./artifacts/efbundle 20260710102124_AddMigrationAliases --connection "Host=localhost;Port=5432;Database=verloskundigespiekt;Username=vs_migrator;Password=ci-migrator"
+          ./artifacts/efbundle --connection "Host=localhost;Port=5432;Database=verloskundigespiekt;Username=vs_migrator;Password=ci-migrator"
+          psql -h localhost -U vs_migrator -d verloskundigespiekt -f database/roles.sql
+          ./artifacts/efbundle --connection "Host=localhost;Port=5432;Database=verloskundigespiekt;Username=vs_migrator;Password=ci-migrator"
+        shell: pwsh
       - run: dotnet publish src/VerloskundigeSpiekt.Api/VerloskundigeSpiekt.Api.csproj --configuration Release --no-restore --output artifacts/api
       - name: Build production image
         working-directory: .
@@ -48,3 +68,56 @@ jobs:
           image: verloskundigespiekt-api:${{ github.sha }}
           artifact-name: sbom.spdx.json
           output-file: backend/artifacts/sbom.spdx.json
+      - name: Scan production image
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: verloskundigespiekt-api:${{ github.sha }}
+          format: json
+          output: backend/artifacts/trivy-image.json
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
+      - name: Inspect runtime image
+        working-directory: .
+        run: |
+          test "$(docker image inspect verloskundigespiekt-api:${{ github.sha }} --format '{{.Config.User}}')" != "0"
+          docker run --rm --entrypoint sh verloskundigespiekt-api:${{ github.sha }} -c 'test ! -d /usr/share/dotnet/sdk && test ! -d /src && test ! -d /tests'
+      - name: Verify readiness from the production image
+        working-directory: .
+        run: |
+          docker run -d --name vs-api --network host \
+            -e ASPNETCORE_ENVIRONMENT=Development \
+            -e Database__ConnectionString='Host=localhost;Port=5432;Database=verloskundigespiekt;Username=vs_api;Password=ci-runtime' \
+            -e Firebase__ProjectId=ci-test-project \
+            -e Storage__RootPath=/tmp/vs-storage \
+            -e Storage__SigningKey=ci-container-signing-key-32-characters \
+            verloskundigespiekt-api:${{ github.sha }}
+          for _ in {1..30}; do curl --fail http://localhost:8080/health/ready && break; sleep 1; done
+          curl --fail http://localhost:8080/health/ready
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        working-directory: .
+      - name: Verify generated API client drift
+        working-directory: frontend
+        env:
+          API_OPENAPI_URL: http://localhost:8080/openapi/v1.json
+        run: |
+          pnpm run generate:api
+          git diff --exit-code -- lib/api/openapi.generated.ts
+      - name: Stop API verification container
+        if: always()
+        working-directory: .
+        run: docker stop --time 10 vs-api || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-security-and-migration-artifacts
+          path: |
+            backend/artifacts/efbundle
+            backend/artifacts/sbom.spdx.json
+            backend/artifacts/trivy-image.json

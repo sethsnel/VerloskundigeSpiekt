@@ -1,13 +1,10 @@
 import firebase, { initializeApp } from 'firebase/app'
 // the below imports are option - comment out what you don't need
 import 'firebase/auth'
-import 'firebase/firestore'
-// import 'firebase/storage'
 import 'firebase/analytics'
 import 'firebase/performance'
 import { getAnalytics } from 'firebase/analytics'
 import { getPerformance } from 'firebase/performance'
-import { getFirestore } from 'firebase/firestore'
 // import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const clientCredentials = {
@@ -21,7 +18,6 @@ const clientCredentials = {
 }
 
 const firebaseApp = initializeApp(clientCredentials)
-export const firestoreDb = getFirestore()
 
 if (typeof window !== 'undefined') {
     const analytics = getAnalytics(firebaseApp)

@@ -2,9 +2,9 @@ name: frontend
 
 on:
   push:
-    paths: ["frontend/**", "pnpm-lock.yaml", "pnpm-workspace.yaml", ".github/workflows/frontend.yml"]
+    paths: ["frontend/**", "extension/**", "tools/migration-firestore-postgres/**", "pnpm-lock.yaml", "pnpm-workspace.yaml", ".github/workflows/frontend.yml"]
   pull_request:
-    paths: ["frontend/**", "pnpm-lock.yaml", "pnpm-workspace.yaml", ".github/workflows/frontend.yml"]
+    paths: ["frontend/**", "extension/**", "tools/migration-firestore-postgres/**", "pnpm-lock.yaml", "pnpm-workspace.yaml", ".github/workflows/frontend.yml"]
 
 permissions:
   contents: read
@@ -15,8 +15,6 @@ jobs:
     env:
       NEXT_PUBLIC_CHANNEL: VerloskundigeSpiekt
       NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
-      NEXT_PUBLIC_AZURE_SEARCH_ENDPOINT: https://example.invalid
-      NEXT_PUBLIC_AZURE_SEARCH_API_KEY: ci-placeholder
       NEXT_PUBLIC_FIREBASE_API_KEY: ci-placeholder
       NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ci-placeholder
       NEXT_PUBLIC_FIREBASE_DATABASE_URL: https://example.invalid
@@ -34,5 +32,21 @@ jobs:
           node-version: 24.x
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --prod --audit-level high
       - run: pnpm --filter frontend exec tsc --noEmit
+      - run: pnpm --filter frontend lint
+      - name: Prevent application-domain Firestore and direct search imports
+        run: |
+          ! grep -R --include='*.ts' --include='*.tsx' -E "firebase/firestore|@azure/search-documents|lib/firestore" frontend
       - run: pnpm --filter frontend build
+      - run: pnpm --filter frontend test:component
+      - run: pnpm --filter frontend exec playwright install --with-deps chromium
+      - run: pnpm --filter frontend test:e2e
+      - run: npm test
+        working-directory: extension
+      - run: node --check background.js && node --check popup.js
+        working-directory: extension
+      - run: pnpm install --ignore-workspace --frozen-lockfile
+        working-directory: tools/migration-firestore-postgres
+      - run: pnpm run typecheck && pnpm test && pnpm audit --prod --audit-level high
+        working-directory: tools/migration-firestore-postgres

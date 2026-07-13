@@ -1,4 +1,4 @@
-import { auth } from 'firebase-admin'
+import { getAuth } from 'firebase-admin/auth'
 
 import { firebaseAdmin } from '../../../../../lib/server'
 import { validateAdminRequest } from '../../../../../lib/server'
@@ -14,6 +14,6 @@ export async function GET(
     return NextResponse.json({}, { status: requestResponseCode })
   }
 
-  var fetchedUser = await auth(firebaseAdmin).getUser(uid)
+  var fetchedUser = await getAuth(firebaseAdmin).getUser(uid)
   return NextResponse.json(fetchedUser)
 }

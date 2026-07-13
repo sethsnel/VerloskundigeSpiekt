@@ -13,7 +13,7 @@ public sealed class InvitationsController(IPracticeService practices) : Controll
     public Task<IReadOnlyList<InvitationDto>> Pending(CancellationToken cancellationToken) => practices.ListPendingInvitationsAsync(cancellationToken);
 
     [HttpPost("{invitationId:guid}/response")]
-    public Task<InvitationDto> Respond(Guid invitationId, [FromBody] InvitationResponseRequest request, CancellationToken cancellationToken) => practices.RespondToInvitationAsync(invitationId, request.Response, cancellationToken);
+    public Task<InvitationDto> Respond(Guid invitationId, [FromBody] InvitationResponseRequest request, [FromHeader(Name = "Idempotency-Key")] string? idempotencyKey, CancellationToken cancellationToken) => practices.RespondToInvitationAsync(invitationId, request.Response, idempotencyKey, cancellationToken);
 }
 
 public sealed record InvitationResponseRequest(InvitationResponse Response);

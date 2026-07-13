@@ -1,4 +1,3 @@
-import { FullMetadata } from 'firebase/storage'
 import Image from 'next/image'
 import { useRef, useState, type JSX } from 'react';
 import { BsCloudUpload, BsFileEarmarkPdf } from 'react-icons/bs'
@@ -9,9 +8,11 @@ import { useFiles } from '../../lib/hooks/files'
 import styles from './fileCenter.module.scss'
 
 type FileListItem = {
+  id: string
   name: string
   url: string
-  metaData: FullMetadata
+  contentType: string
+  size: number
 }
 
 interface FileCenterProps {
@@ -22,7 +23,7 @@ interface FileCenterProps {
   onFileUploaded: (file: File) => void
 }
 
-export type FileDto = { name: string, url: string }
+export type FileDto = { id: string, name: string, url: string }
 
 const FileCenter = ({ folderPath, files, isDeletingFileName, onFileSelect, onFileUploaded }: FileCenterProps) => {
   const { uploadFileMutation } = useFiles(folderPath)
@@ -45,7 +46,7 @@ const FileCenter = ({ folderPath, files, isDeletingFileName, onFileSelect, onFil
   let fileOptions = undefined
   if (files) {
     fileOptions = files.map(file => {
-      const isLoading = isDeletingFileName === file.name
+      const isLoading = isDeletingFileName === file.id
       const isSelected = file.url === selectedFile?.url
       return mapFileToTile(file, isLoading, isSelected, selectFile)
     })
@@ -78,7 +79,7 @@ const FileCenter = ({ folderPath, files, isDeletingFileName, onFileSelect, onFil
 }
 
 function mapFileToTile(file: FileListItem, isLoading: boolean, isSelected: boolean, selectFile: (file?: FileDto) => void): JSX.Element {
-  const { contentType } = file.metaData
+  const { contentType } = file
 
   return isLoading ?
     <div key={file.name} className={`${styles.uploadFile} d-flex justify-content-center align-items-center`}>

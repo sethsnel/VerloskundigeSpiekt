@@ -8,11 +8,9 @@ import { Accordion } from '@/components/ui/accordion'
 import { ArticleAccordion } from '@/components/accordion'
 import { Button } from '../../components/button'
 import { useUser } from '../../lib/auth/use-user'
-import { upsertNote, deleteNote, getArticle } from '../../lib/firestore/articles'
 import { getArticleQueryKey } from '../../lib/react-query'
 import { Article, Note } from '../../schema/article'
 import { useArticles } from '../../lib/hooks/articles'
-import { deleteArticleNotesFromIndexApi, deleteNoteFromIndexApi, indexArticleNotesApi } from '../../lib/services/search-api-client'
 
 import styles from './notes.module.scss'
 
@@ -26,14 +24,12 @@ const Notes = ({ article }: NotesProps) => {
   const { user } = useUser()
   const queryClient = useQueryClient()
   const articleQueryKey = getArticleQueryKey(article.id || '')
-  const { deleteArticleMutation } = useArticles()
+  const { deleteArticleMutation, addArticleMutation } = useArticles()
   const [openAccordionItems, setOpenAccordionItems] = useState<string[]>([])
 
   const onDeletePage = async () => {
     if (window.confirm('Weet je zeker dat je deze pagina wilt verwijderen?')) {
-      // Delete all notes from search index before deleting article
       deleteArticleMutation.mutate(article.id)
-      await deleteArticleNotesFromIndexApi(article.id)
     }
   }
 
@@ -48,7 +44,7 @@ const Notes = ({ article }: NotesProps) => {
     setNewNote(undefined)
   }
 
-  const upsertNoteMutation = useMutation((newNote: Note) => upsertNote(newNote, article.id), {
+  const upsertNoteMutation = useMutation(async (newNote: Note) => { await addArticleMutation.mutateAsync({ ...article, notes: { ...article.notes, [newNote.id]: newNote } }); return newNote }, {
     onSuccess: async (upsertedNote) => {
       if (upsertedNote) {
         const updatedArticle = {
@@ -60,19 +56,15 @@ const Notes = ({ article }: NotesProps) => {
         }
 
         queryClient.setQueryData(articleQueryKey, updatedArticle)
-        // Update search index
-        await indexArticleNotesApi(updatedArticle.id)
       }
     },
   })
 
-  const deleteNoteMutation = useMutation((noteId: string) => deleteNote(noteId, article.id), {
+  const deleteNoteMutation = useMutation(async (noteId: string) => { const notes = { ...article.notes }; delete notes[noteId]; await addArticleMutation.mutateAsync({ ...article, notes }); return noteId }, {
     onSuccess: async (deletedNoteId) => {
       if (deletedNoteId && article?.notes) {
         delete article.notes[deletedNoteId]
         queryClient.setQueryData(articleQueryKey, { ...article })
-        // Remove from search index
-        await deleteNoteFromIndexApi(deletedNoteId)
       }
     },
   })

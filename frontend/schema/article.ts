@@ -6,6 +6,10 @@ export type Article = {
   headerUrl?: string
   notes?: Record<string, Note>
   tagIds?: string[]
+  slug?: string
+  position?: number
+  isPublished?: boolean
+  version?: string
 }
 
 export type UpsertArticle = Omit<Article, 'id'> & {
@@ -26,6 +30,7 @@ export type Tag = {
     id: string
     name: string
   }[]
+  version?: string
 }
 
 export type UpsertTag = Omit<Tag, 'id'> & {

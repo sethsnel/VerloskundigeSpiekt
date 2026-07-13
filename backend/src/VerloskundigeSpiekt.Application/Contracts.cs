@@ -27,7 +27,7 @@ public interface IPracticeService
     Task<IReadOnlyList<InvitationDto>> ListPendingInvitationsAsync(CancellationToken cancellationToken);
     Task<IReadOnlyList<InvitationDto>> ListPracticeInvitationsAsync(Guid practiceId, CancellationToken cancellationToken);
     Task<InvitationDto> CreateInvitationAsync(Guid practiceId, CreateInvitationRequest request, CancellationToken cancellationToken);
-    Task<InvitationDto> RespondToInvitationAsync(Guid invitationId, InvitationResponse response, CancellationToken cancellationToken);
+    Task<InvitationDto> RespondToInvitationAsync(Guid invitationId, InvitationResponse response, string? idempotencyKey, CancellationToken cancellationToken);
     Task RevokeInvitationAsync(Guid practiceId, Guid invitationId, CancellationToken cancellationToken);
 }
 
@@ -35,7 +35,10 @@ public interface IContentService
 {
     Task<IReadOnlyList<PracticePageDto>> ListPagesAsync(Guid practiceId, CancellationToken cancellationToken);
     Task<PracticePageDto> GetPageAsync(Guid practiceId, string slug, CancellationToken cancellationToken);
-    Task<PracticePageDto> UpsertPageAsync(Guid practiceId, string slug, PageRequest request, byte[]? expectedVersion, CancellationToken cancellationToken);
+    Task<PracticePageDto> CreatePageAsync(Guid practiceId, string slug, PageRequest request, bool idempotentSeed, CancellationToken cancellationToken);
+    Task<PracticePageDto> UpdatePageAsync(Guid practiceId, string slug, PageRequest request, byte[]? expectedVersion, CancellationToken cancellationToken);
+    Task DeletePageAsync(Guid practiceId, string slug, byte[]? expectedVersion, CancellationToken cancellationToken);
+    Task<IReadOnlyList<PageVersionDto>> ListPageVersionsAsync(Guid practiceId, string slug, CancellationToken cancellationToken);
     Task<IReadOnlyList<EmailTemplateDto>> ListPublishedTemplatesAsync(Guid practiceId, CancellationToken cancellationToken);
     Task<EmailTemplateDto> GetPublishedTemplateAsync(Guid practiceId, string key, CancellationToken cancellationToken);
     Task<EmailTemplateDto> UpsertTemplateAsync(Guid practiceId, string key, TemplateRequest request, byte[]? expectedVersion, CancellationToken cancellationToken);
@@ -45,8 +48,18 @@ public interface IContentService
     Task DeleteContactAsync(Guid practiceId, Guid contactId, CancellationToken cancellationToken);
     Task<IReadOnlyList<ArticleDto>> ListArticlesAsync(CancellationToken cancellationToken);
     Task<ArticleDto> GetArticleAsync(string slug, CancellationToken cancellationToken);
-    Task<IReadOnlyList<SearchResultDto>> SearchAsync(Guid? practiceId, string query, CancellationToken cancellationToken);
-    Task<FileDto> RegisterFileAsync(Guid practiceId, FileRequest request, CancellationToken cancellationToken);
+    Task<ArticleDto> CreateArticleAsync(ArticleRequest request, CancellationToken cancellationToken);
+    Task<ArticleDto> UpdateArticleAsync(Guid articleId, ArticleRequest request, byte[]? expectedVersion, CancellationToken cancellationToken);
+    Task DeleteArticleAsync(Guid articleId, byte[]? expectedVersion, CancellationToken cancellationToken);
+    Task<IReadOnlyList<TagDto>> ListTagsAsync(CancellationToken cancellationToken);
+    Task<TagDto> CreateTagAsync(TagRequest request, CancellationToken cancellationToken);
+    Task<TagDto> UpdateTagAsync(Guid tagId, TagRequest request, byte[]? expectedVersion, CancellationToken cancellationToken);
+    Task<SearchResponseDto> SearchAsync(Guid? practiceId, string query, string? cursor, int pageSize, string? kind, CancellationToken cancellationToken);
+    Task<FileAccessDto> AuthorizeFileUploadAsync(Guid practiceId, FileUploadRequest request, CancellationToken cancellationToken);
+    Task<FileAccessDto> AuthorizeFileDownloadAsync(Guid practiceId, Guid fileId, CancellationToken cancellationToken);
+    Task UploadFileAsync(string token, Stream content, string? contentType, long? contentLength, CancellationToken cancellationToken);
+    Task<FileDownloadDto> DownloadFileAsync(string token, CancellationToken cancellationToken);
+    Task DeleteFileAsync(Guid practiceId, Guid fileId, CancellationToken cancellationToken);
     Task<IReadOnlyList<FileDto>> ListFilesAsync(Guid practiceId, CancellationToken cancellationToken);
 }
 
@@ -58,16 +71,25 @@ public sealed record CreatePracticeRequest(string Name, string Slug);
 public sealed record UpdatePracticeRequest(string Name, string Slug);
 public sealed record CreateInvitationRequest(string Email, PracticeRole Role, int ValidForDays = 7);
 public enum InvitationResponse { Accept, Decline }
-public sealed record PracticePageDto(Guid Id, Guid PracticeId, string Slug, string Title, string DocumentJson, DateTimeOffset UpdatedAt, string Version);
-public sealed record PageRequest(string Title, string DocumentJson);
+public sealed record PracticePageDto(Guid Id, Guid PracticeId, string Slug, string Title, string DocumentJson, IReadOnlyList<PageSectionDto> Sections, DateTimeOffset UpdatedAt, string Version);
+public sealed record PageSectionDto(Guid Id, int Position, string Heading, string DocumentJson);
+public sealed record PageSectionRequest(string Heading, string DocumentJson);
+public sealed record PageRequest(string Title, string? DocumentJson = null, IReadOnlyList<PageSectionRequest>? Sections = null);
+public sealed record PageVersionDto(Guid Id, int VersionNumber, string SnapshotJson, DateTimeOffset CreatedAt, Guid ChangedByUserId);
 public sealed record EmailTemplateDto(Guid Id, Guid PracticeId, string Key, string Name, string DefinitionJson, TemplateVersionStatus Status, string Version);
-public sealed record TemplateRequest(string Name, string DefinitionJson, bool Publish = false);
+public sealed record TemplateRequest(string Name, string DefinitionJson, TemplateVersionStatus Status = TemplateVersionStatus.Draft);
 public sealed record ContactDto(Guid Id, Guid PracticeId, string DisplayName, string? Email, string? Telephone, string MetadataJson, string Version);
 public sealed record ContactRequest(string DisplayName, string? Email, string? Telephone, string MetadataJson = "{}");
-public sealed record ArticleDto(Guid Id, string Slug, string Title, int Position, string DocumentJson);
-public sealed record SearchResultDto(string Kind, Guid Id, string Title, string? PracticeId, string Snippet);
+public sealed record ArticleDto(Guid Id, string Slug, string Title, int Position, string? HeaderUrl, bool IsPublished, string DocumentJson, IReadOnlyList<PageSectionDto> Sections, IReadOnlyList<Guid> TagIds, string Version);
+public sealed record ArticleRequest(string Slug, string Title, int Position, string? HeaderUrl, bool IsPublished, IReadOnlyList<PageSectionRequest> Sections, IReadOnlyList<Guid>? TagIds = null);
+public sealed record TagDto(Guid Id, string Name, IReadOnlyList<Guid> ArticleIds, string Version);
+public sealed record TagRequest(string Name);
+public sealed record SearchResultDto(string Kind, Guid Id, string Title, string? PracticeId, string Snippet, float Rank);
+public sealed record SearchResponseDto(IReadOnlyList<SearchResultDto> Items, string? NextCursor, IReadOnlyDictionary<string, int> Facets);
 public sealed record FileDto(Guid Id, Guid PracticeId, string FileName, string ContentType, long SizeBytes, string StorageObjectName, DateTimeOffset UpdatedAt);
-public sealed record FileRequest(string FileName, string ContentType, long SizeBytes, string StorageObjectName);
+public sealed record FileUploadRequest(string FileName, string ContentType, long SizeBytes);
+public sealed record FileAccessDto(FileDto File, string Url, DateTimeOffset ExpiresAt);
+public sealed record FileDownloadDto(Stream Content, string ContentType, string FileName);
 public sealed record PagedResult<T>(IReadOnlyList<T> Items, string? NextCursor);
 
 public sealed record ApiError(string Code, string Detail);
@@ -88,4 +110,7 @@ public static class ErrorCodes
     public const string InvitationState = "invitation.invalid_state";
     public const string OnlyOwner = "practice.only_owner";
     public const string IdempotencyConflict = "request.idempotency_conflict";
+    public const string PreconditionRequired = "request.precondition_required";
+    public const string MalformedPrecondition = "request.precondition_malformed";
+    public const string RequestTooLarge = "request.body_too_large";
 }

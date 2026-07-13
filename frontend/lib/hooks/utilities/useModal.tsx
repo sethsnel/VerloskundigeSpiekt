@@ -9,7 +9,7 @@ const useModal = (key: string) => {
   const showModal = useCallback((modalProps: Omit<ModalState, 'display'>): void => {
     setModal({ ...modalProps, display: true })
     setModalKey(key)
-  }, [setModal])
+  }, [key, setModal])
 
   const updateModal = useCallback((modalProps: Omit<ModalState, 'display'>): void => {
     if (modal && modal.display) {

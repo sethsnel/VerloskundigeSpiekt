@@ -1,0 +1,2 @@
+import { defineConfig } from '@playwright/test'
+export default defineConfig({ testDir: './test/e2e', use: { baseURL: 'http://127.0.0.1:3000' }, webServer: { command: 'pnpm build && pnpm start', port: 3000, reuseExistingServer: true, env: { NEXT_PUBLIC_CHANNEL: 'VerloskundigeSpiekt', NEXT_PUBLIC_API_BASE_URL: 'http://localhost:8080', NEXT_PUBLIC_FIREBASE_API_KEY: 'test', NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: 'test.invalid', NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'test', NEXT_PUBLIC_FIREBASE_APP_ID: 'test' } } })

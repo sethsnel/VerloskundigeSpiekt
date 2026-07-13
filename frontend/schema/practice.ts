@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase/firestore'
-
 import { Article } from './article'
 
 export type PracticeMemberRole = 'admin' | 'user'
@@ -18,7 +16,7 @@ export type Practice = {
   name: string
   ownerId?: string
   address: PracticeAddress
-  createdAt?: Timestamp | null
+  createdAt?: Date | string | null
 }
 
 export type ArticlePractice = {
@@ -27,6 +25,7 @@ export type ArticlePractice = {
 
 export type PracticeWithRole = Practice & {
   role: PracticeMemberRole
+  version?: string
 }
 
 export type PracticeMember = {
@@ -36,7 +35,7 @@ export type PracticeMember = {
   role: PracticeMemberRole
   email?: string | null
   displayName?: string | null
-  createdAt?: Timestamp | null
+  createdAt?: Date | string | null
 }
 
 export type PracticeInviteStatus = 'pending' | 'accepted' | 'declined'
@@ -48,7 +47,7 @@ export type PracticeInvite = {
   role: PracticeMemberRole
   invitedBy: string
   status: PracticeInviteStatus
-  createdAt?: Timestamp | null
+  createdAt?: Date | string | null
 }
 
 export type UserState = {

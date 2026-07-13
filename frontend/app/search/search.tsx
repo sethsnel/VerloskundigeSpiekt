@@ -6,18 +6,19 @@ import Link from 'next/link'
 import styles from './search.module.scss'
 
 import { Content } from '../../components/layout'
-import { SearchableNote } from '../../lib/search/search-schema'
-import { queryIndexApi } from '../../lib/services/search-api-client'
+import { generatedApi, type ApiSearchResponse } from '../../lib/api/generated'
 import { Button } from '../../components/button'
 import SearchBar from '@/components/layout/search-bar'
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
-  const [results, setResults] = useState<SearchableNote[]>([])
+  const [results, setResults] = useState<ApiSearchResponse['items']>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [total, setTotal] = useState<number>(0)
-  const [page, setPage] = useState<number>(1)
+  const [cursors, setCursors] = useState<Array<string | undefined>>([undefined])
+  const [page, setPage] = useState(0)
+  const [nextCursor, setNextCursor] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const pageSize = 10
 
@@ -35,13 +36,10 @@ export default function SearchPage() {
         setLoading(true)
         setError(null)
 
-        const skip = (page - 1) * pageSize
-
-        // Use the actual search function
-        const searchResults = await queryIndexApi(query, pageSize, skip)
-
-        setResults(searchResults.notes)
-        setTotal(searchResults.total)
+        const searchResults = await generatedApi.search(query, cursors[page], pageSize)
+        setResults(searchResults.items)
+        setNextCursor(searchResults.nextCursor)
+        setTotal(Object.values(searchResults.facets).reduce((sum, count) => sum + count, 0))
       } catch (error) {
         console.error('Error searching:', error)
         setError('De zoekservice is momenteel niet beschikbaar. Probeer het later opnieuw.')
@@ -53,15 +51,14 @@ export default function SearchPage() {
     }
 
     fetchSearchResults()
-  }, [query, page])
+  }, [cursors, page, query])
 
   const handlePageChange = (newPage: number) => {
+    if (newPage > page && nextCursor) setCursors(current => [...current.slice(0, page + 1), nextCursor])
     setPage(newPage)
     // Scroll to top when changing pages
     window.scrollTo(0, 0)
   }
-
-  const totalPages = Math.ceil(total / pageSize)
 
   return (
     <Content>
@@ -82,37 +79,34 @@ export default function SearchPage() {
               {results.map((result) => (
                 <div key={result.id} className={styles.resultItem}>
                   <h2>
-                    <Link href={`/artikel/${result.articleId}#${result.noteId}`}>
-                      {result.articleName}
-                      <span className={styles.articleName}>&nbsp;- {result.name}</span>
+                    <Link href={result.kind === 'article' ? `/artikel/${result.snippet}` : `/praktijk/${result.snippet}`}>
+                      {result.title}
                     </Link>
                   </h2>
                   <p className={styles.noteContent}>
-                    {result.content.length > 200
-                      ? `${result.content.substring(0, 200)}...`
-                      : result.content}
+                    {result.snippet}
                   </p>
                 </div>
               ))}
             </div>
 
-            {totalPages > 1 && (
+            {(page > 0 || nextCursor) && (
               <div className={styles.pagination}>
                 <Button
                   variant="outline"
                   onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
+                  disabled={page === 0}
                   icon='back'
                 >
                   Vorige
                 </Button>
                 <span className={styles.pageInfo}>
-                  Pagina {page} van {totalPages}
+                  Pagina {page + 1}
                 </span>
                 <Button
                   variant="outline"
                   onClick={() => handlePageChange(page + 1)}
-                  disabled={page >= totalPages}
+                  disabled={!nextCursor}
                   icon='forward'
                 >
                   Volgende

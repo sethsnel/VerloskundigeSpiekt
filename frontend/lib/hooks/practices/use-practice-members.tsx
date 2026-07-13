@@ -16,7 +16,7 @@ const usePracticeMembers = (practiceId?: string, userId?: string, canViewInvites
 
   const membersQuery = useQuery(
     apiQueryKeys.members(userId, practiceId),
-    async () => (await generatedApi.listMembers(practiceId as string)).map(member => ({ id: member.userId, practiceId: practiceId as string, userId: member.userId, role: member.role === 'Member' ? 'user' as const : 'admin' as const, email: member.email, displayName: member.displayName })),
+    async () => (await generatedApi.listMembers(practiceId as string)).map(member => ({ id: member.userId, practiceId: practiceId as string, userId: member.userId, role: member.role === 'Member' ? 'user' as const : 'admin' as const, email: member.email, displayName: member.displayName, version: member.version })),
     { enabled: Boolean(practiceId) }
   )
 
@@ -36,7 +36,11 @@ const usePracticeMembers = (practiceId?: string, userId?: string, canViewInvites
   )
 
   const updateMemberRoleMutation = useMutation(
-    (input: Omit<UpdatePracticeMemberRoleInput, 'practiceId'>) => generatedApi.updateMember(practiceId as string, input.userId, apiRole(input.role)),
+    (input: Omit<UpdatePracticeMemberRoleInput, 'practiceId'>) => {
+      const version = membersQuery.data?.find(member => member.userId === input.userId)?.version
+      if (!version) throw new Error('The member version is unavailable; refresh before updating.')
+      return generatedApi.updateMember(practiceId as string, input.userId, apiRole(input.role), version)
+    },
     {
       onSuccess: () => {
         queryClient.invalidateQueries(apiQueryKeys.members(userId, practiceId))

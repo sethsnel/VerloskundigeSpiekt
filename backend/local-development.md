@@ -25,16 +25,23 @@ Username: postgres
 Password: postgres
 ```
 
-## Apply the EF schema
+## Bootstrap roles and apply the EF schema
 
-Run migrations separately; the API does not apply migrations during startup.
+The clean-environment order is mandatory: create restricted roles first, make
+`vs_migrator` the database/schema owner, apply the committed bundle as that
+role, and only then apply runtime grants. The API never applies migrations.
 
 ```powershell
 cd backend
 
-rtk dotnet ef database update `
-  --project src/VerloskundigeSpiekt.Infrastructure/VerloskundigeSpiekt.Infrastructure.csproj `
-  --startup-project src/VerloskundigeSpiekt.Api/VerloskundigeSpiekt.Api.csproj
+$env:PGPASSWORD = 'postgres'
+rtk psql -h localhost -U postgres -d verloskundigespiekt -f database/bootstrap-roles.sql
+rtk psql -h localhost -U postgres -d verloskundigespiekt -c "ALTER ROLE vs_migrator PASSWORD 'local-migrator'; ALTER ROLE vs_api PASSWORD 'local-runtime';"
+rtk dotnet tool restore
+rtk ./scripts/create-migration-bundle.ps1 -Output artifacts/efbundle.exe
+rtk ./artifacts/efbundle.exe --connection "Host=localhost;Port=5432;Database=verloskundigespiekt;Username=vs_migrator;Password=local-migrator"
+$env:PGPASSWORD = 'local-migrator'
+rtk psql -h localhost -U vs_migrator -d verloskundigespiekt -f database/roles.sql
 ```
 
 ## Start the API
@@ -70,7 +77,8 @@ Password: postgres
 SSL:      Disable
 ```
 
-Connect as `postgres` when inspecting local data. The API runtime role is intentionally restricted by PostgreSQL row-level security.
+Connect as `vs_api` when validating application behavior and as `vs_migrator`
+only for schema inspection. `postgres` is limited to initial cluster bootstrap.
 
 Useful inspection queries:
 

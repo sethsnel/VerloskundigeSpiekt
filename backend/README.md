@@ -1,6 +1,6 @@
 # VerloskundigeSpiekt API
 
-The API is the only application data boundary. Run locally with `dotnet run --project src/VerloskundigeSpiekt.Api` or start PostgreSQL and the API with `docker compose up --build`.
+The API is the only application data boundary. Follow [local-development.md](local-development.md) to bootstrap `vs_migrator` before the schema, apply the committed bundle, apply post-schema grants, and run the API as `vs_api`. `docker compose up postgres` intentionally does not grant the API owner credentials.
 
 Required configuration is validated at startup. Store local secrets in .NET Secret Manager or an ignored environment file; `.env.example` contains names only. The API never applies EF migrations during startup. Generate and execute migration bundles separately with the direct migration connection and role.
 

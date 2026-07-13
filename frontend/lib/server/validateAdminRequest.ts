@@ -1,4 +1,4 @@
-import { auth } from "firebase-admin"
+import { getAuth } from "firebase-admin/auth"
 import { headers } from 'next/headers'
 
 import { firebaseAdmin } from "."
@@ -12,7 +12,7 @@ export default async function validateAdminRequest(): Promise<number> {
   }
 
   try {
-    const decodedToken = await auth(firebaseAdmin).verifyIdToken(idToken as string)
+    const decodedToken = await getAuth(firebaseAdmin).verifyIdToken(idToken as string)
 
     if (!decodedToken.admin) {
       return 403
